@@ -11,7 +11,10 @@ import {
   Packages,
   ROIEarnings,
   Withdraw,
+  Profile,
 } from "../Pages";
+import BEP20 from "../Pages/Deposit/BEP20/BEP20";
+import TRC20 from "../Pages/Deposit/TRC20/TRC20";
 
 export const router = createBrowserRouter([
   {
@@ -26,12 +29,20 @@ export const router = createBrowserRouter([
             element: <Dashboard />,
           },
           { path: "dashboard", element: <Dashboard /> },
-          { path: "deposit", element: <Deposit /> },
+          {
+            path: "deposit",
+            children: [
+              { index: true, element: <Deposit /> },
+              { path: "trc20", element: <TRC20 /> },
+              { path: "bep20", element: <BEP20 /> },
+            ],
+          },
           { path: "network", element: <Network /> },
           { path: "packages", element: <Packages /> },
           { path: "roi-earnings", element: <ROIEarnings /> },
           { path: "commissions", element: <Commissions /> },
           { path: "withdraw", element: <Withdraw /> },
+          { path: "profile", element: <Profile /> },
         ],
       },
     ],

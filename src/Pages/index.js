@@ -6,4 +6,5 @@ export { default as Signup } from "./Signup/Signup";
 export { default as Packages } from "./Packages/Packages";
 export { default as Network } from "./Network/Network";
 export { default as ROIEarnings } from "./ROIEarnings/ROIEarnings";
-export { default as Withdraw } from "./Withdraw/Withdraw";  
+export { default as Withdraw } from "./Withdraw/Withdraw";
+export { default as Profile } from "./profile/Profile.jsx";

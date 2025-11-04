@@ -1,5 +1,56 @@
-export const BASE_URL="https://admintheme.mukeshkatoch.com/api/v1/";
+export const BASE_URL = "https://admintheme.mukeshkatoch.com/api/v1/";
 
-//AUTH 
-export const LOGIN_URL="login";
-export const SIGNUP_URL="register";
+//AUTH
+export const LOGIN_URL = "login"; //done
+export const SIGNUP_URL = "register"; //done
+
+//dashboard
+export const DASHBOARD_URL = "dashboard";
+export const DASHBOARD_EARNING_HISTORY = "dashboard/earnings-history";
+
+//packages
+export const PACKAGES_URL = "packages";
+export const PACKAGES_WALLET_BALANCE = "packages/wallet-balance";
+export const PACKAGES_USER = "packages/user";
+export const PACKAGES_INVESTMENT_HISTORY = "packages/investment-history";
+export const PACKAGES_PURCHASE = "packages/purchase";
+
+//deposit methods
+export const DEPOSIT_METHODS_URL = "deposit-methods";
+export const DEPOSIT_METHODS_RECOMMENDED_URL = "deposit-methods/recommended";
+export const DEPOSIT_METHODS_TYPE_USDT_TRC20_URL =
+  "deposit-methods/type/usdt-trc20";
+export const DEPOSIT_METHODS_TYPE_USDT_BEP20_URL =
+  "deposit-methods/type/usdt-bep20";
+export const DEPOSIT_METHODS_VALIDATE_AMOUNT_URL =
+  "deposit-methods/validate-amount";
+export const DEPOSIT_METHODS_CALCULATE_FEE_URL =
+  "deposit-methods/calculate-fee";
+
+//deposits history routes
+
+export const DEPOSITS_HISTORY_URL = "deposits/history";
+export const DEPOSITS_WALLET_QR_CODE_URL = "wallet/qr-code";
+
+//profile
+export const GET_PROFILE = "profile";
+export const UPDATE_PROFILE = "profile/update";
+export const UPLOAD_PROFILE_PICTURE = "profile/upload-picture";
+export const DELETE_PROFILE_PICTURE = "profile/delete-picture";
+export const UPLOAD_DOCUMENT = "profile/upload-document"; // temprary
+export const ADD_BANK_ACCOUNT = "profile/add-bank-account"; // temprary
+export const DELETE_BANK_ACCOUNT = "profile/delete-bank-account"; // temprary
+export const FETCH_BANK_DETAILS = "profile/bank-details"; // temprary
+export const UPDATE_PASSWORD = "profile/update-password"; //temprary
+
+//Closing Routes
+export const CLOSING_MONTHLY_URL = "closing/monthly";
+export const CLOSING_STATS_URL = "closing/stats";
+
+export const CLOSING_SINGLE_URL = "closing/single";
+
+//Roi Earnings
+
+//Network Routes
+
+//Commissions Routes
