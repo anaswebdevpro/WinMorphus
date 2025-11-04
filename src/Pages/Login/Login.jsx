@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Loader } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
 import { LOGIN_URL } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
@@ -17,6 +18,7 @@ const validationSchema = Yup.object({
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -28,6 +30,7 @@ const Login = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
+      setIsLoading(true);
       try {
         const payload = JSON.stringify({
           email: values.email,
@@ -44,16 +47,19 @@ const Login = () => {
 
             navigate("/dashboard");
             console.log(response);
+            setIsLoading(false);
           })
           .catch((error) => {
             console.error("Login failed:", error);
 
             formik.setFieldError("password", "Invalid email or password");
+            setIsLoading(false);
           });
       } catch (error) {
         console.error("Login failed:", error);
 
         formik.setFieldError("password", "Invalid email or password");
+        setIsLoading(false);
       }
     },
   });
@@ -65,7 +71,7 @@ const Login = () => {
 
       {/* Main Content */}
       <div
-        className="flex items-center justify-center min-h-[calc(100vh-80px)] p-6"
+        className="flex items-center justify-center min-h-[calc(100vh-80px)] p-3 sm:p-6"
         style={{
           backgroundImage: `url(${loginBackground})`,
           backgroundSize: "cover",
@@ -73,16 +79,16 @@ const Login = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="max-w-5xl w-full  rounded-2xl shadow-2xl overflow-hidden flex">
+        <div className="max-w-5xl w-full rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
           {/* Left - Form Section */}
-          <div className="w-1/2 p-12 bg-white flex flex-col justify-center">
+          <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 bg-white flex flex-col justify-center order-2 lg:order-1">
             <div className="max-w-sm mx-auto w-full">
               {/* Logo and Title */}
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20rounded-full mb-6">
-                  <img src={logo} alt="Win" className="h-20 w-auto" />
+              <div className="text-center mb-6 sm:mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full mb-4 sm:mb-6">
+                  <img src={logo} alt="Win" className="h-16 sm:h-20 w-auto" />
                 </div>
-                <h1 className="text-2xl font-bold text-slate-800 mb-2">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">
                   Let's get you
                   <br />
                   signed in
@@ -90,9 +96,15 @@ const Login = () => {
               </div>
 
               {/* Form */}
-              <form onSubmit={formik.handleSubmit} className="space-y-6">
+              <form
+                onSubmit={formik.handleSubmit}
+                className="space-y-4 sm:space-y-6"
+              >
                 {/* Email Field */}
                 <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Email Address
+                  </label>
                   <input
                     id="email"
                     name="email"
@@ -101,7 +113,7 @@ const Login = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.email}
-                    className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                    className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 sm:py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base ${
                       formik.touched.email && formik.errors.email
                         ? "border-red-400"
                         : ""
@@ -116,6 +128,9 @@ const Login = () => {
 
                 {/* Password Field */}
                 <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Password
+                  </label>
                   <div className="relative">
                     <input
                       id="password"
@@ -125,7 +140,7 @@ const Login = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.password}
-                      className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 pr-12 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                      className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 pr-12 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base ${
                         formik.touched.password && formik.errors.password
                           ? "border-red-400"
                           : ""
@@ -135,25 +150,9 @@ const Login = () => {
                       type="button"
                       aria-label="Toggle password"
                       onClick={() => setShowPassword((s) => !s)}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 touch-manipulation"
                     >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d={
-                            showPassword
-                              ? "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                              : "M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          }
-                        />
-                      </svg>
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
                   {formik.touched.password && formik.errors.password ? (
@@ -170,9 +169,9 @@ const Login = () => {
                     name="keep"
                     onChange={formik.handleChange}
                     checked={formik.values.keep}
-                    className="h-4 w-4 text-yellow-500 border-gray-300 rounded focus:ring-yellow-400 mt-1"
+                    className="h-4 w-4 sm:h-4 sm:w-4 text-yellow-500 border-gray-300 rounded focus:ring-yellow-400 mt-1 touch-manipulation"
                   />
-                  <label className="ml-2 text-sm text-slate-600">
+                  <label className="ml-2 text-xs sm:text-sm text-slate-600">
                     I agree to the Terms & Conditions
                   </label>
                 </div>
@@ -180,24 +179,37 @@ const Login = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={formik.isSubmitting}
-                  className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-900 font-bold py-4 rounded-lg transition-all duration-200 disabled:opacity-60 shadow-lg"
+                  disabled={isLoading}
+                  className="w-full bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-900 font-bold py-3 sm:py-4 rounded-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg text-sm sm:text-base touch-manipulation flex items-center justify-center gap-2"
                 >
-                  {formik.isSubmitting ? "logging in..." : "Login"}
+                  {isLoading ? (
+                    <>
+                      <Loader size={20} className="animate-spin" />
+                      <span>Logging in...</span>
+                    </>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
 
                 {/* Login Link */}
-                <p className="text-center text-sm text-slate-600">
-                  Don't have to account? <Link to="/signup">Sign Up</Link>
+                <p className="text-center text-xs sm:text-sm text-slate-600">
+                  Don't have to account?{" "}
+                  <Link
+                    to="/signup"
+                    className="text-yellow-500 hover:text-yellow-600 font-medium"
+                  >
+                    Sign Up
+                  </Link>
                 </p>
               </form>
             </div>
           </div>
 
           {/* Right - Hero Section */}
-          <div className="w-1/2 bg-[#080D18] p-12 flex flex-col justify-center items-center text-center relative overflow-hidden">
+          <div className="w-full lg:w-1/2 bg-[#080D18] p-6 sm:p-8 lg:p-12 flex flex-col justify-center items-center text-center relative overflow-hidden order-1 lg:order-2 min-h-[300px] lg:min-h-auto">
             {/* Login Image - Full Size */}
-            <div className="relative mb-8 w-full h-80 flex items-center justify-center">
+            <div className="relative mb-4 sm:mb-6 lg:mb-8 w-full h-48 sm:h-64 lg:h-80 flex items-center justify-center">
               <img
                 src={loginImage}
                 alt="Trading Platform"
@@ -209,13 +221,13 @@ const Login = () => {
             </div>
 
             {/* Text Content */}
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4">
               Unlock Your
               <br />
               <span className="text-yellow-400">Trading Potential</span>
             </h2>
 
-            <div className="text-yellow-400 font-bold text-xl tracking-wider mb-6">
+            <div className="text-yellow-400 font-bold text-lg sm:text-xl tracking-wider mb-4 sm:mb-6">
               WIN MORPHUS
             </div>
           </div>

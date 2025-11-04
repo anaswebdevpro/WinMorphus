@@ -24,19 +24,27 @@ const MainNavbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-slate-900 px-6 py-4 sticky top-0 z-50 shadow-lg">
+    <nav className="bg-slate-900 px-4 sm:px-6 py-3 sticky top-0 z-50 shadow-lg">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
-        <div className="flex items-center">
-          <Link to="/dashboard" className="flex items-center">
+        <div className="flex-shrink-0">
+          <Link to="/dashboard" className="flex items-center gap-2">
             <img
               src={logo}
               alt="Logo"
-              className="h-8 w-auto"
+              className="h-8 sm:h-10 w-auto"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
             />
+            <div className="flex items-center">
+              <span className="text-white text-lg sm:text-xl md:text-2xl font-bold">
+                Win
+              </span>
+              <span className="text-yellow-400 text-lg sm:text-xl md:text-2xl font-bold">
+                Morphus
+              </span>
+            </div>
           </Link>
         </div>
 

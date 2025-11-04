@@ -8,7 +8,7 @@ export default function MainLayout() {
       <MainNavbar />
 
       {/* This is where child routes will render */}
-      <main className="p-4">
+      <main>
         <Outlet />
       </main>
     </div>
