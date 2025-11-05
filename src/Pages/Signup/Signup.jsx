@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Link,  useParams } from "react-router-dom";
+import { Link,  useNavigate,  useParams } from "react-router-dom";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
 import { SIGNUP_URL } from "../../Api/Api_variables";
@@ -31,7 +31,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   // const { login } = useAuth();
   const { referralId } = useParams();
 
@@ -63,12 +63,12 @@ const Signup = () => {
         })
           .then((response) => {
             console.log("Signup successful:", response);
-            enqueueSnackbar("Signup successful!", { variant: "success" });
-            enqueueSnackbar("Verification email sent! Check your inbox.", { variant: "success" });
-            // // Automatically login the user after signup
+            const successMessage = response?.message || "Signup successful!";
+            enqueueSnackbar(successMessage, { variant: "success" });
+            // Automatically login the user after signup
             // login(response?.user, response?.token);
-            // setIsLoading(false);
-            // navigate("/dashboard");
+            setIsLoading(false);
+            navigate("/login");
           })
           .catch((error) => {
             console.error("Signup failed:", error);

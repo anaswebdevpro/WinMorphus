@@ -54,5 +54,6 @@ export const CLOSING_SINGLE_URL = "closing/single";
 //Network Routes
 export const MY_NETWORK = "network/team-tree";
 export const NETWORK_STATS = "network/stats";
+export const NETWORK_LEVEL_WISE = "network/level-wise";
 
 //Commissions Routes
