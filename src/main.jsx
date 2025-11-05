@@ -11,7 +11,11 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     {/* <App /> */}
     <AuthProvider>
-      <SnackbarProvider maxSnack={3}>
+      <SnackbarProvider  maxSnack={3}
+  anchorOrigin={{
+    vertical: 'top',
+    horizontal: 'right',
+  }}>
         <RouterProvider router={router} />
       </SnackbarProvider>
     </AuthProvider>

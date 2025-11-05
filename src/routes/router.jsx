@@ -50,6 +50,7 @@ export const router = createBrowserRouter([
   // Public routes
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <Signup /> },
+  { path: "/ref/:referralId", element: <Signup /> },
   // Fallback
   { path: "*", element: <Login /> },
 ]);

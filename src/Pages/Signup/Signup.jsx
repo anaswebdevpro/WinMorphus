@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,  useParams } from "react-router-dom";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
 import { SIGNUP_URL } from "../../Api/Api_variables";
-import { useAuth } from "../../Context/UseAuth";
+// import { useAuth } from "../../Context/UseAuth";
 import { logo, loginImage, loginBackground } from "../../assets";
 import MainNavbar from "../../Component/MainNavbar";
+import { enqueueSnackbar } from "notistack";
 
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -30,15 +31,16 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const { login } = useAuth();
+  // const navigate = useNavigate();
+  // const { login } = useAuth();
+  const { referralId } = useParams();
 
   const formik = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
       email: "",
-      sponser: "",
+      sponser: referralId || "",
       password: "",
       confirmPassword: "",
       agree: true,
@@ -61,23 +63,27 @@ const Signup = () => {
         })
           .then((response) => {
             console.log("Signup successful:", response);
-            // Automatically login the user after signup
-            login(response?.user, response?.token);
-            setIsLoading(false);
-            navigate("/dashboard");
+            enqueueSnackbar("Signup successful!", { variant: "success" });
+            enqueueSnackbar("Verification email sent! Check your inbox.", { variant: "success" });
+            // // Automatically login the user after signup
+            // login(response?.user, response?.token);
+            // setIsLoading(false);
+            // navigate("/dashboard");
           })
           .catch((error) => {
             console.error("Signup failed:", error);
-            formik.setFieldError(
-              "email",
+            const errorMessage =
               error?.response?.data?.message ||
-                "Signup failed. Please try again."
-            );
+              "Signup failed. Please try again.";
+            enqueueSnackbar(errorMessage, { variant: "error" });
+            formik.setFieldError("email", errorMessage);
             setIsLoading(false);
           });
       } catch (error) {
         console.error("Signup failed:", error);
-        formik.setFieldError("email", "Signup failed. Please try again.");
+        const errorMessage = "Signup failed. Please try again.";
+        enqueueSnackbar(errorMessage, { variant: "error" });
+        formik.setFieldError("email", errorMessage);
         setIsLoading(false);
       }
     },

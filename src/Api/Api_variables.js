@@ -5,11 +5,11 @@ export const LOGIN_URL = "login"; //done
 export const SIGNUP_URL = "register"; //done
 
 //dashboard
-export const DASHBOARD_URL = "dashboard";
+export const DASHBOARD_DATA = "dashboard";
 export const DASHBOARD_EARNING_HISTORY = "dashboard/earnings-history";
 
 //packages
-export const PACKAGES_URL = "packages";
+export const PACKAGES_URL = "packages"; // done
 export const PACKAGES_WALLET_BALANCE = "packages/wallet-balance";
 export const PACKAGES_USER = "packages/user";
 export const PACKAGES_INVESTMENT_HISTORY = "packages/investment-history";
@@ -19,9 +19,9 @@ export const PACKAGES_PURCHASE = "packages/purchase";
 export const DEPOSIT_METHODS_URL = "deposit-methods";
 export const DEPOSIT_METHODS_RECOMMENDED_URL = "deposit-methods/recommended";
 export const DEPOSIT_METHODS_TYPE_USDT_TRC20_URL =
-  "deposit-methods/type/usdt-trc20";
+  "deposit-methods/type/usdt-trc20"; // waiting for the wallet integration
 export const DEPOSIT_METHODS_TYPE_USDT_BEP20_URL =
-  "deposit-methods/type/usdt-bep20";
+  "deposit-methods/type/usdt-bep20"; //done
 export const DEPOSIT_METHODS_VALIDATE_AMOUNT_URL =
   "deposit-methods/validate-amount";
 export const DEPOSIT_METHODS_CALCULATE_FEE_URL =
@@ -52,5 +52,7 @@ export const CLOSING_SINGLE_URL = "closing/single";
 //Roi Earnings
 
 //Network Routes
+export const MY_NETWORK = "network/team-tree";
+export const NETWORK_STATS = "network/stats";
 
 //Commissions Routes

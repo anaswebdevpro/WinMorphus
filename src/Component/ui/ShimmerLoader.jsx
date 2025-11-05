@@ -9,26 +9,25 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
           <ContentLoader
             speed={2}
             width={width || 1200}
-            height={height || 400}
-            viewBox="0 0 1200 400"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
+            height={height || 600}
+            viewBox="0 0 1200 600"
+            backgroundColor="#1f2937"
+            foregroundColor="#374151"
             className={className}
           >
             {/* Header */}
-            <rect x="0" y="0" rx="8" ry="8" width="1200" height="60" />
+            <rect x="0" y="20" rx="8" ry="8" width="500" height="40" />
 
-            {/* Stats Cards */}
-            <rect x="0" y="80" rx="8" ry="8" width="280" height="120" />
-            <rect x="300" y="80" rx="8" ry="8" width="280" height="120" />
-            <rect x="600" y="80" rx="8" ry="8" width="280" height="120" />
-            <rect x="900" y="80" rx="8" ry="8" width="280" height="120" />
+            {/* Stats Cards - 2 rows of 3 */}
+            <rect x="0" y="80" rx="8" ry="8" width="380" height="100" />
+            <rect x="410" y="80" rx="8" ry="8" width="380" height="100" />
+            <rect x="820" y="80" rx="8" ry="8" width="380" height="100" />
+            <rect x="0" y="200" rx="8" ry="8" width="380" height="100" />
+            <rect x="410" y="200" rx="8" ry="8" width="380" height="100" />
+            <rect x="820" y="200" rx="8" ry="8" width="380" height="100" />
 
             {/* Chart Area */}
-            <rect x="0" y="220" rx="8" ry="8" width="800" height="160" />
-
-            {/* Recent Transactions */}
-            <rect x="820" y="220" rx="8" ry="8" width="360" height="160" />
+            <rect x="0" y="320" rx="16" ry="16" width="1200" height="280" />
           </ContentLoader>
         );
 
@@ -39,8 +38,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 1000}
             height={height || 400}
             viewBox="0 0 1000 400"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
+            backgroundColor="#1e1e1e"
+            foregroundColor="#2d2d2d"
             className={className}
           >
             {/* Table Header */}
@@ -63,8 +62,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 300}
             height={height || 200}
             viewBox="0 0 300 200"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
+            backgroundColor="#1e1e1e"
+            foregroundColor="#2d2d2d"
             className={className}
           >
             <rect x="0" y="0" rx="8" ry="8" width="300" height="200" />
@@ -78,8 +77,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 400}
             height={height || 500}
             viewBox="0 0 400 500"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
+            backgroundColor="#1e1e1e"
+            foregroundColor="#2d2d2d"
             className={className}
           >
             {/* Form Title */}
@@ -104,8 +103,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 400}
             height={height || 300}
             viewBox="0 0 400 300"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
+            backgroundColor="#1e1e1e"
+            foregroundColor="#2d2d2d"
             className={className}
           >
             {/* Chart Title */}
@@ -127,8 +126,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 400}
             height={height || 300}
             viewBox="0 0 400 300"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
+            backgroundColor="#1e1e1e"
+            foregroundColor="#2d2d2d"
             className={className}
           >
             {/* List Items */}
@@ -147,8 +146,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 300}
             height={height || 400}
             viewBox="0 0 300 400"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
+            backgroundColor="#1e1e1e"
+            foregroundColor="#2d2d2d"
             className={className}
           >
             {/* Profile Picture */}
@@ -175,8 +174,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 300}
             height={height || 200}
             viewBox="0 0 300 200"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
+            backgroundColor="#1e1e1e"
+            foregroundColor="#2d2d2d"
             className={className}
           >
             <rect x="0" y="0" rx="8" ry="8" width="300" height="200" />

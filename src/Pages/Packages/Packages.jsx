@@ -1,68 +1,91 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Zap, Star, Crown, Check, AlertCircle, TrendingUp } from "lucide-react";
+import { apiRequest } from "../../Services/Api";
+import { PACKAGES_URL } from "../../Api/Api_variables";
+import { useAuth } from "../../Context/UseAuth";
+import { enqueueSnackbar } from "notistack";
 
 const Packages = () => {
   const [investmentHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [PackageData, setPackageData] = useState({});
+  const { token } = useAuth();
 
-  const packages = [
-    {
-      id: 1,
-      name: "Standard",
-      icon: Zap,
+  // Icons mapping for packages
+  const iconMap = {
+    Standard: Zap,
+    Premium: Star,
+    Elite: Crown,
+  };
+
+  // Theme mapping for packages
+  const themeMap = {
+    Standard: {
       borderColor: "border-cyan-500",
       bgGradient: "from-cyan-900/30 to-cyan-800/20",
-      range: "5,000 - 25,000 USDT",
-      roi: "12.00% P.A",
-      commission: "20.00% Commission",
       buttonColor: "bg-cyan-600 hover:bg-cyan-700",
       accentColor: "text-cyan-400",
       badgeColor: "bg-cyan-600",
       iconBg: "bg-cyan-600/30",
     },
-    {
-      id: 2,
-      name: "Premium",
-      icon: Star,
+    Premium: {
       borderColor: "border-yellow-500",
       bgGradient: "from-yellow-900/30 to-yellow-800/20",
-      range: "25,001 - 50,000 USDT",
-      roi: "15.00% P.A",
-      commission: "25.00% Commission",
       buttonColor: "bg-yellow-500 hover:bg-yellow-600",
       accentColor: "text-yellow-400",
       badgeColor: "bg-yellow-500",
       iconBg: "bg-yellow-600/30",
       popular: true,
     },
-    {
-      id: 3,
-      name: "Elite",
-      icon: Crown,
+    Elite: {
       borderColor: "border-purple-500",
       bgGradient: "from-purple-900/30 to-purple-800/20",
-      range: "Above 50,001 USDT",
-      roi: "18.00% P.A",
-      commission: "30.00% Commission",
       buttonColor: "bg-purple-600 hover:bg-purple-700",
       accentColor: "text-purple-400",
       badgeColor: "bg-purple-600",
       iconBg: "bg-purple-600/30",
     },
-  ];
+  };
 
-  const advisorCommission = [
-    { package: "Standard package", commission: "20%" },
-    { package: "Premium package", commission: "25%" },
-    { package: "Elite package", commission: "30%" },
-  ];
+  // Dynamically calculate grid columns based on package count
+  const gridColsClass = useMemo(() => {
+    const packageCount = PackageData?.packages?.length || 0;
+    if (packageCount === 1) return "grid-cols-1 max-w-md mx-auto";
+    if (packageCount === 2) return "grid-cols-1 md:grid-cols-2";
+    return "grid-cols-1 md:grid-cols-3";
+  }, [PackageData?.packages?.length]);
 
-  const franchiseCommission = [
-    { level: "5%", color: "bg-red-500" },
-    { level: "4%", color: "bg-blue-600" },
-    { level: "3%", color: "bg-cyan-500" },
-    { level: "2%", color: "bg-yellow-500" },
-    { level: "1%", color: "bg-teal-500" },
-  ];
+  const FetchPackages = useCallback(() => {
+    setLoading(true);
+    apiRequest({
+      endpoint: PACKAGES_URL,
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        console.log("Packages API Response:", response);
+
+        // Handle both nested and direct data structures
+        const data = response.data || response;
+        setPackageData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch packages data:", error);
+        const errorMessage =
+          error?.message ||
+          error?.response?.data?.message ||
+          "Failed to fetch packages data";
+        enqueueSnackbar(errorMessage, { variant: "error" });
+        setLoading(false);
+      });
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      FetchPackages();
+    }
+  }, [token, FetchPackages]);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -84,75 +107,106 @@ const Packages = () => {
             Select a package that matches your investment capacity
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            {packages.map((pkg) => {
-              const IconComponent = pkg.icon;
-              return (
-                <div
-                  key={pkg.id}
-                  className={`relative bg-gradient-to-br ${pkg.bgGradient} border-2 ${pkg.borderColor} rounded-xl p-6 transition-all duration-300 hover:shadow-2xl hover:border-opacity-100 group`}
-                >
-                  {pkg.popular && (
-                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                      <span
-                        className={`${pkg.badgeColor} text-white px-4 py-1 rounded-full text-xs font-bold tracking-wide`}
-                      >
-                        ⭐ MOST POPULAR
-                      </span>
-                    </div>
-                  )}
+          <div className={`grid ${gridColsClass} gap-6 mb-6`}>
+            {PackageData?.packages?.length > 0 ? (
+              PackageData.packages.map((pkg) => {
+                const theme = themeMap[pkg.name] || themeMap.Standard;
+                const IconComponent = iconMap[pkg.name] || Zap;
 
-                  <div className="flex justify-center mb-4">
-                    <div
-                      className={`${pkg.iconBg} p-4 rounded-full border border-slate-700 group-hover:scale-110 transition-transform`}
-                    >
-                      <IconComponent className={`w-8 h-8 ${pkg.accentColor}`} />
-                    </div>
-                  </div>
+                // Build investment range
+                const minAmount =
+                  pkg.min_amount || pkg.formatted_range?.split("-")[0] || "N/A";
+                const maxAmount =
+                  pkg.max_amount || pkg.formatted_range?.split("-")[1] || "N/A";
+                const range =
+                  pkg.formatted_range ||
+                  (maxAmount === "null" || maxAmount === null
+                    ? `Above ${minAmount}`
+                    : `${minAmount} - ${maxAmount}`);
 
-                  <h3 className="text-2xl font-bold text-center mb-4 text-white">
-                    {pkg.name}
-                  </h3>
-
-                  <div className="space-y-3 mb-6">
-                    <div className="text-center">
-                      <p className={`text-sm font-semibold ${pkg.accentColor}`}>
-                        Investment Range
-                      </p>
-                      <p className="text-gray-300 font-bold mt-1">
-                        {pkg.range}
-                      </p>
-                    </div>
-
-                    <div className="flex gap-2 justify-center">
-                      <div
-                        className={`${pkg.badgeColor} text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1`}
-                      >
-                        <TrendingUp className="w-4 h-4" />
-                        {pkg.roi}
-                      </div>
-                      <div
-                        className={`${pkg.badgeColor} text-white px-4 py-2 rounded-lg text-sm font-bold`}
-                      >
-                        {pkg.commission}
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    className={`${pkg.buttonColor} text-white w-full py-3 rounded-lg font-bold text-base transition-all duration-300 transform hover:scale-105 shadow-lg`}
+                return (
+                  <div
+                    key={pkg.id}
+                    className={`relative bg-linear-to-br ${theme.bgGradient} border-2 ${theme.borderColor} rounded-xl p-6 transition-all duration-300 hover:shadow-2xl hover:border-opacity-100 group`}
                   >
-                    SUBSCRIBE NOW
-                  </button>
+                    {theme.popular && (
+                      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <span
+                          className={`${theme.badgeColor} text-white px-4 py-1 rounded-full text-xs font-bold tracking-wide`}
+                        >
+                          ⭐ MOST POPULAR
+                        </span>
+                      </div>
+                    )}
 
-                  <div className="mt-4 pt-4 border-t border-slate-700">
-                    <p className="text-xs text-gray-500 text-center">
-                      ✓ Automated Daily Payouts
-                    </p>
+                    <div className="flex justify-center mb-4">
+                      <div
+                        className={`${theme.iconBg} p-4 rounded-full border border-slate-700 group-hover:scale-110 transition-transform`}
+                      >
+                        <IconComponent
+                          className={`w-8 h-8 ${theme.accentColor}`}
+                        />
+                      </div>
+                    </div>
+
+                    <h3 className="text-2xl font-bold text-center mb-4 text-white">
+                      {pkg.name}
+                    </h3>
+
+                    <div className="space-y-3 mb-6">
+                      <div className="text-center">
+                        <p
+                          className={`text-sm font-semibold ${theme.accentColor}`}
+                        >
+                          Investment Range
+                        </p>
+                        <p className="text-gray-300 font-bold mt-1">{range}</p>
+                      </div>
+
+                      <div className="text-center text-xs text-gray-400 mb-2">
+                        {pkg.description}
+                      </div>
+
+                      <div className="flex gap-2 justify-center">
+                        <div
+                          className={`${theme.badgeColor} text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1`}
+                        >
+                          <TrendingUp className="w-4 h-4" />
+                          {pkg.formatted_rate ||
+                            `${pkg.rate_percentage || "N/A"}% P.A.`}
+                        </div>
+                        <div
+                          className={`${theme.badgeColor} text-white px-4 py-2 rounded-lg text-sm font-bold`}
+                        >
+                          {pkg.formatted_commission ||
+                            `${pkg.commission_percentage || "N/A"}% Commission`}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      className={`${theme.buttonColor} text-white w-full py-3 rounded-lg font-bold text-base transition-all duration-300 transform hover:scale-105 shadow-lg`}
+                    >
+                      SUBSCRIBE NOW
+                    </button>
+
+                    <div className="mt-4 pt-4 border-t border-slate-700">
+                      <p className="text-xs text-gray-500 text-center">
+                        ✓{" "}
+                        {pkg.status
+                          ? "Status: " + pkg.status.toUpperCase()
+                          : "Active"}{" "}
+                        | Automated Daily Payouts
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div className="col-span-3 text-center py-8 text-gray-400">
+                {loading ? "Loading packages..." : "No packages available"}
+              </div>
+            )}
           </div>
 
           <div className="bg-slate-700/50 border border-slate-600 rounded-lg p-4 text-center">
@@ -160,11 +214,11 @@ const Packages = () => {
               <span className="text-yellow-400 font-semibold">
                 Closing Date:
               </span>{" "}
-              Last date of month |
+              {PackageData?.dates_info?.closing_date || "Last date of month"} |
               <span className="text-yellow-400 font-semibold ml-2">
                 Payout Date:
               </span>{" "}
-              10th of month
+              {PackageData?.dates_info?.payout_date || "10th of month"}
             </p>
           </div>
         </div>
@@ -221,7 +275,7 @@ const Packages = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Advisor Commission */}
           <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
+            <div className="bg-linear-to-r from-green-600 to-emerald-600 text-white p-6">
               <h3 className="text-xl font-bold flex items-center gap-2">
                 <TrendingUp className="w-6 h-6" />
                 Advisor Commission
@@ -229,23 +283,31 @@ const Packages = () => {
             </div>
             <div className="p-6">
               <p className="text-sm text-gray-400 mb-6">
-                To qualify for advisor commissions, you must make at least one
-                direct referral
+                {PackageData?.commission_info?.description ||
+                  "To qualify for advisor commissions, you must make at least one direct referral"}
               </p>
               <div className="space-y-3">
-                {advisorCommission.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 bg-slate-700/50 border border-slate-600 rounded-lg hover:border-green-500/50 transition-colors"
-                  >
-                    <span className="text-gray-300 font-medium">
-                      {item.package}
-                    </span>
-                    <span className="text-lg font-bold text-green-400">
-                      {item.commission}
-                    </span>
+                {PackageData?.commission_info?.advisor ? (
+                  Object.entries(PackageData.commission_info.advisor).map(
+                    ([name, commission], index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-4 bg-slate-700/50 border border-slate-600 rounded-lg hover:border-green-500/50 transition-colors"
+                      >
+                        <span className="text-gray-300 font-medium capitalize">
+                          {name} Package
+                        </span>
+                        <span className="text-lg font-bold text-green-400">
+                          {commission}%
+                        </span>
+                      </div>
+                    )
+                  )
+                ) : (
+                  <div className="text-gray-400 text-center py-4">
+                    No commission data available
                   </div>
-                ))}
+                )}
               </div>
               <p className="text-xs text-gray-500 mt-6 bg-slate-700/30 p-3 rounded border border-slate-600">
                 💡 Commission will be paid based on the packages your referrals
@@ -261,23 +323,50 @@ const Packages = () => {
             </div>
             <div className="p-6">
               <p className="text-sm text-gray-300 mb-6">
-                To qualify as a Franchise Partner, an advisor must recruit at
-                least 10 direct advisors.
+                {PackageData?.franchise_info?.description ||
+                  "To qualify as a Franchise Partner, an advisor must recruit at least 10 direct advisors."}
               </p>
 
               <div className="space-y-3 mb-6">
-                {franchiseCommission.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div className={`${item.color} w-3 h-3 rounded-full`}></div>
-                    <span className="text-gray-300 font-medium text-sm">
-                      {item.level}
-                    </span>
+                {PackageData?.franchise_info?.tiers?.length > 0 ? (
+                  PackageData.franchise_info.tiers.map((tier, index) => {
+                    // Handle both direct object and nested array index formats
+                    const tierData = tier[index] || tier;
+                    const colorMap = {
+                      red: "bg-red-500",
+                      purple: "bg-purple-500",
+                      blue: "bg-blue-500",
+                      orange: "bg-orange-500",
+                      teal: "bg-teal-500",
+                      cyan: "bg-cyan-500",
+                      green: "bg-green-500",
+                    };
+                    const bgColor = colorMap[tierData?.color] || "bg-gray-500";
+
+                    return (
+                      <div key={index} className="flex items-center gap-3">
+                        <div
+                          className={`${bgColor} w-3 h-3 rounded-full`}
+                        ></div>
+                        <span className="text-gray-300 font-medium text-sm">
+                          {tierData?.percentage || index + 1}% - Tier{" "}
+                          {index + 1}
+                        </span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-gray-400 text-center py-4">
+                    No tier data available
                   </div>
-                ))}
+                )}
               </div>
 
               <p className="text-xs text-gray-400">
-                To be advisor you'll need to make at least 1 direct to get paid
+                💡 Minimum investment required:{" "}
+                {PackageData?.franchise_info?.minimum_investment
+                  ? `${PackageData.franchise_info.minimum_investment.toLocaleString()} USDT`
+                  : "Contact support"}
               </p>
             </div>
           </div>

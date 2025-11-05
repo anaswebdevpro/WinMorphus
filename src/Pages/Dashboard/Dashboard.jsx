@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { useSnackbar } from "notistack";
+import ContentLoader from "react-content-loader";
 import {
   Package,
   TrendingUp,
@@ -13,27 +15,177 @@ import {
   AlertCircle,
   ChevronRight,
 } from "lucide-react";
+import { useAuth } from "../../Context/UseAuth";
+import { apiRequest } from "../../Services/Api";
+import { DASHBOARD_DATA } from "../../Api/Api_variables";
 
 const Dashboard = () => {
+  const { token } = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
   const [copiedLink, setCopiedLink] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [dashboardData, setDashboardData] = useState(null);
 
-  // Sample data
-  const stats = {
-    currentPackage: "NO PACKAGE",
-    packageValue: "0 USDT",
-    totalInvestment: "0 USDT",
-    currentROI: "0 USDT",
-    totalCommission: "0 USDT",
+  // Fetch dashboard data from API
+  const fetchDashboardData = useCallback(() => {
+    setLoading(true);
+    apiRequest({
+      endpoint: DASHBOARD_DATA,
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        console.log("Dashboard API Response:", response);
+        console.log(
+          "Dashboard data.network_data:",
+          response.data?.network_data
+        );
+        // Handle both nested and direct data structures
+        const data = response.data || response;
+        setDashboardData(data);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch dashboard data:", error);
+        const errorMessage =
+          error?.message ||
+          error?.response?.data?.message ||
+          "Failed to fetch dashboard data";
+        enqueueSnackbar(errorMessage, { variant: "error" });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [token, enqueueSnackbar]);
+
+  useEffect(() => {
+    if (token) {
+      fetchDashboardData();
+    }
+  }, [token, fetchDashboardData]);
+
+  // Prepare stats from dashboard data or use defaults
+  const stats = dashboardData
+    ? {
+        currentPackage: dashboardData.current_package?.name || "NO PACKAGE",
+        packageValue: `${dashboardData.current_package?.amount || 0} USDT`,
+        totalInvestment: `${dashboardData.total_investment || 0} USDT`,
+        currentROI: `${
+          dashboardData.current_package?.current_roi_earned || 0
+        } USDT`,
+        totalCommission: `${dashboardData.total_commission || 0} USDT`,
+      }
+    : {
+        currentPackage: "NO PACKAGE",
+        packageValue: "0 USDT",
+        totalInvestment: "0 USDT",
+        currentROI: "0 USDT",
+        totalCommission: "0 USDT",
+      };
+
+  const baseUrl = "https://winmorphus.billioninfotech.com";
+  const referralLink = dashboardData?.referral_link
+    ? `${baseUrl}${dashboardData.referral_link}`
+    : `${baseUrl}/ref/0`;
+
+  const networkStats = dashboardData?.network_statistics
+    ? {
+        directReferrals: dashboardData.network_statistics.direct_referrals || 0,
+        totalTeamSize: dashboardData.network_statistics.total_team_size || 0,
+        activeMembers: dashboardData.network_statistics.active_members || 0,
+        teamInvestment: `${
+          dashboardData.network_statistics.team_investment || 0
+        } USDT`,
+      }
+    : {
+        directReferrals: 0,
+        totalTeamSize: 0,
+        activeMembers: 0,
+        teamInvestment: "0 USDT",
+      };
+
+  // Extract network data - handle both direct array and nested structure
+  const networkData = React.useMemo(() => {
+    if (!dashboardData) return [];
+    if (!dashboardData.network_data) return [];
+
+    const data = dashboardData.network_data;
+    console.log("useMemo - getNetworkData - data:", data);
+    console.log(
+      "useMemo - getNetworkData - Array.isArray(data):",
+      Array.isArray(data)
+    );
+    console.log("useMemo - getNetworkData - typeof data:", typeof data);
+    console.log(
+      "useMemo - getNetworkData - Object.keys(data):",
+      Object.keys(data)
+    );
+
+    // If it's already an array, return it
+    if (Array.isArray(data)) {
+      console.log("useMemo - Returning data (already array)");
+      return data;
+    }
+
+    // Try to get first array-like property from object
+    if (data && typeof data === "object") {
+      // Check if it has numeric keys
+      const keys = Object.keys(data);
+      console.log("useMemo - Object keys:", keys);
+
+      for (const key of keys) {
+        console.log(`useMemo - Checking key "${key}":`, data[key]);
+        if (Array.isArray(data[key])) {
+          console.log(`useMemo - Found array at key "${key}":`, data[key]);
+          return data[key];
+        }
+      }
+
+      // Also check 'i' property specifically
+      if (data.i && Array.isArray(data.i)) {
+        console.log("useMemo - Returning data.i (nested array):", data.i);
+        return data.i;
+      }
+    }
+
+    console.log("useMemo - Returning empty array (no match)");
+    return [];
+  }, [dashboardData]);
+  const roiEarningsHistory = dashboardData?.roi_earnings_history || [];
+  const commissionEarningsHistory =
+    dashboardData?.commission_earnings_history || [];
+
+  // Debug logging
+  React.useEffect(() => {
+    if (dashboardData) {
+      console.log("dashboardData:", dashboardData);
+      console.log("networkData length:", networkData?.length);
+      console.log("networkData:", networkData);
+    }
+  }, [dashboardData, networkData]);
+
+  // Helper function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
-  const referralLink = "https://affiliate.genefy.com/ref/29940";
-
-  const networkStats = {
-    directReferrals: 2,
-    totalTeamSize: 5,
-    activeMembers: 4,
-    teamInvestment: "142k USDT",
-  };
+  // Shimmer loader component for cards
+  const ShimmerLoader = () => (
+    <ContentLoader
+      speed={2}
+      width={300}
+      height={150}
+      backgroundColor="#1e293b"
+      foregroundColor="#334155"
+    >
+      <rect x="0" y="0" rx="8" ry="8" width="300" height="150" />
+    </ContentLoader>
+  );
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -57,36 +209,6 @@ const Dashboard = () => {
       window.open(shareUrls[platform], "_blank", "width=600,height=400");
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -113,55 +235,83 @@ const Dashboard = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {/* Current Package */}
-          <div className="bg-gradient-to-br from-purple-600 to-purple-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
-              <Package className="w-4 h-4" />
+          {loading ? (
+            <ShimmerLoader />
+          ) : (
+            <div className="bg-gradient-to-br from-purple-600 to-purple-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
+              <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
+                <Package className="w-4 h-4" />
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <Package className="w-5 h-5" />
+                <p className="text-sm font-medium opacity-90">
+                  Current Package
+                </p>
+              </div>
+              <h2 className="text-2xl font-bold mb-1">
+                {stats.currentPackage}
+              </h2>
+              <p className="text-sm opacity-75">{stats.packageValue}</p>
             </div>
-            <div className="flex items-center gap-2 mb-2">
-              <Package className="w-5 h-5" />
-              <p className="text-sm font-medium opacity-90">Current Package</p>
-            </div>
-            <h2 className="text-2xl font-bold mb-1">{stats.currentPackage}</h2>
-            <p className="text-sm opacity-75">{stats.packageValue}</p>
-          </div>
+          )}
 
           {/* Total Investment */}
-          <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
-              <TrendingUp className="w-4 h-4" />
+          {loading ? (
+            <ShimmerLoader />
+          ) : (
+            <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
+              <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
+                <TrendingUp className="w-4 h-4" />
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="w-5 h-5" />
+                <p className="text-sm font-medium opacity-90">
+                  Total Investment
+                </p>
+              </div>
+              <h2 className="text-2xl font-bold mb-1">
+                {stats.totalInvestment}
+              </h2>
             </div>
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5" />
-              <p className="text-sm font-medium opacity-90">Total Investment</p>
-            </div>
-            <h2 className="text-2xl font-bold mb-1">{stats.totalInvestment}</h2>
-          </div>
+          )}
 
           {/* Current ROI Earned */}
-          <div className="bg-gradient-to-br from-green-600 to-green-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
-              <DollarSign className="w-4 h-4" />
+          {loading ? (
+            <ShimmerLoader />
+          ) : (
+            <div className="bg-gradient-to-br from-green-600 to-green-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
+              <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
+                <DollarSign className="w-4 h-4" />
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <DollarSign className="w-5 h-5" />
+                <p className="text-sm font-medium opacity-90">
+                  Current ROI Earned
+                </p>
+              </div>
+              <h2 className="text-2xl font-bold mb-1">{stats.currentROI}</h2>
             </div>
-            <div className="flex items-center gap-2 mb-2">
-              <DollarSign className="w-5 h-5" />
-              <p className="text-sm font-medium opacity-90">
-                Current ROI Earned
-              </p>
-            </div>
-            <h2 className="text-2xl font-bold mb-1">{stats.currentROI}</h2>
-          </div>
+          )}
 
           {/* Total Commission */}
-          <div className="bg-gradient-to-br from-orange-600 to-orange-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
-              <Users className="w-4 h-4" />
+          {loading ? (
+            <ShimmerLoader />
+          ) : (
+            <div className="bg-gradient-to-br from-orange-600 to-orange-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
+              <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
+                <Users className="w-4 h-4" />
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-5 h-5" />
+                <p className="text-sm font-medium opacity-90">
+                  Total Commission
+                </p>
+              </div>
+              <h2 className="text-2xl font-bold mb-1">
+                {stats.totalCommission}
+              </h2>
             </div>
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="w-5 h-5" />
-              <p className="text-sm font-medium opacity-90">Total Commission</p>
-            </div>
-            <h2 className="text-2xl font-bold mb-1">{stats.totalCommission}</h2>
-          </div>
+          )}
         </div>
 
         {/* Referral Link Section */}
@@ -289,29 +439,36 @@ const Dashboard = () => {
               <div className="w-0.5 h-12 bg-gray-300 mb-4"></div>
 
               {/* Team Members */}
-              <div className="flex gap-12">
-                <div className="flex flex-col items-center">
-                  <div className="w-20 h-20 rounded-full bg-orange-500 flex items-center justify-center mb-3">
-                    <Users className="w-10 h-10 text-white" />
-                  </div>
-                  <div className="bg-gray-100 px-3 py-1 rounded mb-2">
-                    <p className="text-xs font-medium text-gray-700">
-                      wedecorhomes01...
-                    </p>
-                  </div>
-                  <p className="text-xs text-gray-600">Mandeep Singh</p>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center mb-3">
-                    <Users className="w-10 h-10 text-white" />
-                  </div>
-                  <div className="bg-gray-100 px-3 py-1 rounded mb-2">
-                    <p className="text-xs font-medium text-gray-700">
-                      grdforex@gmail.c...
-                    </p>
-                  </div>
-                  <p className="text-xs text-gray-600">Parminder singh</p>
-                </div>
+              <div
+                className={`flex ${
+                  networkData && networkData.length > 1 ? "gap-12" : "gap-4"
+                } justify-center flex-wrap`}
+              >
+                {networkData && networkData.length > 0 ? (
+                  networkData.slice(0, 2).map((member) => (
+                    <div
+                      key={member.id || Math.random()}
+                      className="flex flex-col items-center"
+                    >
+                      <div className="w-20 h-20 rounded-full bg-orange-500 flex items-center justify-center mb-3">
+                        <Users className="w-10 h-10 text-white" />
+                      </div>
+                      <div className="bg-gray-100 px-3 py-1 rounded mb-2">
+                        <p className="text-xs font-medium text-gray-700 truncate max-w-[120px]">
+                          {member.email?.substring(0, 15)}...
+                        </p>
+                      </div>
+                      <p className="text-xs text-gray-600 truncate max-w-[120px]">
+                        {member.name || "Team Member"}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Level: {member.level || "N/A"}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-400">No team members yet</p>
+                )}
               </div>
             </div>
           </div>
@@ -360,7 +517,7 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <span className="text-2xl font-bold text-green-400">
-                  142000 USDT
+                  {networkStats.teamInvestment}
                 </span>
               </div>
             </div>
@@ -379,24 +536,46 @@ const Dashboard = () => {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b-2 border-gray-200">
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">
+                  <tr className="border-b-2 border-slate-600">
+                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
                       Date
                     </th>
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">
+                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
                       Amount
                     </th>
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">
+                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
                       Package
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td colSpan="3" className="text-center py-12 text-gray-500">
-                      No data available
-                    </td>
-                  </tr>
+                  {roiEarningsHistory && roiEarningsHistory.length > 0 ? (
+                    roiEarningsHistory.map((entry, index) => (
+                      <tr
+                        key={index}
+                        className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
+                      >
+                        <td className="text-left py-3 px-2 text-sm text-gray-300">
+                          {formatDate(entry.created_at)}
+                        </td>
+                        <td className="text-left py-3 px-2 text-sm font-semibold text-green-400">
+                          {entry.amount || entry.roi || "N/A"} USDT
+                        </td>
+                        <td className="text-left py-3 px-2 text-sm text-gray-300">
+                          {entry.package_name || entry.package || "N/A"}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        className="text-center py-12 text-gray-400"
+                      >
+                        No ROI earnings history available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -412,24 +591,55 @@ const Dashboard = () => {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b-2 border-gray-200">
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">
+                  <tr className="border-b-2 border-slate-600">
+                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
+                      Date
+                    </th>
+                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
                       Level
                     </th>
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">
+                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
                       Referral
                     </th>
-                    <th className="text-right py-3 px-2 text-sm font-semibold text-gray-700">
+                    <th className="text-right py-3 px-2 text-sm font-semibold text-gray-300">
                       Earned
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td colSpan="3" className="text-center py-12 text-gray-500">
-                      No data available
-                    </td>
-                  </tr>
+                  {commissionEarningsHistory &&
+                  commissionEarningsHistory.length > 0 ? (
+                    commissionEarningsHistory.map((entry, index) => (
+                      <tr
+                        key={index}
+                        className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
+                      >
+                        <td className="text-left py-3 px-2 text-sm text-gray-300">
+                          {formatDate(entry.created_at)}
+                        </td>
+                        <td className="text-left py-3 px-2 text-sm">
+                          <span className="bg-blue-900/50 text-blue-300 px-2 py-1 rounded text-xs font-semibold">
+                            Level {entry.level || "N/A"}
+                          </span>
+                        </td>
+                        <td className="text-left py-3 px-2 text-sm text-gray-300 truncate">
+                          {entry.referral_email || entry.referral_name || "N/A"}
+                        </td>
+                        <td className="text-right py-3 px-2 text-sm font-semibold text-green-400">
+                          {entry.amount || entry.commission || "N/A"} USDT
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="4"
+                        className="text-center py-12 text-gray-400"
+                      >
+                        No commission earnings history available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -450,7 +660,10 @@ const Dashboard = () => {
                 <p className="text-xs font-medium opacity-90 mb-1">
                   Available Wallet Balance
                 </p>
-                <p className="text-2xl font-bold">0.00 USDT</p>
+                <p className="text-2xl font-bold">
+                  {dashboardData?.wallet_balances?.available_balance || "0.00"}{" "}
+                  USDT
+                </p>
               </div>
               <Wallet className="w-8 h-8 opacity-50" />
             </div>
@@ -461,7 +674,9 @@ const Dashboard = () => {
                 <p className="text-xs font-medium opacity-90 mb-1">
                   Main Wallet Balance
                 </p>
-                <p className="text-2xl font-bold">9500.00 USDT</p>
+                <p className="text-2xl font-bold">
+                  {dashboardData?.wallet_balances?.main_balance || "0.00"} USDT
+                </p>
               </div>
               <Building2 className="w-8 h-8 opacity-50" />
             </div>
