@@ -18,6 +18,7 @@ import {
 import { useAuth } from "../../Context/UseAuth";
 import { apiRequest } from "../../Services/Api";
 import { DASHBOARD_DATA } from "../../Api/Api_variables";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { token } = useAuth();
@@ -25,6 +26,7 @@ const Dashboard = () => {
   const [copiedLink, setCopiedLink] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch dashboard data from API
   const fetchDashboardData = useCallback(() => {
@@ -35,11 +37,6 @@ const Dashboard = () => {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        console.log("Dashboard API Response:", response);
-        console.log(
-          "Dashboard data.network_data:",
-          response.data?.network_data
-        );
         // Handle both nested and direct data structures
         const data = response.data || response;
         setDashboardData(data);
@@ -109,20 +106,9 @@ const Dashboard = () => {
     if (!dashboardData.network_data) return [];
 
     const data = dashboardData.network_data;
-    console.log("useMemo - getNetworkData - data:", data);
-    console.log(
-      "useMemo - getNetworkData - Array.isArray(data):",
-      Array.isArray(data)
-    );
-    console.log("useMemo - getNetworkData - typeof data:", typeof data);
-    console.log(
-      "useMemo - getNetworkData - Object.keys(data):",
-      Object.keys(data)
-    );
 
     // If it's already an array, return it
     if (Array.isArray(data)) {
-      console.log("useMemo - Returning data (already array)");
       return data;
     }
 
@@ -130,38 +116,24 @@ const Dashboard = () => {
     if (data && typeof data === "object") {
       // Check if it has numeric keys
       const keys = Object.keys(data);
-      console.log("useMemo - Object keys:", keys);
 
       for (const key of keys) {
-        console.log(`useMemo - Checking key "${key}":`, data[key]);
         if (Array.isArray(data[key])) {
-          console.log(`useMemo - Found array at key "${key}":`, data[key]);
           return data[key];
         }
       }
 
       // Also check 'i' property specifically
       if (data.i && Array.isArray(data.i)) {
-        console.log("useMemo - Returning data.i (nested array):", data.i);
         return data.i;
       }
     }
 
-    console.log("useMemo - Returning empty array (no match)");
     return [];
   }, [dashboardData]);
   const roiEarningsHistory = dashboardData?.roi_earnings_history || [];
   const commissionEarningsHistory =
     dashboardData?.commission_earnings_history || [];
-
-  // Debug logging
-  React.useEffect(() => {
-    if (dashboardData) {
-      console.log("dashboardData:", dashboardData);
-      console.log("networkData length:", networkData?.length);
-      console.log("networkData:", networkData);
-    }
-  }, [dashboardData, networkData]);
 
   // Helper function to format date
   const formatDate = (dateString) => {
@@ -224,13 +196,16 @@ const Dashboard = () => {
         </div>
 
         {/* Alert Banner */}
-        <div className="bg-yellow-400 text-slate-900 p-4 rounded-lg mb-6 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5" />
-          <p className="text-sm sm:text-base font-medium">
-            Activate your account by purchasing a package to start earning
-            rewards.
-          </p>
-        </div>
+
+        {!networkData.is_activated && (
+          <div className="bg-yellow-400 text-slate-900 p-4 rounded-lg mb-6 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5" />
+            <p className="text-sm sm:text-base font-medium">
+              Activate your account by purchasing a package to start earning
+              rewards.
+            </p>
+          </div>
+        )}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -413,9 +388,12 @@ const Dashboard = () => {
         </div>
 
         {/* My Network Section - Title */}
-        <div className="bg-white text-slate-900 p-4 rounded-lg shadow-lg mb-4 text-center relative">
+        <div className="bg-slate-800 text-white p-4 rounded-lg shadow-lg mb-4 text-center relative">
           <h2 className="text-2xl font-bold">My Network</h2>
-          <button className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1 border border-blue-600 px-4 py-2 rounded-lg">
+          <button
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1 border border-blue-600 px-4 py-2 rounded-lg"
+            onClick={() => navigate("/network")}
+          >
             <ChevronRight className="w-4 h-4" />
             View All Network
           </button>
@@ -653,7 +631,7 @@ const Dashboard = () => {
             <h3 className="text-lg font-semibold">Wallet Balances</h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Available Wallet Balance */}
             <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 p-4 rounded-lg flex items-center justify-between">
               <div>
@@ -681,15 +659,23 @@ const Dashboard = () => {
               <Building2 className="w-8 h-8 opacity-50" />
             </div>
 
-            {/* Action Buttons */}
-            <button className="bg-red-600 hover:bg-red-700 text-white p-4 rounded-lg font-semibold text-base transition-colors flex items-center justify-center gap-2">
-              <ArrowUpFromLine className="w-5 h-5" />
-              Withdraw
-            </button>
-            <button className="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-semibold text-base transition-colors flex items-center justify-center gap-2">
-              <ArrowDownToLine className="w-5 h-5" />
-              Deposit
-            </button>
+            {/* Action Buttons - Vertical Stack */}
+            <div className="flex flex-col gap-4">
+              <button
+                className="bg-red-600 hover:bg-red-700 text-white p-4 rounded-lg font-semibold text-base transition-colors flex items-center justify-center gap-2"
+                onClick={() => navigate("/withdraw")}
+              >
+                <ArrowUpFromLine className="w-5 h-5" />
+                Withdraw
+              </button>
+              <button
+                className="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-semibold text-base transition-colors flex items-center justify-center gap-2"
+                onClick={() => navigate("/deposit")}
+              >
+                <ArrowDownToLine className="w-5 h-5" />
+                Deposit
+              </button>
+            </div>
           </div>
         </div>
 
