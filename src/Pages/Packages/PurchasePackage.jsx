@@ -15,6 +15,7 @@ import {
 } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { useSnackbar } from "notistack";
+import ShimmerLoader from "../../Component/ui/ShimmerLoader";
 
 const PurchasePackage = ({ isOpen, onClose, packageId }) => {
   const [packageDetails, setPackageDetails] = useState(null);
@@ -226,10 +227,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
         {/* Content */}
         <div className="p-6 space-y-6">
           {isLoading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto"></div>
-              <p className="text-gray-400 mt-4">Loading package details...</p>
-            </div>
+            <ShimmerLoader variant="dashboard" />
           ) : packageDetails ? (
             <>
               {/* Package Details */}
@@ -272,7 +270,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
               </div>
 
               {/* Wallet Balance */}
-              <div className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl p-5 shadow-lg">
+              <div className="bg-linear-to-r from-cyan-600 to-blue-600 rounded-xl p-5 shadow-lg">
                 <div className="flex items-center gap-2 text-white mb-3">
                   <Wallet className="w-5 h-5" />
                   <h3 className="font-semibold">Wallet Balance</h3>
@@ -379,7 +377,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
               !packageDetails ||
               parseFloat(remainingBalance) < 0
             }
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
+            className="flex-1 px-6 py-3 bg-green-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
           >
             {isPurchasing ? (
               <>

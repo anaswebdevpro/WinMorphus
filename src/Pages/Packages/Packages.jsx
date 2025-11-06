@@ -5,6 +5,7 @@ import { PACKAGES_URL } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { enqueueSnackbar } from "notistack";
 import PurchasePackage from "./PurchasePackage";
+import ShimmerLoader from "../../Component/ui/ShimmerLoader";
 
 const Packages = () => {
   const [investmentHistory] = useState([]);
@@ -18,7 +19,7 @@ const Packages = () => {
   const themeMap = {
     Standard: {
       borderColor: "border-slate-600",
-        bgGradient: "from-slate-800 to-slate-900",
+      bgGradient: "from-slate-800 to-slate-900",
       buttonColor: "bg-yellow-500 hover:bg-yellow-600",
       accentColor: "text-yellow-400",
       badgeColor: "bg-yellow-500",
@@ -79,6 +80,26 @@ const Packages = () => {
     // Refresh packages after purchase
     FetchPackages();
   };
+
+  // Show shimmer loader while loading
+  if (loading && !PackageData?.packages) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto p-6">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 mb-2">
+              Investment Packages
+            </h1>
+            <p className="text-gray-400">
+              Choose the perfect package to start your investment journey
+            </p>
+          </div>
+          <ShimmerLoader variant="dashboard" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
