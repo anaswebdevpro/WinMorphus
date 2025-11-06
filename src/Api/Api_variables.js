@@ -10,10 +10,11 @@ export const DASHBOARD_EARNING_HISTORY = "dashboard/earnings-history";
 
 //packages
 export const PACKAGES_URL = "packages"; // done
-export const PACKAGES_WALLET_BALANCE = "packages/wallet-balance";
+export const PACKAGES_WALLET_BALANCE = "packages/wallet-balance"; //done
 export const PACKAGES_USER = "packages/user";
-export const PACKAGES_INVESTMENT_HISTORY = "packages/investment-history";
-export const PACKAGES_PURCHASE = "packages/purchase";
+export const PACKAGES_INVESTMENT_HISTORY = "packages/investment-history";  
+export const PACKAGES_PURCHASE = "packages/purchase";  //done
+
 
 //deposit methods
 export const DEPOSIT_METHODS_URL = "deposit-methods";

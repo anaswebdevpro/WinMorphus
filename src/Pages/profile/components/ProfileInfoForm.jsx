@@ -46,8 +46,12 @@ const ProfileInfoForm = ({ profileData, isLoading, onSubmit }) => {
 
   const form = useFormik({
     initialValues: {
-      first_name: profileData?.first_name || "",
-      last_name: profileData?.last_name || "",
+      first_name:
+        profileData?.name?.split(" ")[0] || profileData?.first_name || "",
+      last_name:
+        profileData?.name?.split(" ").slice(1).join(" ") ||
+        profileData?.last_name ||
+        "",
       middle_name: profileData?.middle_name || "",
       email: profileData?.email || "",
       phone: profileData?.phone || "",
@@ -56,7 +60,7 @@ const ProfileInfoForm = ({ profileData, isLoading, onSubmit }) => {
       city: profileData?.city || "",
       state: profileData?.state || "",
       country: profileData?.country || "",
-      zip_code: profileData?.zip_code || "",
+      zip_code: profileData?.postal_code || profileData?.zip_code || "",
       referral_code: profileData?.referral_code || "",
       profile_picture: profileData?.profile_picture || "",
     },
@@ -112,7 +116,10 @@ const ProfileInfoForm = ({ profileData, isLoading, onSubmit }) => {
           </div>
           <div>
             <h3 className="text-lg font-medium text-white">
-              {profileData?.first_name} {profileData?.last_name}
+              {profileData?.name ||
+                `${profileData?.first_name || ""} ${
+                  profileData?.last_name || ""
+                }`.trim()}
             </h3>
             <p className="text-sm text-gray-400">{profileData?.email}</p>
             <p className="text-xs text-gray-500 mt-1">

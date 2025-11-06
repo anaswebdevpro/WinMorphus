@@ -4,46 +4,25 @@ import { apiRequest } from "../../Services/Api";
 import { PACKAGES_URL } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { enqueueSnackbar } from "notistack";
+import PurchasePackage from "./PurchasePackage";
 
 const Packages = () => {
   const [investmentHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [PackageData, setPackageData] = useState({});
+  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
+  const [selectedPackageId, setSelectedPackageId] = useState(null);
   const { token } = useAuth();
-
-  // Icons mapping for packages
-  const iconMap = {
-    Standard: Zap,
-    Premium: Star,
-    Elite: Crown,
-  };
 
   // Theme mapping for packages
   const themeMap = {
     Standard: {
-      borderColor: "border-cyan-500",
-      bgGradient: "from-cyan-900/30 to-cyan-800/20",
-      buttonColor: "bg-cyan-600 hover:bg-cyan-700",
-      accentColor: "text-cyan-400",
-      badgeColor: "bg-cyan-600",
-      iconBg: "bg-cyan-600/30",
-    },
-    Premium: {
-      borderColor: "border-yellow-500",
-      bgGradient: "from-yellow-900/30 to-yellow-800/20",
+      borderColor: "border-slate-600",
+        bgGradient: "from-slate-800 to-slate-900",
       buttonColor: "bg-yellow-500 hover:bg-yellow-600",
       accentColor: "text-yellow-400",
       badgeColor: "bg-yellow-500",
-      iconBg: "bg-yellow-600/30",
-      popular: true,
-    },
-    Elite: {
-      borderColor: "border-purple-500",
-      bgGradient: "from-purple-900/30 to-purple-800/20",
-      buttonColor: "bg-purple-600 hover:bg-purple-700",
-      accentColor: "text-purple-400",
-      badgeColor: "bg-purple-600",
-      iconBg: "bg-purple-600/30",
+      iconBg: "bg-slate-700/50",
     },
   };
 
@@ -87,6 +66,20 @@ const Packages = () => {
     }
   }, [token, FetchPackages]);
 
+  // Handle opening purchase modal
+  const handleOpenPurchaseModal = (packageId) => {
+    setSelectedPackageId(packageId);
+    setIsPurchaseModalOpen(true);
+  };
+
+  // Handle closing purchase modal
+  const handleClosePurchaseModal = () => {
+    setIsPurchaseModalOpen(false);
+    setSelectedPackageId(null);
+    // Refresh packages after purchase
+    FetchPackages();
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       <div className="max-w-7xl mx-auto p-6">
@@ -110,8 +103,8 @@ const Packages = () => {
           <div className={`grid ${gridColsClass} gap-6 mb-6`}>
             {PackageData?.packages?.length > 0 ? (
               PackageData.packages.map((pkg) => {
-                const theme = themeMap[pkg.name] || themeMap.Standard;
-                const IconComponent = iconMap[pkg.name] || Zap;
+                const theme = themeMap.Standard;
+                const IconComponent = Zap;
 
                 // Build investment range
                 const minAmount =
@@ -149,9 +142,9 @@ const Packages = () => {
                       </div>
                     </div>
 
-                    <h3 className="text-2xl font-bold text-center mb-4 text-white">
+                    {/* <h3 className="text-2xl font-bold text-center mb-4 text-white">
                       {pkg.name}
-                    </h3>
+                    </h3> */}
 
                     <div className="space-y-3 mb-6">
                       <div className="text-center">
@@ -163,11 +156,11 @@ const Packages = () => {
                         <p className="text-gray-300 font-bold mt-1">{range}</p>
                       </div>
 
-                      <div className="text-center text-xs text-gray-400 mb-2">
+                      {/* <div className="text-center text-xs text-gray-400 mb-2">
                         {pkg.description}
-                      </div>
+                      </div> */}
 
-                      <div className="flex gap-2 justify-center">
+                      {/* <div className="flex gap-2 justify-center">
                         <div
                           className={`${theme.badgeColor} text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1`}
                         >
@@ -181,10 +174,11 @@ const Packages = () => {
                           {pkg.formatted_commission ||
                             `${pkg.commission_percentage || "N/A"}% Commission`}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
 
                     <button
+                      onClick={() => handleOpenPurchaseModal(pkg.id)}
                       className={`${theme.buttonColor} text-white w-full py-3 rounded-lg font-bold text-base transition-all duration-300 transform hover:scale-105 shadow-lg`}
                     >
                       SUBSCRIBE NOW
@@ -372,6 +366,13 @@ const Packages = () => {
           </div>
         </div>
       </div>
+
+      {/* Purchase Package Modal */}
+      <PurchasePackage
+        isOpen={isPurchaseModalOpen}
+        onClose={handleClosePurchaseModal}
+        packageId={selectedPackageId}
+      />
     </div>
   );
 };

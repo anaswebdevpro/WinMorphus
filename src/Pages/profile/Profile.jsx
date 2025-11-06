@@ -28,40 +28,41 @@ const Profile = () => {
   const [bankAccounts, setBankAccounts] = useState([]);
 
   // Get user data from AuthContext and snackbar hook
-  const { user, token } = useAuth();
+  const { token } = useAuth();
 
   const { enqueueSnackbar } = useSnackbar();
   console.log(token);
 
   // Function to fetch profile data from API
-  const fetchProfileData = useCallback(() => {
-    if (!token) return;
-
+  const fetchProfileData = () => {
     setIsLoading(true);
-
-    apiRequest({
-      endpoint: GET_PROFILE,
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        if (response) {
-          setProfileData(response);
-          console.log("✅ Profile data fetched:", response);
-        } else {
-          setProfileData(user);
-        }
+    try {
+      apiRequest({
+        endpoint: GET_PROFILE,
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch((error) => {
-        console.error("❌ Error fetching profile data:", error);
-        setProfileData(user);
-      })
-      .finally(() => {
-        setIsLoading(false);
+        .then((response) => {
+          console.log("Profile Data:", response);
+          setIsLoading(false);
+          // Extract profile data from nested structure: response.data.profile
+          setProfileData(response.data?.profile || response.data);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.error("Failed to fetch Profile Data:", error);
+          enqueueSnackbar("Failed to fetch Profile Data: " + error.message, {
+            variant: "error",
+          });
+        });
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Failed to fetch Profile Data:", error);
+      enqueueSnackbar("Failed to fetch Profile Data. Please try again.", {
+        variant: "error",
       });
-  }, [token, user]);
+    }
+  };
 
   // Function to fetch bank details
   const fetchBankDetails = useCallback(() => {
@@ -108,9 +109,12 @@ const Profile = () => {
 
   // Load data on component mount
   useEffect(() => {
-    fetchProfileData();
-    fetchBankDetails();
-  }, [fetchProfileData, fetchBankDetails]);
+    if (token) {
+      fetchProfileData();
+      fetchBankDetails();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   // Profile form submission
   const handleProfileSubmit = async (values, imageFile) => {
@@ -146,7 +150,7 @@ const Profile = () => {
       });
 
       if (response?.user || response?.success) {
-        await fetchProfileData();
+        fetchProfileData();
         enqueueSnackbar(response?.message || "Profile updated successfully!", {
           variant: "success",
         });

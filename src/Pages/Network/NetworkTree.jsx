@@ -132,11 +132,10 @@ const NetworkTree = ({ networkData }) => {
   const [networkTree, setNetworkTree] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [allMembersMap, setAllMembersMap] = useState({});
+  const [maxLevels, setMaxLevels] = useState(5);
+  const [maxNodesPerLevel, setMaxNodesPerLevel] = useState(5);
   const { user } = useAuth();
   console.log("Logged-in User:", user);
-    const maxLevels = 5;
-    const maxNodesPerLevel = 5;
-     
 
   // Build hierarchical tree structure from level-wise data
   React.useEffect(() => {
@@ -275,47 +274,82 @@ const NetworkTree = ({ networkData }) => {
 
   return (
     <div>
-      {/* Info Banner */}
-      <div className="mb-4 bg-slate-800 border border-slate-700 rounded-lg p-3 flex items-center justify-between text-sm">
-        <div className="text-gray-300">
-          <span className="font-semibold text-yellow-400">Network Limits:</span>{" "}
-          Max {maxLevels} levels | Max {maxNodesPerLevel} members per level
-        </div>
-        <div className="text-gray-400">
-          Current view: {networkTree?.children?.length || 0} direct referrals
-        </div>
-      </div>
+      {/* Control Panel */}
+      <div className="mb-4 bg-slate-800 border border-slate-700 rounded-lg p-4">
+        <div className="flex flex-wrap items-center gap-4 justify-between">
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Max Levels Input */}
+            <div className="flex items-center gap-2">
+              <label className="text-gray-300 text-sm font-medium whitespace-nowrap">
+                Max Levels:
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={maxLevels}
+                onChange={(e) =>
+                  setMaxLevels(Math.max(1, parseInt(e.target.value) || 1))
+                }
+                className="w-20 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+              />
+            </div>
 
-      {/* Zoom Controls */}
-      <div className="flex justify-end gap-3 mb-4">
-        <button
-          onClick={handleResetToRoot}
-          className="px-6 py-2 bg-[#FFD700] text-black rounded-lg hover:bg-[#e6c200] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
-          title="Reset to Root"
-        >
-          Reset to Root
-        </button>
-        <button
-          onClick={handleZoomIn}
-          className="px-4 py-2 bg-[#FFD700] text-black rounded-lg hover:bg-[#e6c200] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
-          title="Zoom In"
-        >
-          +
-        </button>
-        <button
-          onClick={handleResetZoom}
-          className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
-          title="Reset Zoom"
-        >
-          100%
-        </button>
-        <button
-          onClick={handleZoomOut}
-          className="px-4 py-2 bg-[#FFD700] text-black rounded-lg hover:bg-[#e6c200] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
-          title="Zoom Out"
-        >
-          -
-        </button>
+            {/* Max Nodes Per Level Input */}
+            <div className="flex items-center gap-2">
+              <label className="text-gray-300 text-sm font-medium whitespace-nowrap">
+                Max User:
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="100"
+                value={maxNodesPerLevel}
+                onChange={(e) =>
+                  setMaxNodesPerLevel(
+                    Math.max(1, parseInt(e.target.value) || 1)
+                  )
+                }
+                className="w-20 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+              />
+            </div>
+
+            {/* Current Stats */}
+           
+          </div>
+
+          {/* Zoom Controls */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleResetToRoot}
+              className="px-4 py-2 bg-[#FFD700] text-black rounded-lg hover:bg-[#e6c200] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-sm"
+              title="Reset to Root"
+            >
+              Reset
+            </button>
+            <button
+              onClick={handleZoomIn}
+              className="px-3 py-2 bg-[#FFD700] text-black rounded-lg hover:bg-[#e6c200] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-sm"
+              title="Zoom In"
+            >
+              +
+            </button>
+            <button
+              onClick={handleResetZoom}
+              className="px-3 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-sm"
+              title="Reset Zoom"
+            >
+              100%
+            </button>
+            <button
+              onClick={handleZoomOut}
+              className="px-3 py-2 bg-[#FFD700] text-black rounded-lg hover:bg-[#e6c200] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-sm"
+              title="Zoom Out"
+            >
+              -
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Tree Container */}
