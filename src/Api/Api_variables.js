@@ -38,10 +38,7 @@ export const GET_PROFILE = "profile";
 export const UPDATE_PROFILE = "profile/update";
 export const UPLOAD_PROFILE_PICTURE = "profile/upload-picture";
 export const DELETE_PROFILE_PICTURE = "profile/delete-picture";
-export const UPLOAD_DOCUMENT = "profile/upload-document"; // temprary
-export const ADD_BANK_ACCOUNT = "profile/add-bank-account"; // temprary
-export const DELETE_BANK_ACCOUNT = "profile/delete-bank-account"; // temprary
-export const FETCH_BANK_DETAILS = "profile/bank-details"; // temprary
+
 export const UPDATE_PASSWORD = "profile/update-password"; //temprary
 
 //Closing Routes
