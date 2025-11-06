@@ -196,8 +196,8 @@ const Dashboard = () => {
         </div>
 
         {/* Alert Banner */}
-
-        {!networkData.is_activated && (
+        
+        {!dashboardData?.is_activated && (
           <div className="bg-yellow-400 text-slate-900 p-4 rounded-lg mb-6 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5" />
             <p className="text-sm sm:text-base font-medium">

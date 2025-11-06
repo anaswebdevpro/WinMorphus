@@ -47,7 +47,7 @@ const MainNavbar = () => {
             </div>
           </Link>
         </div>
-        {console.log(user)}
+       
 
         {/* Navigation Links */}
         <div className="hidden md:flex items-center space-x-8">
