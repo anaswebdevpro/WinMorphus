@@ -81,7 +81,7 @@ const Login = () => {
       >
         <div className="max-w-5xl w-full rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
           {/* Left - Form Section */}
-          <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 bg-white flex flex-col justify-center order-2 lg:order-1">
+          <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 bg-white flex flex-col justify-center order-1">
             <div className="max-w-sm mx-auto w-full">
               {/* Logo and Title */}
               <div className="text-center mb-6 sm:mb-8">
@@ -207,7 +207,7 @@ const Login = () => {
           </div>
 
           {/* Right - Hero Section */}
-          <div className="w-full lg:w-1/2 bg-[#080D18] p-6 sm:p-8 lg:p-12 flex flex-col justify-center items-center text-center relative overflow-hidden order-1 lg:order-2 min-h-[300px] lg:min-h-auto">
+          <div className="w-full lg:w-1/2 bg-[#080D18] p-6 sm:p-8 lg:p-12 flex flex-col justify-center items-center text-center relative overflow-hidden order-2 min-h-[300px] lg:min-h-auto">
             {/* Login Image - Full Size */}
             <div className="relative mb-4 sm:mb-6 lg:mb-8 w-full h-48 sm:h-64 lg:h-80 flex items-center justify-center">
               <img

@@ -24,10 +24,10 @@ const MainNavbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-slate-900 px-4 sm:px-6 py-3 sticky top-0 z-50 shadow-lg">
+    <nav className="bg-slate-900 px-4 sm:px-6 py-2 sticky top-0 z-50 shadow-lg">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <Link to="/dashboard" className="flex items-center gap-2">
             <img
               src={logo}
@@ -47,6 +47,7 @@ const MainNavbar = () => {
             </div>
           </Link>
         </div>
+        {console.log(user)}
 
         {/* Navigation Links */}
         <div className="hidden md:flex items-center space-x-8">
@@ -73,11 +74,22 @@ const MainNavbar = () => {
             <div className="relative">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center space-x-2 p-2 text-gray-300 hover:text-white transition-colors"
+                className="flex items-center space-x-2  text-gray-300 hover:text-white transition-colors"
               >
-                <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 text-sm font-medium">
-                  <User className="w-4 h-4" />
+                <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 text-sm font-medium">
+                  {user?.profile_picture_url ? (
+                    <img
+                      src={user.profile_picture_url}
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full"
+                    />
+                  ) : (
+                    <User className="w-4 h-4" />
+                  )}
                 </div>
+                <span className="hidden sm:block text-sm font-medium">
+                  {user?.name || "User"}
+                </span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform ${
                     isProfileOpen ? "rotate-180" : ""
@@ -87,24 +99,24 @@ const MainNavbar = () => {
 
               {/* Dropdown Menu */}
               {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg border font-semibold border-gray-700 py-1 z-50">
                   <Link
                     to="/profile"
-                    className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="block px-4 py-2 text-base text-white hover:bg-gray-50 hover:text-black transition-colors"
                     onClick={() => setIsProfileOpen(false)}
                   >
                     Profile Settings
                   </Link>
                   <Link
                     to="/account"
-                    className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="block px-4 py-2 text-base text-white hover:bg-gray-50 hover:text-black  transition-colors"
                     onClick={() => setIsProfileOpen(false)}
                   >
-                    Account Settings
+                    Change Password
                   </Link>
-                  <hr className="my-1" />
+                  <hr className="my-1 border-gray-600" />
                   <button
-                    className="block w-full text-left px-4 py-2 text-base text-red-600 hover:bg-gray-50 transition-colors"
+                    className="block w-full text-left px-4 py-2 text-base font-semibold text-red-600 hover:bg-gray-50 transition-colors"
                     onClick={() => {
                       setIsProfileOpen(false);
                       logout();
@@ -118,7 +130,7 @@ const MainNavbar = () => {
             </div>
           ) : (
             // Show LOGIN and SIGN UP buttons when user is not logged in
-            <div className="flex items-center space-x-3">
+            <div className="hidden md:flex items-center space-x-3">
               <button
                 onClick={() => navigate("/login")}
                 className="border border-yellow-400 text-yellow-400 px-6 py-2 rounded text-base font-medium hover:bg-yellow-400 hover:text-slate-900 transition-colors"
@@ -162,6 +174,30 @@ const MainNavbar = () => {
                 {item.name}
               </Link>
             ))}
+
+            {/* Mobile Auth Buttons - Only show when user is not logged in */}
+            {!user && (
+              <div className="pt-4 space-y-2 border-t border-gray-700">
+                <button
+                  onClick={() => {
+                    navigate("/login");
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full border border-yellow-400 text-yellow-400 px-4 py-2 rounded text-base font-medium hover:bg-yellow-400 hover:text-slate-900 transition-colors"
+                >
+                  LOG IN
+                </button>
+                <button
+                  onClick={() => {
+                    navigate("/signup");
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full bg-yellow-400 text-slate-900 px-4 py-2 rounded text-base font-medium hover:bg-yellow-500 transition-colors"
+                >
+                  SIGN UP
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
