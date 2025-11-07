@@ -6,6 +6,7 @@ import {
   DollarSign,
   Percent,
 } from "lucide-react";
+import StatusBadge from "../../Component/ui/StatusBadge";
 
 // Constants
 const DEFAULT_ENTRIES_PER_PAGE = 10;
@@ -24,16 +25,6 @@ const StatCard = ({ title, value, icon: IconComponent, color, bgColor }) => (
       </div>
     </div>
   </div>
-);
-
-const StatusBadge = ({ status }) => (
-  <span
-    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-      status === 1 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-    }`}
-  >
-    {status === 1 ? "ACTIVE" : "INACTIVE"}
-  </span>
 );
 
 const ROIEarnings = () => {

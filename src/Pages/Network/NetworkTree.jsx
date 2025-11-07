@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Tree, TreeNode } from "react-organizational-chart";
 import { useAuth } from "../../Context/UseAuth";
+import StatusBadge from "../../Component/ui/StatusBadge";
 
 /**
  * MemberNode Component: Renders a single member's information card within the organizational chart.
@@ -47,17 +48,18 @@ const MemberNode = ({ member, onClick, isSelected }) => {
 
         {/* Status Badge */}
         <div className="mb-3">
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+          <StatusBadge
+            status={
               member.is_active || member.status === "active"
-                ? "bg-green-900 text-green-300"
-                : "bg-red-900 text-red-300"
-            }`}
-          >
-            {member.is_active || member.status === "active"
-              ? "ACTIVE"
-              : "INACTIVE"}
-          </span>
+                ? "success"
+                : "error"
+            }
+            label={
+              member.is_active || member.status === "active"
+                ? "ACTIVE"
+                : "INACTIVE"
+            }
+          />
         </div>
 
         {member.created_at && (
@@ -315,7 +317,6 @@ const NetworkTree = ({ networkData }) => {
             </div>
 
             {/* Current Stats */}
-           
           </div>
 
           {/* Zoom Controls */}

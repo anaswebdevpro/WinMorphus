@@ -6,6 +6,7 @@ import {
   UserCheck,
   RefreshCw,
 } from "lucide-react";
+import PaginationButton from "../../Component/ui/PaginationButton";
 
 // Constants
 const ENTRIES_PER_PAGE_OPTIONS = [5, 10, 25];
@@ -55,20 +56,6 @@ const StatCard = ({ title, value, icon: IconComponent, color, bgColor }) => {
     </div>
   );
 };
-
-const PaginationButton = ({ onClick, disabled, children, isActive }) => (
-  <button
-    onClick={onClick}
-    disabled={disabled}
-    className={`px-3 py-1 border rounded-md transition-colors ${
-      isActive
-        ? "bg-blue-500 text-white border-blue-500"
-        : "border-slate-600 text-gray-300 hover:border-blue-500"
-    } disabled:opacity-50 disabled:cursor-not-allowed`}
-  >
-    {children}
-  </button>
-);
 
 const Commissions = () => {
   const [searchTerm, setSearchTerm] = useState("");
