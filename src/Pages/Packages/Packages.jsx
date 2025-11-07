@@ -5,7 +5,7 @@ import { PACKAGES_URL } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { enqueueSnackbar } from "notistack";
 import PurchasePackage from "./PurchasePackage";
-import ShimmerLoader from "../../Component/ui/ShimmerLoader";
+import { ShimmerLoader, PageHeader } from "../../Component/ui";
 
 const Packages = () => {
   const [investmentHistory] = useState([]);
@@ -86,15 +86,10 @@ const Packages = () => {
     return (
       <div className="min-h-screen bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto p-6">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 mb-2">
-              Investment Packages
-            </h1>
-            <p className="text-gray-400">
-              Choose the perfect package to start your investment journey
-            </p>
-          </div>
+          <PageHeader
+            title="Investment Packages"
+            description="Choose the perfect package to start your investment journey"
+          />
           <ShimmerLoader variant="dashboard" />
         </div>
       </div>
@@ -105,14 +100,10 @@ const Packages = () => {
     <div className="min-h-screen bg-slate-900 text-white">
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 mb-2">
-            Investment Packages
-          </h1>
-          <p className="text-gray-400">
-            Choose the perfect package to start your investment journey
-          </p>
-        </div>
+        <PageHeader
+          title="Investment Packages"
+          description="Choose the perfect package to start your investment journey"
+        />
 
         {/* Packages Section */}
         <div className="bg-slate-800 border border-slate-700 p-8 rounded-lg shadow-lg mb-8">
@@ -128,15 +119,17 @@ const Packages = () => {
                 const IconComponent = Zap;
 
                 // Build investment range
-                const minAmount =
-                  pkg.min_amount || pkg.formatted_range?.split("-")[0] || "N/A";
-                const maxAmount =
-                  pkg.max_amount || pkg.formatted_range?.split("-")[1] || "N/A";
-                const range =
-                  pkg.formatted_range ||
-                  (maxAmount === "null" || maxAmount === null
-                    ? `Above ${minAmount}`
-                    : `${minAmount} - ${maxAmount}`);
+                const minAmount = pkg.min_amount;
+                const maxAmount = pkg.max_amount;
+
+                // Check if maxAmount is zero, null, or contains "0 USDT"
+                const isUnlimited = maxAmount === "0.00";
+                typeof maxAmount === "string" &&
+                  maxAmount.trim().startsWith("0");
+
+                const range = isUnlimited
+                  ? `${minAmount} - Onwards`
+                  : pkg.formatted_range || `${minAmount} - ${maxAmount}`;
 
                 return (
                   <div

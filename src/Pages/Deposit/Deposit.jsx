@@ -5,6 +5,7 @@ import { useAuth } from "../../Context/UseAuth";
 import { useSnackbar } from "notistack";
 import { apiRequest } from "../../Services/Api";
 import { DEPOSIT_METHODS_URL } from "../../Api/Api_variables";
+import { ShimmerLoader, PageHeader } from "../../Component/ui";
 
 const Deposit = () => {
   const navigate = useNavigate();
@@ -73,18 +74,27 @@ const Deposit = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto p-6">
+          <PageHeader
+            title="Deposit Funds"
+            description="Choose your preferred cryptocurrency deposit method"
+          />
+          <ShimmerLoader variant="dashboard" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       <div className="max-w-7xl mx-auto p-6">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 mb-2">
-            Deposit Funds
-          </h1>
-          <p className="text-gray-400">
-            Choose your preferred cryptocurrency deposit method
-          </p>
-        </div>
+        <PageHeader
+          title="Deposit Funds"
+          description="Choose your preferred cryptocurrency deposit method"
+        />
         {console.log(
           "Rendering Deposit Component with Methods:",
           DepositMethod
@@ -104,9 +114,7 @@ const Deposit = () => {
             Cryptocurrency Deposit Options
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {loading ? (
-              <p className="text-gray-400">Loading deposit methods...</p>
-            ) : DepositMethod && DepositMethod.length > 0 ? (
+            {DepositMethod && DepositMethod.length > 0 ? (
               DepositMethod.map((method) => {
                 const colors = getColorScheme(method.network);
                 return (

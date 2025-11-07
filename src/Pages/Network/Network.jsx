@@ -7,7 +7,7 @@ import {
   Briefcase,
   Activity,
 } from "lucide-react";
-import ShimmerLoader from "../../Component/ui/ShimmerLoader";
+import { ShimmerLoader, PageHeader } from "../../Component/ui";
 import { apiRequest } from "../../Services/Api";
 import { NETWORK_LEVEL_WISE, NETWORK_STATS } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
@@ -38,9 +38,6 @@ const Network = () => {
   const [networkData, setNetworkData] = useState(null);
   const { token } = useAuth();
 
-
-
-  
   const FetchNetwork = () => {
     setIsLoading(true);
     try {
@@ -53,7 +50,6 @@ const Network = () => {
           console.log("Network Data:", response);
           setIsLoading(false);
           setNetworkData(response.data);
-          
         })
         .catch((error) => {
           setIsLoading(false);
@@ -71,7 +67,7 @@ const Network = () => {
     }
   };
 
- const fetchStats = () => {
+  const fetchStats = () => {
     setIsLoading(true);
     try {
       apiRequest({
@@ -115,22 +111,14 @@ const Network = () => {
     fetchStats();
   }, []);
 
-
   if (isLoading) {
     return (
       <div className="p-6 bg-[#121212] min-h-screen text-white">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 mb-2">
-                Track your Network Members
-              </h1>
-              <p className="text-gray-400">
-                Monitor and manage your network members effectively
-              </p>
-            </div>
-          </div>
+          <PageHeader
+            title="Track your Network Members"
+            description="Monitor and manage your network members effectively"
+          />
           <ShimmerLoader variant="dashboard" />
         </div>
       </div>
@@ -141,17 +129,12 @@ const Network = () => {
     <>
       <div className="p-6 bg-[#121212] min-h-screen text-white">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 mb-2">
-              Track your Network Members
-            </h1>
-            <p className="text-gray-400">
-              Monitor and manage your network members effectively
-            </p>
-          </div>
+          <PageHeader
+            title="Track your Network Members"
+            description="Monitor and manage your network members effectively"
+          />
 
-          {/* Statistics Grid */}
+          {/* Stat Cards */}
           {networkStats && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               <StatCard

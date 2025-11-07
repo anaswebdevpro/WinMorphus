@@ -6,7 +6,7 @@ import {
   DollarSign,
   Percent,
 } from "lucide-react";
-import StatusBadge from "../../Component/ui/StatusBadge";
+import { StatusBadge, PageHeader } from "../../Component/ui";
 
 // Constants
 const DEFAULT_ENTRIES_PER_PAGE = 10;
@@ -147,15 +147,10 @@ const ROIEarnings = () => {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       <div className="max-w-7xl mx-auto p-6">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 mb-2">
-            ROI Earnings
-          </h1>
-          <p className="text-gray-400">
-            Track and manage your ROI earnings from investments
-          </p>
-        </div>
+        <PageHeader
+          title="ROI Earnings"
+          description="Track and manage your ROI earnings from investments"
+        />
 
         {/* Stat Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

@@ -107,13 +107,13 @@ const MainNavbar = () => {
                   >
                     Profile Settings
                   </Link>
-                  <Link
+                  {/* <Link
                     to="/account"
                     className="block px-4 py-2 text-base text-white hover:bg-gray-50 hover:text-black  transition-colors"
                     onClick={() => setIsProfileOpen(false)}
                   >
                     Change Password
-                  </Link>
+                  </Link> */}
                   <hr className="my-1 border-gray-600" />
                   <button
                     className="block w-full text-left px-4 py-2 text-base font-semibold text-red-600 hover:bg-gray-50 transition-colors"
