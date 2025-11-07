@@ -1,16 +1,21 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, {  useEffect, useState, useMemo } from "react";
 import { Zap, Star, Crown, Check, AlertCircle, TrendingUp } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
-import { PACKAGES_URL } from "../../Api/Api_variables";
+import {
+  PACKAGES_INVESTMENT_HISTORY,
+  PACKAGES_URL,
+} from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { enqueueSnackbar } from "notistack";
 import PurchasePackage from "./PurchasePackage";
 import { ShimmerLoader, PageHeader } from "../../Component/ui";
+import Investment_table from "./Investment_table";
 
 const Packages = () => {
-  const [investmentHistory] = useState([]);
+ 
   const [loading, setLoading] = useState(false);
   const [PackageData, setPackageData] = useState({});
+  
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const { token } = useAuth();
@@ -35,7 +40,9 @@ const Packages = () => {
     return "grid-cols-1 md:grid-cols-3";
   }, [PackageData?.packages?.length]);
 
-  const FetchPackages = useCallback(() => {
+  
+
+  const FetchPackages = () => {
     setLoading(true);
     apiRequest({
       endpoint: PACKAGES_URL,
@@ -59,13 +66,13 @@ const Packages = () => {
         enqueueSnackbar(errorMessage, { variant: "error" });
         setLoading(false);
       });
-  }, [token]);
+  };
 
   useEffect(() => {
     if (token) {
       FetchPackages();
-    }
-  }, [token, FetchPackages]);
+         }
+  }, []);
 
   // Handle opening purchase modal
   const handleOpenPurchaseModal = (packageId) => {
@@ -232,52 +239,7 @@ const Packages = () => {
         </div>
 
         {/* Investment History */}
-        <div className="bg-slate-800 border border-slate-700 p-8 rounded-lg shadow-lg mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">
-            Investment History
-          </h2>
-
-          {investmentHistory.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 bg-slate-700/30 rounded-lg border border-slate-600">
-              <AlertCircle className="w-16 h-16 text-gray-500 mb-4" />
-              <p className="text-gray-300 text-lg font-semibold">
-                No Investment History Yet
-              </p>
-              <p className="text-gray-500 text-center mt-2 max-w-md">
-                You haven't made any investments yet. Start by subscribing to a
-                package above to begin your investment journey
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-600 bg-slate-700/50">
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
-                      Date
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
-                      Amount
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
-                      Package
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan="4" className="text-center py-12 text-gray-500">
-                      No data available
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+       <Investment_table />
 
         {/* Commission Structure */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

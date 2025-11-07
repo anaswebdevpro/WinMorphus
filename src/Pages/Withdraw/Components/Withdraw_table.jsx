@@ -115,6 +115,9 @@ const Withdraw_table = () => {
           <thead>
             <tr className="border-b border-slate-700 bg-slate-700/50">
               <th className="text-left p-4 font-semibold text-gray-300">
+                S.No
+              </th>
+              <th className="text-left p-4 font-semibold text-gray-300">
                 Date
               </th>
               <th className="text-left p-4 font-semibold text-gray-300">
@@ -128,9 +131,6 @@ const Withdraw_table = () => {
                 Status
               </th>
               <th className="text-left p-4 font-semibold text-gray-300">OTP</th>
-              <th className="text-left p-4 font-semibold text-gray-300">
-                TXN ID
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -140,6 +140,9 @@ const Withdraw_table = () => {
                   key={item.id || index}
                   className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
                 >
+                  <td className="p-4 text-gray-300">
+                    {(currentPage - 1) * entriesPerPage + index + 1}
+                  </td>
                   <td className="p-4 text-gray-300">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-yellow-400" />
@@ -190,17 +193,6 @@ const Withdraw_table = () => {
                       </span>
                     )}
                   </td>
-                  <td className="p-4">
-                    {item.transaction_id ? (
-                      <div className="flex flex-col">
-                        <span className="text-blue-400 font-mono text-sm">
-                          #{item.transaction_id}
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="text-gray-500">-</span>
-                    )}
-                  </td>
                 </tr>
               ))
             ) : (
@@ -230,8 +222,6 @@ const Withdraw_table = () => {
               ))}
             </select>
           </div>
-
-       
 
           {/* Pagination Controls */}
           <div className="flex items-center space-x-2">
