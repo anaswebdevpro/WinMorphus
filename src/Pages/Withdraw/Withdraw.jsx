@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useSnackbar } from "notistack";
 import {
   DollarSign,
   Wallet,
@@ -10,26 +11,20 @@ import {
   Calendar,
   ArrowDownUp,
 } from "lucide-react";
+import { useAuth } from "../../Context/UseAuth";
+import { apiRequest } from "../../Services/Api";
+import {
+  WITHDRAWAL_TABLE_HISTORY,
+  WITHDRAWAL_WALLET_INFO,
+  WITHDRAWAL_STATISTICS,
+  WITHDRAWAL_NETWORKS,
+  WITHDRAWAL_LIMITS,
+} from "../../Api/Api_variables";
+
 
 // Constants
 const ENTRIES_PER_PAGE_OPTIONS = [5, 10, 25];
-const DEFAULT_ENTRIES_PER_PAGE = 10;
-const DEBOUNCE_DELAY = 300;
-
-// Validation Schema
-const withdrawalValidationSchema = Yup.object().shape({
-  amount: Yup.number()
-    .required("Amount is required")
-    .positive("Amount must be greater than 0")
-    .typeError("Amount must be a number")
-    .min(10, "Minimum withdrawal is 10 USDT")
-    .max(10000, "Maximum withdrawal is 10000 USDT"),
-  wallet: Yup.string().required("Please select a wallet"),
-  network: Yup.string().required("Please select a network"),
-  address: Yup.string()
-    .required("Wallet address is required")
-    .min(20, "Invalid wallet address"),
-});
+const DEFAULT_ENTRIES_PER_PAGE = 20;
 
 // Reusable Components
 const BalanceCard = ({ title, amount, icon, bgColor }) => {
@@ -63,135 +58,271 @@ const PaginationButton = ({ onClick, disabled, children, isActive }) => (
   </button>
 );
 
-const StatusBadge = ({ status }) => {
+const StatusBadge = ({ status, label }) => {
   const statusConfig = {
-    approved: { bg: "bg-green-100", text: "text-green-800", label: "Approved" },
-    pending: { bg: "bg-yellow-100", text: "text-yellow-800", label: "Pending" },
-    completed: { bg: "bg-blue-100", text: "text-blue-800", label: "Completed" },
-    failed: { bg: "bg-red-100", text: "text-red-800", label: "Failed" },
-    cancelled: { bg: "bg-gray-100", text: "text-gray-800", label: "Cancelled" },
+    approved: { bg: "bg-green-100", text: "text-green-800" },
+    pending: { bg: "bg-yellow-100", text: "text-yellow-800" },
+    completed: { bg: "bg-blue-100", text: "text-blue-800" },
+    failed: { bg: "bg-red-100", text: "text-red-800" },
+    cancelled: { bg: "bg-gray-100", text: "text-gray-800" },
+    processing: { bg: "bg-purple-100", text: "text-purple-800" },
+    rejected: { bg: "bg-red-100", text: "text-red-800" },
   };
 
   const config = statusConfig[status] || statusConfig.pending;
+  const displayLabel =
+    label || status.charAt(0).toUpperCase() + status.slice(1);
 
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}
+      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${config.bg} ${config.text}`}
     >
-      {config.label}
+      {displayLabel}
     </span>
   );
 };
 
 const Withdraw = () => {
+  const { token } = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
+
   const [entriesPerPage, setEntriesPerPage] = useState(
     DEFAULT_ENTRIES_PER_PAGE
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState("all");
   const [withdrawalHistory, setWithdrawalHistory] = useState([]);
+  const [walletInfo, setWalletInfo] = useState(null);
+  const [networks, setNetworks] = useState({});
+  const [limits, setLimits] = useState(null);
+  const [statistics, setStatistics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    per_page: 20,
+    total: 0,
+    last_page: 1,
+  });
 
-  // Mock balance data
-  const balanceData = {
-    available: "0.00 USDT",
-    mainWallet: "9500.00 USDT",
-  };
+  // Validation Schema - Dynamic based on limits
+  const withdrawalValidationSchema = useMemo(() => {
+    const minAmount = limits?.limits?.min_withdrawal || 10;
+    const maxAmount = limits?.limits?.max_withdrawal || 10000;
+
+    return Yup.object().shape({
+      amount: Yup.number()
+        .required("Amount is required")
+        .positive("Amount must be greater than 0")
+        .typeError("Amount must be a number")
+        .min(minAmount, `Minimum withdrawal is ${minAmount} USDT`)
+        .max(maxAmount, `Maximum withdrawal is ${maxAmount} USDT`),
+      wallet: Yup.string().required("Please select a wallet"),
+      network: Yup.string().required("Please select a network"),
+      address: Yup.string()
+        .required("Wallet address is required")
+        .min(20, "Invalid wallet address"),
+    });
+  }, [limits]);
 
   // Fetch withdrawal history
-  useEffect(() => {
-    const mockHistoryData = [
-      {
-        id: 1,
-        date: "Aug 16, 2025, 02:00 PM",
-        amount: "500.00 USDT",
-        network: "TRC20",
-        status: "approved",
-        address: "TQeHwj...XXXX",
-      },
-      {
-        id: 2,
-        date: "Aug 15, 2025, 10:30 AM",
-        amount: "1000.00 USDT",
-        network: "BEP20",
-        status: "completed",
-        address: "0x123a...XXXX",
-      },
-      {
-        id: 3,
-        date: "Aug 14, 2025, 03:45 PM",
-        amount: "250.00 USDT",
-        network: "TRC20",
-        status: "pending",
-        address: "TQeHwj...XXXX",
-      },
-      {
-        id: 4,
-        date: "Aug 13, 2025, 09:15 AM",
-        amount: "750.00 USDT",
-        network: "BEP20",
-        status: "failed",
-        address: "0x456b...XXXX",
-      },
-      {
-        id: 5,
-        date: "Aug 12, 2025, 05:20 PM",
-        amount: "300.00 USDT",
-        network: "TRC20",
-        status: "cancelled",
-        address: "TQeHwj...XXXX",
-      },
-    ];
+  const fetchWithdrawalHistory = useCallback(
+    async (page = 1, perPage = DEFAULT_ENTRIES_PER_PAGE) => {
+      if (!token) return;
 
-    setLoading(true);
-    setTimeout(() => {
-      setWithdrawalHistory(mockHistoryData);
-      setLoading(false);
-    }, 500);
-  }, []);
+      try {
+        const response = await apiRequest({
+          endpoint: WITHDRAWAL_TABLE_HISTORY,
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: {
+            page,
+            per_page: perPage,
+          },
+        });
 
-  // Filter data by status
-  const filteredData = useMemo(() => {
-    if (activeTab === "all") return withdrawalHistory;
-    return withdrawalHistory.filter((item) => item.status === activeTab);
-  }, [withdrawalHistory, activeTab]);
-
-  // Paginate data
-  const paginatedData = useMemo(
-    () =>
-      filteredData.slice(
-        (currentPage - 1) * entriesPerPage,
-        currentPage * entriesPerPage
-      ),
-    [filteredData, currentPage, entriesPerPage]
+        if (response?.data?.requests) {
+          setWithdrawalHistory(response.data.requests);
+          setPagination(response.data.pagination);
+        }
+      } catch (error) {
+        console.error("Error fetching withdrawal history:", error);
+        enqueueSnackbar("Failed to load withdrawal history", {
+          variant: "error",
+        });
+      }
+    },
+    [token, enqueueSnackbar]
   );
 
-  const totalPages = Math.ceil(filteredData.length / entriesPerPage);
+  // Fetch wallet info
+  const fetchWalletInfo = useCallback(async () => {
+    if (!token) return;
+
+    try {
+      const response = await apiRequest({
+        endpoint: WITHDRAWAL_WALLET_INFO,
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response?.data) {
+        setWalletInfo(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching wallet info:", error);
+      enqueueSnackbar("Failed to load wallet information", {
+        variant: "error",
+      });
+    }
+  }, [token, enqueueSnackbar]);
+
+  // Fetch withdrawal networks
+  const fetchWithdrawalNetworks = useCallback(async () => {
+    if (!token) return;
+
+    try {
+      const response = await apiRequest({
+        endpoint: WITHDRAWAL_NETWORKS,
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response?.data?.networks) {
+        setNetworks(response.data.networks);
+      }
+    } catch (error) {
+      console.error("Error fetching withdrawal networks:", error);
+      enqueueSnackbar("Failed to load withdrawal networks", {
+        variant: "error",
+      });
+    }
+  }, [token, enqueueSnackbar]);
+
+  // Fetch withdrawal limits
+  const fetchWithdrawalLimits = useCallback(async () => {
+    if (!token) return;
+
+    try {
+      const response = await apiRequest({
+        endpoint: WITHDRAWAL_LIMITS,
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response?.data) {
+        setLimits(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching withdrawal limits:", error);
+      enqueueSnackbar("Failed to load withdrawal limits", { variant: "error" });
+    }
+  }, [token, enqueueSnackbar]);
+
+  // Fetch withdrawal statistics
+  const fetchWithdrawalStatistics = useCallback(async () => {
+    if (!token) return;
+
+    try {
+      const response = await apiRequest({
+        endpoint: WITHDRAWAL_STATISTICS,
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response?.data) {
+        setStatistics(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching withdrawal statistics:", error);
+      enqueueSnackbar("Failed to load withdrawal statistics", {
+        variant: "error",
+      });
+    }
+  }, [token, enqueueSnackbar]);
+
+  // Fetch all data
+  const fetchAllData = useCallback(async () => {
+    if (!token) return;
+
+    setLoading(true);
+    try {
+      await Promise.all([
+        fetchWithdrawalHistory(currentPage, entriesPerPage),
+        fetchWalletInfo(),
+        fetchWithdrawalNetworks(),
+        fetchWithdrawalLimits(),
+        fetchWithdrawalStatistics(),
+      ]);
+    } catch (error) {
+      console.error("Error fetching withdrawal data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    token,
+    currentPage,
+    entriesPerPage,
+    fetchWithdrawalHistory,
+    fetchWalletInfo,
+    fetchWithdrawalNetworks,
+    fetchWithdrawalLimits,
+    fetchWithdrawalStatistics,
+  ]);
+
+  // Fetch data on mount
+  useEffect(() => {
+    fetchAllData();
+  }, [fetchAllData]);
+
+  // Use withdrawal history directly (pagination handled by API)
+  const paginatedData = withdrawalHistory;
+
+  const totalPages = pagination?.last_page || 1;
 
   // Formik setup
   const formik = useFormik({
     initialValues: {
       amount: "",
-      wallet: "available",
-      network: "TRC20",
+      wallet: "main",
+      network: "",
       address: "",
     },
     validationSchema: withdrawalValidationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitLoading(true);
       try {
+        // TODO: Replace with actual withdrawal API endpoint
+        // const response = await apiRequest({
+        //   endpoint: WITHDRAWAL_SUBMIT,
+        //   method: "POST",
+        //   headers: { Authorization: `Bearer ${token}` },
+        //   body: {
+        //     amount: parseFloat(values.amount),
+        //     wallet_type: values.wallet,
+        //     network: values.network,
+        //     wallet_address: values.address,
+        //   },
+        // });
+
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1500));
-        console.log("Withdrawal submitted:", values);
-        // Reset form
-        formik.resetForm();
-        alert("Withdrawal request submitted successfully!");
+
+        enqueueSnackbar("Withdrawal request submitted successfully!", {
+          variant: "success",
+        });
+        resetForm();
+        fetchAllData(); // Refresh data
       } catch (error) {
-        console.error("Error submitting withdrawal:", error);
+        console.error("Withdrawal error:", error);
+        enqueueSnackbar(
+          error?.response?.data?.message ||
+            "Failed to submit withdrawal request",
+          { variant: "error" }
+        );
       } finally {
         setSubmitLoading(false);
+        setSubmitting(false);
       }
     },
   });
@@ -267,22 +398,214 @@ const Withdraw = () => {
         </div>
 
         {/* Balance Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Main Wallet */}
           <BalanceCard
-            title="Available Balance"
-            amount={balanceData.available}
-            icon={DollarSign}
-            bgColor="bg-green-500"
-            textColor="text-white"
-          />
-          <BalanceCard
-            title="Main Wallet Balance"
-            amount={balanceData.mainWallet}
+            title="Main Wallet"
+            amount={
+              walletInfo?.wallets?.main?.balance
+                ? `${walletInfo.wallets.main.balance} ${
+                    walletInfo.wallets.main.currency || "USDT"
+                  }`
+                : "0.00 USDT"
+            }
             icon={Wallet}
             bgColor="bg-blue-600"
             textColor="text-white"
           />
+
+          {/* Available Balance */}
+          <BalanceCard
+            title="Available Balance"
+            amount={
+              walletInfo?.wallets?.available?.balance
+                ? `${walletInfo.wallets.available.balance} ${
+                    walletInfo.wallets.available.currency || "USDT"
+                  }`
+                : "0.00 USDT"
+            }
+            icon={DollarSign}
+            bgColor="bg-green-500"
+            textColor="text-white"
+          />
+
+          {/* Total Withdrawals */}
+          <div className="bg-purple-600 rounded-lg p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white/80 text-sm font-medium mb-2">
+                  Total Withdrawals
+                </p>
+                <p className="text-2xl sm:text-3xl font-bold">
+                  {walletInfo?.total_withdrawals
+                    ? `${walletInfo.total_withdrawals} USDT`
+                    : "0.00 USDT"}
+                </p>
+              </div>
+              <div className="bg-white/20 p-3 rounded-lg">
+                <ArrowDownUp className="w-6 h-6" />
+              </div>
+            </div>
+          </div>
+
+          {/* Pending Requests */}
+          <div className="bg-yellow-600 rounded-lg p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white/80 text-sm font-medium mb-2">
+                  Pending Requests
+                </p>
+                <p className="text-2xl sm:text-3xl font-bold">
+                  {walletInfo?.pending_requests || 0}
+                </p>
+                <p className="text-white/70 text-xs mt-1">
+                  Amount: {walletInfo?.pending_withdrawals || 0} USDT
+                </p>
+              </div>
+              <div className="bg-white/20 p-3 rounded-lg">
+                <RefreshCw className="w-6 h-6" />
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Withdrawal Status Alert */}
+        {walletInfo && (
+          <div
+            className={`mb-8 p-4 rounded-lg border ${
+              walletInfo.can_request_withdrawal
+                ? "bg-green-900/20 border-green-500/50 text-green-400"
+                : "bg-red-900/20 border-red-500/50 text-red-400"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  walletInfo.can_request_withdrawal
+                    ? "bg-green-400"
+                    : "bg-red-400"
+                } animate-pulse`}
+              ></div>
+              <span className="font-medium">
+                {walletInfo.can_request_withdrawal
+                  ? "✓ You can request withdrawals"
+                  : "⚠ Withdrawal requests are currently disabled"}
+              </span>
+              {walletInfo.last_updated && (
+                <span className="text-xs text-gray-400 ml-auto">
+                  Last updated:{" "}
+                  {new Date(walletInfo.last_updated).toLocaleString()}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Withdrawal Statistics */}
+        {statistics && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Withdrawal Statistics (Last {statistics.period_days} Days)
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Total Withdrawals */}
+              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <div className="flex flex-col">
+                  <span className="text-gray-400 text-sm font-medium mb-2">
+                    Total Withdrawals
+                  </span>
+                  <span className="text-3xl font-bold text-white">
+                    {statistics.total_withdrawals || 0}
+                  </span>
+                </div>
+              </div>
+
+              {/* Completed */}
+              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <div className="flex flex-col">
+                  <span className="text-gray-400 text-sm font-medium mb-2">
+                    Completed
+                  </span>
+                  <span className="text-3xl font-bold text-green-400">
+                    {statistics.completed_withdrawals || 0}
+                  </span>
+                </div>
+              </div>
+
+              {/* Pending */}
+              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <div className="flex flex-col">
+                  <span className="text-gray-400 text-sm font-medium mb-2">
+                    Pending
+                  </span>
+                  <span className="text-3xl font-bold text-yellow-400">
+                    {statistics.pending_withdrawals || 0}
+                  </span>
+                </div>
+              </div>
+
+              {/* Failed */}
+              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <div className="flex flex-col">
+                  <span className="text-gray-400 text-sm font-medium mb-2">
+                    Failed
+                  </span>
+                  <span className="text-3xl font-bold text-red-400">
+                    {statistics.failed_withdrawals || 0}
+                  </span>
+                </div>
+              </div>
+
+              {/* Average Withdrawal */}
+              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <div className="flex flex-col">
+                  <span className="text-gray-400 text-sm font-medium mb-2">
+                    Average Amount
+                  </span>
+                  <span className="text-3xl font-bold text-blue-400">
+                    ${statistics.average_withdrawal || 0}
+                  </span>
+                </div>
+              </div>
+
+              {/* Success Rate */}
+              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <div className="flex flex-col">
+                  <span className="text-gray-400 text-sm font-medium mb-2">
+                    Success Rate
+                  </span>
+                  <span className="text-3xl font-bold text-emerald-400">
+                    {statistics.success_rate || 0}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Total Transactions */}
+              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <div className="flex flex-col">
+                  <span className="text-gray-400 text-sm font-medium mb-2">
+                    Total Transactions
+                  </span>
+                  <span className="text-3xl font-bold text-purple-400">
+                    {statistics.total_transactions || 0}
+                  </span>
+                </div>
+              </div>
+
+              {/* Period Days */}
+              <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <div className="flex flex-col">
+                  <span className="text-gray-400 text-sm font-medium mb-2">
+                    Period
+                  </span>
+                  <span className="text-3xl font-bold text-cyan-400">
+                    {statistics.period_days || 0} Days
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Withdrawal Form */}
         <div className="bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-xl p-8 mb-8 shadow-xl">
@@ -324,7 +647,8 @@ const Withdraw = () => {
                 </p>
               ) : (
                 <p className="text-gray-500 text-xs mt-2">
-                  💡 Min: 10 USDT | Max: 10,000 USDT
+                  💡 Min: {limits?.limits?.min_withdrawal || 10} USDT | Max:{" "}
+                  {limits?.limits?.max_withdrawal || 10000} USDT
                 </p>
               )}
             </div>
@@ -352,8 +676,8 @@ const Withdraw = () => {
                     paddingRight: "2.5rem",
                   }}
                 >
+                  <option value="main">Main Wallet</option>
                   <option value="available">Available Balance</option>
-                  <option value="mainWallet">Main Wallet</option>
                 </select>
                 {formik.touched.wallet && formik.errors.wallet && (
                   <p className="text-red-400 text-sm mt-2">
@@ -383,8 +707,25 @@ const Withdraw = () => {
                     paddingRight: "2.5rem",
                   }}
                 >
-                  <option value="TRC20">TRC20 - Fee: 1 USDT</option>
-                  <option value="BEP20">BEP20 - Fee: 1 USDT</option>
+                  <option value="">-- Select Network --</option>
+                  {networks?.trc20 && (
+                    <option value="TRC20">
+                      {networks.trc20.name} - Fee: {networks.trc20.fee}{" "}
+                      {networks.trc20.currency}
+                    </option>
+                  )}
+                  {networks?.bep20 && (
+                    <option value="BEP20">
+                      {networks.bep20.name} - Fee: {networks.bep20.fee}{" "}
+                      {networks.bep20.currency}
+                    </option>
+                  )}
+                  {networks?.erc20 && (
+                    <option value="ERC20">
+                      {networks.erc20.name} - Fee: {networks.erc20.fee}{" "}
+                      {networks.erc20.currency}
+                    </option>
+                  )}
                 </select>
                 {formik.touched.network && formik.errors.network && (
                   <p className="text-red-400 text-sm mt-2">
@@ -466,33 +807,6 @@ const Withdraw = () => {
 
         {/* Withdrawal History */}
         <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
-          {/* Tabs */}
-          <div className="flex border-b border-slate-700 overflow-x-auto">
-            {[
-              "all",
-              "pending",
-              "completed",
-              "approved",
-              "failed",
-              "cancelled",
-            ].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => {
-                  setActiveTab(tab);
-                  setCurrentPage(1);
-                }}
-                className={`px-4 py-3 font-medium text-sm transition-colors whitespace-nowrap ${
-                  activeTab === tab
-                    ? "text-blue-400 border-b-2 border-blue-400 bg-slate-700/50"
-                    : "text-gray-400 hover:text-gray-300"
-                }`}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </div>
-
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -505,13 +819,19 @@ const Withdraw = () => {
                     Amount
                   </th>
                   <th className="text-left p-4 font-semibold text-gray-300">
+                    Fee
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-300">
                     Network
                   </th>
                   <th className="text-left p-4 font-semibold text-gray-300">
                     Status
                   </th>
                   <th className="text-left p-4 font-semibold text-gray-300">
-                    Actions
+                    OTP
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-300">
+                    TXN ID
                   </th>
                 </tr>
               </thead>
@@ -528,23 +848,68 @@ const Withdraw = () => {
                           {item.date}
                         </div>
                       </td>
-                      <td className="p-4 text-green-400 font-semibold">
-                        {item.amount}
-                      </td>
-                      <td className="p-4 text-gray-300">{item.network}</td>
                       <td className="p-4">
-                        <StatusBadge status={item.status} />
+                        <div className="flex flex-col">
+                          <span className="text-green-400 font-semibold">
+                            {item.amount} {item.currency || "USDT"}
+                          </span>
+                          {item.notes && (
+                            <span className="text-xs text-gray-500 mt-1">
+                              {item.notes}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-4 text-red-400 font-medium">
+                        {item.fee
+                          ? `${item.fee} ${item.currency || "USDT"}`
+                          : "-"}
                       </td>
                       <td className="p-4">
-                        <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
-                          View
-                        </button>
+                        <div className="flex flex-col">
+                          <span className="text-gray-300 font-medium">
+                            {item.network}
+                          </span>
+                          {item.wallet_address && (
+                            <span className="text-xs text-gray-400 mt-1 break-all">
+                              {item.wallet_address}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <StatusBadge
+                          status={item.status}
+                          label={item.status_label}
+                        />
+                      </td>
+                      <td className="p-4">
+                        {item.is_otp_verified ? (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <Check className="w-3 h-3" /> Verified
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            Pending
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        {item.transaction_id ? (
+                          <div className="flex flex-col">
+                            <span className="text-blue-400 font-mono text-sm">
+                              #{item.transaction_id}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-gray-500">-</span>
+                        )}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-gray-500">
+                    <td colSpan={7} className="p-8 text-center text-gray-500">
                       No withdrawal history available
                     </td>
                   </tr>
@@ -572,11 +937,18 @@ const Withdraw = () => {
 
               <div className="text-sm text-gray-400">
                 Showing{" "}
-                {paginatedData.length > 0
-                  ? (currentPage - 1) * entriesPerPage + 1
+                {pagination?.total > 0
+                  ? ((pagination?.current_page || 1) - 1) *
+                      (pagination?.per_page || DEFAULT_ENTRIES_PER_PAGE) +
+                    1
                   : 0}{" "}
-                to {Math.min(currentPage * entriesPerPage, filteredData.length)}{" "}
-                of {filteredData.length} entries
+                to{" "}
+                {Math.min(
+                  (pagination?.current_page || 1) *
+                    (pagination?.per_page || DEFAULT_ENTRIES_PER_PAGE),
+                  pagination?.total || 0
+                )}{" "}
+                of {pagination?.total || 0} entries
               </div>
 
               {/* Pagination Controls */}

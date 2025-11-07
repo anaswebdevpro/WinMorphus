@@ -55,3 +55,12 @@ export const NETWORK_STATS = "network/stats";
 export const NETWORK_LEVEL_WISE = "network/level-wise";
 
 //Commissions Routes
+
+
+//Withdraw Routes
+export const WITHDRAWAL_TABLE_HISTORY = "withdrawal/request-history";
+export const WITHDRAWAL_WALLET_INFO = "withdrawal/wallet-info";
+export const WITHDRAWAL_STATISTICS = "withdrawal/statistics";
+export const WITHDRAWAL_NETWORKS = "withdrawal/networks";
+export const WITHDRAWAL_LIMITS = "withdrawal/limits";
+export const WITHDRAWAL_CREATE_REQUEST = "withdrawal/create-request";
