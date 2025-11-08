@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TrendingUp,
   Calendar,
@@ -6,14 +6,16 @@ import {
   DollarSign,
   Percent,
 } from "lucide-react";
-import { StatusBadge, PageHeader } from "../../Component/ui";
+import { PageHeader, ShimmerLoader } from "../../Component/ui";
+import { useAuth } from "../../Context/UseAuth";
+import { apiRequest } from "../../Services/Api";
+import { ROI_ACTIVE_INVESTMENTS } from "../../Api/Api_variables";
+import { enqueueSnackbar } from "notistack";
 
-// Constants
-const DEFAULT_ENTRIES_PER_PAGE = 10;
+// Reusable StatCard Component
 
-// Reusable Components
 // eslint-disable-next-line no-unused-vars
-const StatCard = ({ title, value, icon: IconComponent, color, bgColor }) => (
+const StatCard = ({ title, value, color, icon: IconComponent, bgColor }) => (
   <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-yellow-500/50 transition-all">
     <div className="flex items-start justify-between">
       <div>
@@ -28,117 +30,58 @@ const StatCard = ({ title, value, icon: IconComponent, color, bgColor }) => (
 );
 
 const ROIEarnings = () => {
-  const [data, setData] = useState([]);
+  const [investments, setInvestments] = useState([]);
+  const [stats, setStats] = useState({
+    active_invest: 0,
+    total_invest: 0,
+    total_earned: 0,
+  });
   const [loading, setLoading] = useState(true);
+  const { token } = useAuth();
 
-  // Fetch data
-  useEffect(() => {
-    const mockROIData = [
-      {
-        id: 1,
-        date: "2024-11-04",
-        package: "Premium",
-        amount: 150.0,
-        description: "Daily ROI Earnings",
-        status: 1,
-      },
-      {
-        id: 2,
-        date: "2024-11-03",
-        package: "Standard",
-        amount: 120.0,
-        description: "Daily ROI Earnings",
-        status: 1,
-      },
-      {
-        id: 3,
-        date: "2024-11-02",
-        package: "Elite",
-        amount: 200.0,
-        description: "Daily ROI Earnings",
-        status: 1,
-      },
-      {
-        id: 4,
-        date: "2024-11-01",
-        package: "Premium",
-        amount: 150.0,
-        description: "Daily ROI Earnings",
-        status: 1,
-      },
-      {
-        id: 5,
-        date: "2024-10-31",
-        package: "Standard",
-        amount: 120.0,
-        description: "Daily ROI Earnings",
-        status: 1,
-      },
-      {
-        id: 6,
-        date: "2024-10-30",
-        package: "Premium",
-        amount: 150.0,
-        description: "Daily ROI Earnings",
-        status: 1,
-      },
-      {
-        id: 7,
-        date: "2024-10-29",
-        package: "Elite",
-        amount: 200.0,
-        description: "Daily ROI Earnings",
-        status: 1,
-      },
-      {
-        id: 8,
-        date: "2024-10-28",
-        package: "Standard",
-        amount: 120.0,
-        description: "Daily ROI Earnings",
-        status: 1,
-      },
-    ];
+  const fetchInvestments = () => {
+    if (!token) return;
 
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setData(mockROIData);
-      setLoading(false);
-    }, 500);
+    apiRequest({
+      endpoint: ROI_ACTIVE_INVESTMENTS,
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        if (response?.data) {
+          setInvestments(response.data.investments || []);
+          setStats({
+            active_invest: response.data.total_active_investments,
+            total_invest: response.data.total_invested_amount,
+            total_earned: response.data.total_earned_so_far,
+          });
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        enqueueSnackbar(
+          error.message || "Failed to load Active Investment information",
+          { variant: "error" }
+        );
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchInvestments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Filter data
-  const filteredData = useMemo(() => data, [data]);
-
-  // Calculate statistics
-  const stats = useMemo(() => {
-    const totalROI = data.reduce(
-      (sum, item) => sum + (parseFloat(item.amount) || 0),
-      0
-    );
-    const activeInvestments = data.filter((item) => item.status === 1).length;
-
-    return {
-      totalROIEarned: totalROI.toFixed(2),
-      totalInvestment: (totalROI * 10).toFixed(2), // Mock calculation
-      activeInvestments,
-      roiPercentage: (3.5).toFixed(2), // Mock percentage
-    };
-  }, [data]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto p-6">
-          <div className="animate-pulse space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="bg-slate-800 rounded-lg h-24"></div>
-              ))}
-            </div>
-            <div className="bg-slate-800 rounded-lg h-96"></div>
-          </div>
+          <PageHeader
+            title="ROI Earnings"
+            description="Track and manage your ROI earnings from investments"
+          />
+          <ShimmerLoader variant="dashboard" />
         </div>
       </div>
     );
@@ -156,28 +99,30 @@ const ROIEarnings = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Total ROI Earned"
-            value={`$${stats.totalROIEarned}`}
+            value={`$${stats.total_earned.toFixed(2)}`}
             icon={TrendingUp}
             color="text-green-400"
             bgColor="bg-green-600/30"
           />
           <StatCard
             title="Total Investment"
-            value={`$${stats.totalInvestment}`}
+            value={`$${stats.total_invest.toFixed(2)}`}
             icon={DollarSign}
             color="text-blue-400"
             bgColor="bg-blue-600/30"
           />
           <StatCard
             title="Active Investments"
-            value={stats.activeInvestments}
+            value={stats.active_invest}
             icon={Package}
             color="text-yellow-400"
             bgColor="bg-yellow-600/30"
           />
           <StatCard
             title="ROI Percentage"
-            value={`${stats.roiPercentage}%`}
+            value={`${
+              investments.length > 0 ? investments[0].rate_percentage : "0.00"
+            }%`}
             icon={Percent}
             color="text-purple-400"
             bgColor="bg-purple-600/30"
@@ -191,10 +136,7 @@ const ROIEarnings = () => {
               <thead>
                 <tr className="border-b border-slate-700 bg-slate-700/50">
                   <th className="text-left p-4 font-semibold text-gray-300">
-                    Serial No.
-                  </th>
-                  <th className="text-left p-4 font-semibold text-gray-300">
-                    Date
+                    S.No
                   </th>
                   <th className="text-left p-4 font-semibold text-gray-300">
                     Package
@@ -203,13 +145,28 @@ const ROIEarnings = () => {
                     Amount
                   </th>
                   <th className="text-left p-4 font-semibold text-gray-300">
-                    Description
+                    Rate
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-300">
+                    Purchase Date
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-300">
+                    Days Active
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-300">
+                    Progress
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-300">
+                    Earned So Far
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-300">
+                    Projected Earnings
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredData.length > 0 ? (
-                  filteredData.map((item, index) => (
+                {investments.length > 0 ? (
+                  investments.map((item, index) => (
                     <tr
                       key={item.id || index}
                       className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
@@ -218,31 +175,66 @@ const ROIEarnings = () => {
                         <span className="font-medium">{index + 1}</span>
                       </td>
                       <td className="p-4 text-gray-300">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-yellow-400" />
-                          {item.date || "N/A"}
-                        </div>
-                      </td>
-                      <td className="p-4 text-gray-300">
                         <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/30 text-blue-300 rounded-lg text-sm">
                           <Package className="w-4 h-4" />
-                          {item.package || "N/A"}
+                          {item.package_name}
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="font-semibold text-green-400">
+                        <span className="font-semibold text-white">
                           ${parseFloat(item.amount || 0).toFixed(2)}
                         </span>
                       </td>
-                      <td className="p-4 text-gray-400">
-                        {item.description || "N/A"}
+                      <td className="p-4 text-cyan-400 font-medium">
+                        {item.rate_percentage}%
+                      </td>
+                      <td className="p-4 text-gray-300">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-yellow-400" />
+                          {item.purchase_date}
+                        </div>
+                      </td>
+                      <td className="p-4 text-gray-300">
+                        {Math.max(0, Math.floor(item.days_active))} /{" "}
+                        {item.total_days} days
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-24 bg-slate-700 rounded-full h-2">
+                            <div
+                              className="bg-green-500 h-2 rounded-full transition-all"
+                              style={{
+                                width: `${Math.max(
+                                  0,
+                                  Math.min(100, item.progress_percentage)
+                                )}%`,
+                              }}
+                            ></div>
+                          </div>
+                          <span className="text-xs text-gray-400">
+                            {Math.max(0, item.progress_percentage).toFixed(1)}%
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <span className="font-semibold text-green-400">
+                          ${Math.max(0, item.earned_so_far).toFixed(2)}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <span className="font-semibold text-emerald-400">
+                          $
+                          {parseFloat(
+                            item.projected_total_earnings || 0
+                          ).toFixed(2)}
+                        </span>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-gray-500">
-                      No data available
+                    <td colSpan={9} className="p-8 text-center text-gray-500">
+                      No active investments available
                     </td>
                   </tr>
                 )}
@@ -253,7 +245,7 @@ const ROIEarnings = () => {
           {/* Table Footer with Pagination */}
           <div className="px-4 py-4 border-t border-slate-700 bg-slate-700/30">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-400">
-              <div>Total: {filteredData.length} entries</div>
+              <div>Total: {investments.length} entries</div>
             </div>
           </div>
         </div>

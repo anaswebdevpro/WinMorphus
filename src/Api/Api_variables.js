@@ -48,6 +48,7 @@ export const CLOSING_STATS_URL = "closing/stats";
 export const CLOSING_SINGLE_URL = "closing/single";
 
 //Roi Earnings
+export const ROI_ACTIVE_INVESTMENTS = "roi/active-investments";
 
 //Network Routes
 export const MY_NETWORK = "network/team-tree";
