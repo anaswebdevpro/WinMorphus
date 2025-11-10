@@ -1,10 +1,7 @@
 import React, {  useEffect, useState, useMemo } from "react";
 import { Zap, Star, Crown, Check, AlertCircle, TrendingUp } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
-import {
-  PACKAGES_INVESTMENT_HISTORY,
-  PACKAGES_URL,
-} from "../../Api/Api_variables";
+import { PACKAGES_URL} from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { enqueueSnackbar } from "notistack";
 import PurchasePackage from "./PurchasePackage";
@@ -123,7 +120,7 @@ const Packages = () => {
             {PackageData?.packages?.length > 0 ? (
               PackageData.packages.map((pkg) => {
                 const theme = themeMap.Standard;
-                const IconComponent = Zap;
+                const IconComponent = Crown;
 
                 // Build investment range
                 const minAmount = pkg.min_amount;
@@ -163,9 +160,9 @@ const Packages = () => {
                       </div>
                     </div>
 
-                    {/* <h3 className="text-2xl font-bold text-center mb-4 text-white">
+                    <h3 className="text-2xl font-bold text-center mb-4 text-white">
                       {pkg.name}
-                    </h3> */}
+                    </h3>
 
                     <div className="space-y-3 mb-6">
                       <div className="text-center">

@@ -10,10 +10,12 @@ import { logo, loginImage, loginBackground } from "../../assets";
 import MainNavbar from "../../Component/MainNavbar";
 
 const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid email address").required("Required"),
+  username: Yup.string()
+    .min(3, "Username must be at least 3 characters")
+    .required("Username is required"),
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
-    .required("Required"),
+    .required("Password is required"),
 });
 
 const Login = () => {
@@ -24,7 +26,7 @@ const Login = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "",
+      username: "",
       password: "",
       keep: true,
     },
@@ -33,7 +35,7 @@ const Login = () => {
       setIsLoading(true);
       try {
         const payload = JSON.stringify({
-          email: values.email,
+          username: values.username,
           password: values.password,
         });
         apiRequest({
@@ -52,13 +54,13 @@ const Login = () => {
           .catch((error) => {
             console.error("Login failed:", error);
 
-            formik.setFieldError("password", "Invalid email or password");
+            formik.setFieldError("password", "Invalid username or password");
             setIsLoading(false);
           });
       } catch (error) {
         console.error("Login failed:", error);
 
-        formik.setFieldError("password", "Invalid email or password");
+        formik.setFieldError("password", "Invalid username or password");
         setIsLoading(false);
       }
     },
@@ -100,28 +102,28 @@ const Login = () => {
                 onSubmit={formik.handleSubmit}
                 className="space-y-4 sm:space-y-6"
               >
-                {/* Email Field */}
+                {/* Username Field */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Email Address
+                    User ID
                   </label>
                   <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="Email Address"
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="Enter your username"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.email}
+                    value={formik.values.username}
                     className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 sm:py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base ${
-                      formik.touched.email && formik.errors.email
+                      formik.touched.username && formik.errors.username
                         ? "border-red-400"
                         : ""
                     }`}
                   />
-                  {formik.touched.email && formik.errors.email ? (
+                  {formik.touched.username && formik.errors.username ? (
                     <div className="mt-1 text-sm text-red-500">
-                      {formik.errors.email}
+                      {formik.errors.username}
                     </div>
                   ) : null}
                 </div>
