@@ -1,7 +1,7 @@
-import React, {  useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Zap, Star, Crown, Check, AlertCircle, TrendingUp } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
-import { PACKAGES_URL} from "../../Api/Api_variables";
+import { PACKAGES_URL } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { enqueueSnackbar } from "notistack";
 import PurchasePackage from "./PurchasePackage";
@@ -9,25 +9,70 @@ import { ShimmerLoader, PageHeader } from "../../Component/ui";
 import Investment_table from "./Investment_table";
 
 const Packages = () => {
- 
   const [loading, setLoading] = useState(false);
   const [PackageData, setPackageData] = useState({});
-  
+
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const { token } = useAuth();
 
-  // Theme mapping for packages
-  const themeMap = {
-    Standard: {
-      borderColor: "border-slate-600",
-      bgGradient: "from-slate-800 to-slate-900",
-      buttonColor: "bg-yellow-500 hover:bg-yellow-600",
-      accentColor: "text-yellow-400",
-      badgeColor: "bg-yellow-500",
-      iconBg: "bg-slate-700/50",
+  // Theme mapping for packages with different colors
+  const packageThemes = [
+    {
+      name: "Blue",
+      borderColor: "border-blue-500",
+      bgGradient: "from-blue-900 to-slate-900",
+      buttonColor: "bg-blue-500 hover:bg-blue-600",
+      accentColor: "text-blue-400",
+      badgeColor: "bg-blue-500",
+      iconBg: "bg-blue-700/30",
     },
-  };
+    {
+      name: "Purple",
+      borderColor: "border-purple-500",
+      bgGradient: "from-purple-900 to-slate-900",
+      buttonColor: "bg-purple-500 hover:bg-purple-600",
+      accentColor: "text-purple-400",
+      badgeColor: "bg-purple-500",
+      iconBg: "bg-purple-700/30",
+    },
+    {
+      name: "Green",
+      borderColor: "border-green-500",
+      bgGradient: "from-green-900 to-slate-900",
+      buttonColor: "bg-green-500 hover:bg-green-600",
+      accentColor: "text-green-400",
+      badgeColor: "bg-green-500",
+      iconBg: "bg-green-700/30",
+    },
+    {
+      name: "Orange",
+      borderColor: "border-orange-500",
+      bgGradient: "from-orange-900 to-slate-900",
+      buttonColor: "bg-orange-500 hover:bg-orange-600",
+      accentColor: "text-orange-400",
+      badgeColor: "bg-orange-500",
+      iconBg: "bg-orange-700/30",
+    },
+    {
+      name: "Cyan",
+      borderColor: "border-cyan-500",
+      bgGradient: "from-cyan-900 to-slate-900",
+      buttonColor: "bg-cyan-500 hover:bg-cyan-600",
+      accentColor: "text-cyan-400",
+      badgeColor: "bg-cyan-500",
+      iconBg: "bg-cyan-700/30",
+    },
+    {
+      name: "Pink",
+      borderColor: "border-pink-500",
+      bgGradient: "from-pink-900 to-slate-900",
+      buttonColor: "bg-pink-500 hover:bg-pink-600",
+      accentColor: "text-pink-400",
+      badgeColor: "bg-pink-500",
+      iconBg: "bg-pink-700/30",
+    },
+  ];
 
   // Dynamically calculate grid columns based on package count
   const gridColsClass = useMemo(() => {
@@ -36,8 +81,6 @@ const Packages = () => {
     if (packageCount === 2) return "grid-cols-1 md:grid-cols-2";
     return "grid-cols-1 md:grid-cols-3";
   }, [PackageData?.packages?.length]);
-
-  
 
   const FetchPackages = () => {
     setLoading(true);
@@ -68,8 +111,9 @@ const Packages = () => {
   useEffect(() => {
     if (token) {
       FetchPackages();
-         }
-  }, []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   // Handle opening purchase modal
   const handleOpenPurchaseModal = (packageId) => {
@@ -108,9 +152,11 @@ const Packages = () => {
           title="Investment Packages"
           description="Choose the perfect package to start your investment journey"
         />
-
+        {console.log(PackageData.packages)}
         {/* Packages Section */}
-        <div className="bg-slate-800 border border-slate-700 p-8 rounded-lg shadow-lg mb-8">
+        <div
+          className={`bg-slate-800 border border-slate-700 p-8 rounded-lg shadow-lg mb-8`}
+        >
           <h2 className="text-2xl font-bold text-white mb-2">Packages</h2>
           <p className="text-gray-400 text-sm mb-6">
             Select a package that matches your investment capacity
@@ -118,8 +164,9 @@ const Packages = () => {
 
           <div className={`grid ${gridColsClass} gap-6 mb-6`}>
             {PackageData?.packages?.length > 0 ? (
-              PackageData.packages.map((pkg) => {
-                const theme = themeMap.Standard;
+              PackageData.packages.map((pkg, index) => {
+                // Assign theme based on package index (rotating through colors)
+                const theme = packageThemes[index % packageThemes.length];
                 const IconComponent = Crown;
 
                 // Build investment range
@@ -140,7 +187,7 @@ const Packages = () => {
                     key={pkg.id}
                     className={`relative bg-linear-to-br ${theme.bgGradient} border-2 ${theme.borderColor} rounded-xl p-6 transition-all duration-300 hover:shadow-2xl hover:border-opacity-100 group`}
                   >
-                    {theme.popular && (
+                    {/* {theme.popular && (
                       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                         <span
                           className={`${theme.badgeColor} text-white px-4 py-1 rounded-full text-xs font-bold tracking-wide`}
@@ -148,7 +195,7 @@ const Packages = () => {
                           ⭐ MOST POPULAR
                         </span>
                       </div>
-                    )}
+                    )} */}
 
                     <div className="flex justify-center mb-4">
                       <div
@@ -165,34 +212,46 @@ const Packages = () => {
                     </h3>
 
                     <div className="space-y-3 mb-6">
-                      <div className="text-center">
-                        <p
-                          className={`text-sm font-semibold ${theme.accentColor}`}
-                        >
+                      {/* Investment Range - Row */}
+                      <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <span className="text-sm font-semibold text-gray-400">
                           Investment Range
-                        </p>
-                        <p className="text-gray-300 font-bold mt-1">{range}</p>
+                        </span>
+                        <span className="text-white font-bold">{range}</span>
                       </div>
 
-                      {/* <div className="text-center text-xs text-gray-400 mb-2">
-                        {pkg.description}
-                      </div> */}
+                      {/* Description - Row */}
+                      {pkg.description && (
+                        <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                          <span className="text-sm font-semibold text-gray-400">
+                            Description
+                          </span>
+                          <span className="text-white text-sm text-right max-w-[60%]">
+                            {pkg.description}
+                          </span>
+                        </div>
+                      )}
 
-                      {/* <div className="flex gap-2 justify-center">
-                        <div
-                          className={`${theme.badgeColor} text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1`}
-                        >
-                          <TrendingUp className="w-4 h-4" />
-                          {pkg.formatted_rate ||
-                            `${pkg.rate_percentage || "N/A"}% P.A.`}
-                        </div>
-                        <div
-                          className={`${theme.badgeColor} text-white px-4 py-2 rounded-lg text-sm font-bold`}
-                        >
-                          {pkg.formatted_commission ||
-                            `${pkg.commission_percentage || "N/A"}% Commission`}
-                        </div>
-                      </div> */}
+                      {/* ROI - Row */}
+                      <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <span className="text-sm font-semibold text-gray-400 flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4 text-green-400" />
+                          ROI P.A.
+                        </span>
+                        <span className="text-green-400 font-bold">
+                          {pkg.monthly_roi || "N/A"}%
+                        </span>
+                      </div>
+
+                      {/* Activation Fee - Row */}
+                      <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <span className="text-sm font-semibold text-gray-400">
+                          Activation Fee
+                        </span>
+                        <span className="text-yellow-400 font-bold">
+                          {pkg.commission_percentage || "0"}%
+                        </span>
+                      </div>
                     </div>
 
                     <button
@@ -203,13 +262,14 @@ const Packages = () => {
                     </button>
 
                     <div className="mt-4 pt-4 border-t border-slate-700">
-                      <p className="text-xs text-gray-500 text-center">
-                        ✓{" "}
-                        {pkg.status
-                          ? "Status: " + pkg.status.toUpperCase()
-                          : "Active"}{" "}
-                        | Automated Daily Payouts
-                      </p>
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="text-xs text-green-400">✓</span>
+                        <span className="text-xs text-gray-400">
+                          {pkg.status
+                            ? "Status: " + pkg.status.toUpperCase()
+                            : "Active"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -236,7 +296,7 @@ const Packages = () => {
         </div>
 
         {/* Investment History */}
-       <Investment_table />
+        <Investment_table />
 
         {/* Commission Structure */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

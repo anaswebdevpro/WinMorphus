@@ -12,6 +12,7 @@ import {
   ROIEarnings,
   Withdraw,
   Profile,
+  Loyalty,
 } from "../Pages";
 import BEP20 from "../Pages/Deposit/BEP20/BEP20";
 import TRC20 from "../Pages/Deposit/TRC20/TRC20";
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
           { path: "packages", element: <Packages /> },
           { path: "roi-earnings", element: <ROIEarnings /> },
           { path: "commissions", element: <Commissions /> },
+          { path: "loyalty-allowance", element: <Loyalty /> },
           { path: "withdraw", element: <Withdraw /> },
           { path: "profile", element: <Profile /> },
         ],

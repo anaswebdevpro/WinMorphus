@@ -15,16 +15,17 @@ const MainNavbar = () => {
     { name: "Dashboard", path: "/dashboard" },
     { name: "Packages", path: "/packages" },
     { name: "Deposit", path: "/deposit" },
-    { name: "My Network", path: "/network" },
+    // { name: "My Network", path: "/network" },
     { name: "ROI Earnings", path: "/roi-earnings" },
-    { name: "Commissions", path: "/commissions" },
+    { name: "Leadership Income", path: "/commissions" },
+    { name: "Loyalty Allowance", path: "/loyalty-allowance" },
     { name: "Withdraw", path: "/withdraw" },
   ];
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-slate-900 px-4 sm:px-6 py-2 sticky top-0 z-50 shadow-lg">
+    <nav className="bg-[#0a1628] px-4 sm:px-6 py-3 sticky top-0 z-50 shadow-lg border-b border-slate-800">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
         <div className="shrink-0">
@@ -47,18 +48,15 @@ const MainNavbar = () => {
             </div>
           </Link>
         </div>
-       
 
         {/* Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden lg:flex items-center space-x-6">
           {navItems.map((item) => (
             <Link
               key={item.name}
               to={item.path}
-              className={`text-base font-medium transition-colors duration-200 hover:text-white relative ${
-                isActive(item.path)
-                  ? "text-white after:absolute after:bottom-[-16px] after:left-0 after:right-0 after:h-0.5 after:bg-yellow-400"
-                  : "text-gray-300"
+              className={`text-[16px] font-medium transition-colors duration-200 hover:text-yellow-400 relative py-2 ${
+                isActive(item.path) ? "text-yellow-400" : "text-gray-300"
               }`}
             >
               {item.name}
@@ -130,16 +128,16 @@ const MainNavbar = () => {
             </div>
           ) : (
             // Show LOGIN and SIGN UP buttons when user is not logged in
-            <div className="hidden md:flex items-center space-x-3">
+            <div className="hidden lg:flex items-center space-x-3">
               <button
                 onClick={() => navigate("/login")}
-                className="border border-yellow-400 text-yellow-400 px-6 py-2 rounded text-base font-medium hover:bg-yellow-400 hover:text-slate-900 transition-colors"
+                className="border-2 border-yellow-400 text-yellow-400 px-5 py-2 rounded-md text-sm font-bold hover:bg-yellow-400 hover:text-slate-900 transition-all duration-200"
               >
                 LOG IN
               </button>
               <button
                 onClick={() => navigate("/signup")}
-                className="bg-yellow-400 text-slate-900 px-6 py-2 rounded text-base font-medium hover:bg-yellow-500 transition-colors"
+                className="bg-yellow-400 text-slate-900 px-5 py-2 rounded-md text-sm font-bold hover:bg-yellow-500 transition-all duration-200 shadow-lg"
               >
                 SIGN UP
               </button>
@@ -148,7 +146,7 @@ const MainNavbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-gray-300 hover:text-white"
+            className="lg:hidden p-2 text-gray-300 hover:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <Menu className="w-6 h-6" />
@@ -158,13 +156,13 @@ const MainNavbar = () => {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden mt-4 border-t border-gray-700 pt-4">
+        <div className="lg:hidden mt-4 border-t border-gray-700 pt-4">
           <div className="space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`block px-3 py-2 text-base font-medium rounded-md transition-colors ${
+                className={`block px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                   isActive(item.path)
                     ? "bg-yellow-400 text-slate-900"
                     : "text-gray-300 hover:bg-slate-800 hover:text-white"
@@ -183,7 +181,7 @@ const MainNavbar = () => {
                     navigate("/login");
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full border border-yellow-400 text-yellow-400 px-4 py-2 rounded text-base font-medium hover:bg-yellow-400 hover:text-slate-900 transition-colors"
+                  className="w-full border-2 border-yellow-400 text-yellow-400 px-4 py-2 rounded-md text-sm font-bold hover:bg-yellow-400 hover:text-slate-900 transition-all duration-200"
                 >
                   LOG IN
                 </button>
@@ -192,7 +190,7 @@ const MainNavbar = () => {
                     navigate("/signup");
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full bg-yellow-400 text-slate-900 px-4 py-2 rounded text-base font-medium hover:bg-yellow-500 transition-colors"
+                  className="w-full bg-yellow-400 text-slate-900 px-4 py-2 rounded-md text-sm font-bold hover:bg-yellow-500 transition-all duration-200"
                 >
                   SIGN UP
                 </button>

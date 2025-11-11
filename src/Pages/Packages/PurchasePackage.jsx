@@ -122,14 +122,11 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
       return;
     }
 
-    if (
-      packageDetails.max_amount &&
-      amount > parseFloat(packageDetails.max_amount)
-    ) {
-      enqueueSnackbar(
-        `Maximum investment is ${packageDetails.max_amount} USDT`,
-        { variant: "error" }
-      );
+    const effectiveMaxAmount = getEffectiveMaxAmount();
+    if (amount > effectiveMaxAmount) {
+      enqueueSnackbar(`Maximum investment is ${effectiveMaxAmount} USDT`, {
+        variant: "error",
+      });
       return;
     }
 
@@ -189,22 +186,43 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, packageId]);
 
+  // Get effective max amount (use 50000 if max_amount is 0 for unlimited packages)
+  const getEffectiveMaxAmount = () => {
+    if (!packageDetails) return 50000;
+    const maxAmount = parseFloat(packageDetails.max_amount);
+    return maxAmount > 0 ? maxAmount : 50000;
+  };
+
   // Calculate expected ROI and remaining balance
   const calculateValues = () => {
     const amount = parseFloat(investmentAmount) || 0;
     const rate = parseFloat(packageDetails?.rate_percentage || 0);
+    const commissionRate = parseFloat(
+      packageDetails?.commission_percentage || 0
+    );
+
     const expectedROI = (amount * rate) / 100;
-    const remainingBalance = walletBalance - amount;
+    const activationFee = (amount * commissionRate) / 100;
+    const totalAmount = amount + activationFee;
+    const remainingBalance = walletBalance - totalAmount;
 
     return {
       expectedROI: expectedROI.toFixed(2),
+      activationFee: activationFee.toFixed(2),
+      totalAmount: totalAmount.toFixed(2),
       remainingBalance: remainingBalance.toFixed(2),
     };
   };
 
-  const { expectedROI, remainingBalance } = packageDetails
-    ? calculateValues()
-    : { expectedROI: 0, remainingBalance: 0 };
+  const { expectedROI, activationFee, totalAmount, remainingBalance } =
+    packageDetails
+      ? calculateValues()
+      : {
+          expectedROI: 0,
+          activationFee: 0,
+          totalAmount: 0,
+          remainingBalance: 0,
+        };
 
   if (!isOpen) return null;
 
@@ -296,24 +314,116 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                   <h3 className="font-semibold">Investment Amount</h3>
                 </div>
 
-                <div>
-                  <label className="text-gray-400 text-sm mb-2 block">
-                    Amount (USDT)
-                  </label>
-                  <input
-                    type="number"
-                    value={investmentAmount}
-                    onChange={(e) => setInvestmentAmount(e.target.value)}
-                    placeholder="Enter amount"
-                    min={packageDetails.min_amount}
-                    max={packageDetails.max_amount || walletBalance}
-                    step="0.01"
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  />
-                  <p className="text-gray-500 text-xs mt-2 flex items-center gap-1">
+                <div className="space-y-4">
+                  {/* Amount Display */}
+                  <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                    <p className="text-gray-400 text-sm mb-1">
+                      Selected Amount
+                    </p>
+                    <p className="text-3xl font-bold text-yellow-400">
+                      {parseFloat(investmentAmount || 0).toFixed(2)} USDT
+                    </p>
+                  </div>
+
+                  {/* Slider */}
+                  <div>
+                    <input
+                      type="range"
+                      min={
+                        Math.ceil(parseFloat(packageDetails.min_amount) / 50) *
+                        50
+                      }
+                      max={Math.min(
+                        Math.floor(getEffectiveMaxAmount() / 50) * 50,
+                        Math.floor(walletBalance / 50) * 50
+                      )}
+                      step="50"
+                      value={investmentAmount || packageDetails.min_amount}
+                      onChange={(e) => setInvestmentAmount(e.target.value)}
+                      className="w-full h-2 bg-slate-600 rounded-lg appearance-none cursor-pointer slider-thumb"
+                      style={{
+                        background: `linear-gradient(to right, #facc15 0%, #facc15 ${
+                          ((investmentAmount -
+                            Math.ceil(
+                              parseFloat(packageDetails.min_amount) / 50
+                            ) *
+                              50) /
+                            (Math.min(
+                              Math.floor(getEffectiveMaxAmount() / 50) * 50,
+                              Math.floor(walletBalance / 50) * 50
+                            ) -
+                              Math.ceil(
+                                parseFloat(packageDetails.min_amount) / 50
+                              ) *
+                                50)) *
+                          100
+                        }%, #475569 ${
+                          ((investmentAmount -
+                            Math.ceil(
+                              parseFloat(packageDetails.min_amount) / 50
+                            ) *
+                              50) /
+                            (Math.min(
+                              Math.floor(getEffectiveMaxAmount() / 50) * 50,
+                              Math.floor(walletBalance / 50) * 50
+                            ) -
+                              Math.ceil(
+                                parseFloat(packageDetails.min_amount) / 50
+                              ) *
+                                50)) *
+                          100
+                        }%, #475569 100%)`,
+                      }}
+                    />
+                    <div className="flex justify-between text-xs text-gray-400 mt-2">
+                      <span>
+                        {Math.ceil(parseFloat(packageDetails.min_amount) / 50) *
+                          50}{" "}
+                        USDT
+                      </span>
+                      <span>
+                        {Math.min(
+                          Math.floor(getEffectiveMaxAmount() / 50) * 50,
+                          Math.floor(walletBalance / 50) * 50
+                        )}{" "}
+                        USDT
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Quick Select Buttons */}
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      Math.ceil(parseFloat(packageDetails.min_amount) / 50) *
+                        50,
+                      500,
+                      1000,
+                      2000,
+                    ]
+                      .filter(
+                        (amount) =>
+                          amount >= parseFloat(packageDetails.min_amount) &&
+                          amount <= getEffectiveMaxAmount() &&
+                          amount <= walletBalance
+                      )
+                      .map((amount) => (
+                        <button
+                          key={amount}
+                          onClick={() => setInvestmentAmount(amount.toString())}
+                          className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
+                            parseFloat(investmentAmount) === amount
+                              ? "bg-yellow-400 text-slate-900"
+                              : "bg-slate-700 text-gray-300 hover:bg-slate-600"
+                          }`}
+                        >
+                          {amount}
+                        </button>
+                      ))}
+                  </div>
+
+                  <p className="text-gray-500 text-xs flex items-center gap-1">
                     <span className="text-blue-400">ⓘ</span>
-                    Min: {packageDetails.min_amount} USDT | Max:{" "}
-                    {packageDetails.max_amount || 50000} USDT
+                    Amounts are in multiples of 50 USDT
                   </p>
                 </div>
               </div>
@@ -333,9 +443,29 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Expected ROI:</span>
+                    <span className="text-gray-400">
+                      Activation Fee ({packageDetails.commission_percentage}%):
+                    </span>
+                    <span className="text-yellow-400 font-bold">
+                      {activationFee} USDT
+                    </span>
+                  </div>
+                  <div className="h-px bg-slate-600 my-2"></div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-300 font-semibold">
+                      Total Payable:
+                    </span>
+                    <span className="text-white font-bold text-lg">
+                      {totalAmount} USDT
+                    </span>
+                  </div>
+                  <div className="h-px bg-slate-600 my-2"></div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">
+                      Expected ROI (Annual):
+                    </span>
                     <span className="text-green-400 font-bold">
-                      {expectedROI} USDT/year
+                      {expectedROI} USDT
                     </span>
                   </div>
                   <div className="flex justify-between items-center">

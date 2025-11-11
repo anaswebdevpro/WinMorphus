@@ -47,20 +47,32 @@ const Deposit = () => {
   const getColorScheme = (network) => {
     const colorSchemes = {
       TRC20: {
-        color: "from-teal-600 to-teal-700",
-        bgColor: "bg-teal-600",
+        gradient: "from-teal-900 to-slate-900",
+        border: "border-teal-500",
+        iconBg: "bg-teal-700/30",
+        iconColor: "text-teal-400",
+        badgeBg: "bg-teal-500/20",
+        badgeBorder: "border-teal-400",
         icon: TrendingUp,
       },
       BEP20: {
-        color: "from-purple-600 to-purple-700",
-        bgColor: "bg-purple-600",
+        gradient: "from-purple-900 to-slate-900",
+        border: "border-purple-500",
+        iconBg: "bg-purple-700/30",
+        iconColor: "text-purple-400",
+        badgeBg: "bg-purple-500/20",
+        badgeBorder: "border-purple-400",
         icon: Wallet,
       },
     };
     return (
       colorSchemes[network] || {
-        color: "from-gray-600 to-gray-700",
-        bgColor: "bg-gray-600",
+        gradient: "from-gray-900 to-slate-900",
+        border: "border-gray-500",
+        iconBg: "bg-gray-700/30",
+        iconColor: "text-gray-400",
+        badgeBg: "bg-gray-500/20",
+        badgeBorder: "border-gray-400",
         icon: Wallet,
       }
     );
@@ -121,11 +133,13 @@ const Deposit = () => {
                   <div
                     key={method.id}
                     onClick={() => handleNavigate(method.network)}
-                    className={`bg-linear-to-br ${colors.color} rounded-2xl p-8 shadow-lg relative overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}
+                    className={`bg-linear-to-br ${colors.gradient} border-2 ${colors.border} rounded-2xl p-8 shadow-lg relative overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}
                   >
                     {method.is_recommended && (
                       <div className="absolute top-4 left-4">
-                        <span className="bg-black/40 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                        <span
+                          className={`${colors.badgeBg} border ${colors.badgeBorder} text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider`}
+                        >
                           RECOMMENDED
                         </span>
                       </div>
@@ -138,10 +152,10 @@ const Deposit = () => {
                         </h3>
                       </div>
                       <div
-                        className={`${colors.bgColor} p-3 rounded-full flex items-center justify-center`}
+                        className={`${colors.iconBg} p-3 rounded-lg flex items-center justify-center`}
                       >
                         {React.createElement(colors.icon, {
-                          className: "w-6 h-6 text-white",
+                          className: `w-6 h-6 ${colors.iconColor}`,
                         })}
                       </div>
                     </div>

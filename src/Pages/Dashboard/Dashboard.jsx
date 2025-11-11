@@ -19,6 +19,7 @@ import { useAuth } from "../../Context/UseAuth";
 import { apiRequest } from "../../Services/Api";
 import { DASHBOARD_DATA } from "../../Api/Api_variables";
 import { useNavigate } from "react-router-dom";
+import RoiChart from "./RoiChart";
 
 const Dashboard = () => {
   const { token } = useAuth();
@@ -101,6 +102,8 @@ const Dashboard = () => {
       };
 
   // Extract network data - handle both direct array and nested structure
+  // COMMENTED OUT - Not needed since network tree is replaced with RoiChart
+  /*
   const networkData = React.useMemo(() => {
     if (!dashboardData) return [];
     if (!dashboardData.network_data) return [];
@@ -131,6 +134,7 @@ const Dashboard = () => {
 
     return [];
   }, [dashboardData]);
+  */
   const roiEarningsHistory = dashboardData?.roi_earnings_history || [];
   const commissionEarningsHistory =
     dashboardData?.commission_earnings_history || [];
@@ -196,7 +200,7 @@ const Dashboard = () => {
         </div>
 
         {/* Alert Banner */}
-        
+
         {!dashboardData?.is_activated && (
           <div className="bg-yellow-400 text-slate-900 p-4 rounded-lg mb-6 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5" />
@@ -213,12 +217,12 @@ const Dashboard = () => {
           {loading ? (
             <ShimmerLoader />
           ) : (
-            <div className="bg-gradient-to-br from-purple-600 to-purple-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
-                <Package className="w-4 h-4" />
+            <div className="bg-linear-to-br from-purple-900 to-slate-900 border-2 border-purple-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-purple-700/30 px-3 py-1 rounded-lg">
+                <Package className="w-4 h-4 text-purple-400" />
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <Package className="w-5 h-5" />
+                <Package className="w-5 h-5 text-purple-400" />
                 <p className="text-sm font-medium opacity-90">
                   Current Package
                 </p>
@@ -234,12 +238,12 @@ const Dashboard = () => {
           {loading ? (
             <ShimmerLoader />
           ) : (
-            <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
-                <TrendingUp className="w-4 h-4" />
+            <div className="bg-linear-to-br from-blue-900 to-slate-900 border-2 border-blue-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-blue-700/30 px-3 py-1 rounded-lg">
+                <TrendingUp className="w-4 h-4 text-blue-400" />
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-5 h-5" />
+                <TrendingUp className="w-5 h-5 text-blue-400" />
                 <p className="text-sm font-medium opacity-90">
                   Total Investment
                 </p>
@@ -254,12 +258,12 @@ const Dashboard = () => {
           {loading ? (
             <ShimmerLoader />
           ) : (
-            <div className="bg-gradient-to-br from-green-600 to-green-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
-                <DollarSign className="w-4 h-4" />
+            <div className="bg-linear-to-br from-green-900 to-slate-900 border-2 border-green-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-green-700/30 px-3 py-1 rounded-lg">
+                <DollarSign className="w-4 h-4 text-green-400" />
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="w-5 h-5" />
+                <DollarSign className="w-5 h-5 text-green-400" />
                 <p className="text-sm font-medium opacity-90">
                   Current ROI Earned
                 </p>
@@ -272,12 +276,12 @@ const Dashboard = () => {
           {loading ? (
             <ShimmerLoader />
           ) : (
-            <div className="bg-gradient-to-br from-orange-600 to-orange-700 p-6 rounded-lg shadow-lg relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full">
-                <Users className="w-4 h-4" />
+            <div className="bg-linear-to-br from-orange-900 to-slate-900 border-2 border-orange-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-orange-700/30 px-3 py-1 rounded-lg">
+                <Users className="w-4 h-4 text-orange-400" />
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <Users className="w-5 h-5" />
+                <Users className="w-5 h-5 text-orange-400" />
                 <p className="text-sm font-medium opacity-90">
                   Total Commission
                 </p>
@@ -401,8 +405,8 @@ const Dashboard = () => {
 
         {/* Network Section - Two Cards Side by Side */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Network Tree Visualization Card */}
-          <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
+          {/* Network Tree Visualization Card - COMMENTED OUT */}
+          {/* <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
             <div className="flex flex-col items-center">
               <div className="w-24 h-24 rounded-full bg-purple-600 flex items-center justify-center mb-3">
                 <Users className="w-12 h-12 text-white" />
@@ -413,10 +417,8 @@ const Dashboard = () => {
                 </p>
               </div>
 
-              {/* Connection Line */}
               <div className="w-0.5 h-12 bg-gray-300 mb-4"></div>
 
-              {/* Team Members */}
               <div
                 className={`flex ${
                   networkData && networkData.length > 1 ? "gap-12" : "gap-4"
@@ -449,54 +451,84 @@ const Dashboard = () => {
                 )}
               </div>
             </div>
+            <div> hii </div>
+          </div> */}
+
+          {/* ROI Chart Component */}
+          <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
+            <RoiChart />
           </div>
 
           {/* Network Statistics Card */}
-          <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-blue-600 rounded-lg text-white">
-                <div className="flex items-center gap-3">
-                  <Users className="w-5 h-5" />
-                  <span className="text-sm font-semibold uppercase tracking-wide">
-                    DIRECT REFERRALS:
+          <div className="bg-slate-800 text-white rounded-lg shadow-lg border border-slate-700">
+            <div className="p-6 border-b border-slate-700">
+              <h3 className="text-xl font-semibold text-white">
+                Network Statistics
+              </h3>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="bg-linear-to-br from-blue-900 to-slate-900 border-2 border-blue-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-700/30 p-2 rounded-lg">
+                      <Users className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-300">
+                      Direct Referrals
+                    </span>
+                  </div>
+                  <span className="text-3xl font-bold text-white">
+                    {networkStats.directReferrals}
                   </span>
                 </div>
-                <span className="text-3xl font-bold text-red-500">
-                  {networkStats.directReferrals}
-                </span>
               </div>
-              <div className="flex items-center justify-between p-4 bg-green-600 rounded-lg text-white">
-                <div className="flex items-center gap-3">
-                  <Users className="w-5 h-5" />
-                  <span className="text-sm font-semibold uppercase tracking-wide">
-                    TOTAL TEAM SIZE:
+
+              <div className="bg-linear-to-br from-green-900 to-slate-900 border-2 border-green-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-700/30 p-2 rounded-lg">
+                      <Users className="w-5 h-5 text-green-400" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-300">
+                      Total Team Size
+                    </span>
+                  </div>
+                  <span className="text-3xl font-bold text-white">
+                    {networkStats.totalTeamSize}
                   </span>
                 </div>
-                <span className="text-3xl font-bold text-red-500">
-                  {networkStats.totalTeamSize}
-                </span>
               </div>
-              <div className="flex items-center justify-between p-4 bg-orange-500 rounded-lg text-white">
-                <div className="flex items-center gap-3">
-                  <Users className="w-5 h-5" />
-                  <span className="text-sm font-semibold uppercase tracking-wide">
-                    ACTIVE MEMBERS:
+
+              <div className="bg-linear-to-br from-orange-900 to-slate-900 border-2 border-orange-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-orange-700/30 p-2 rounded-lg">
+                      <Users className="w-5 h-5 text-orange-400" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-300">
+                      Active Members
+                    </span>
+                  </div>
+                  <span className="text-3xl font-bold text-white">
+                    {networkStats.activeMembers}
                   </span>
                 </div>
-                <span className="text-3xl font-bold text-red-500">
-                  {networkStats.activeMembers}
-                </span>
               </div>
-              <div className="flex items-center justify-between p-4 bg-purple-600 rounded-lg text-white">
-                <div className="flex items-center gap-3">
-                  <DollarSign className="w-5 h-5" />
-                  <span className="text-sm font-semibold uppercase tracking-wide">
-                    TEAM INVESTMENT:
+
+              <div className="bg-linear-to-br from-purple-900 to-slate-900 border-2 border-purple-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-purple-700/30 p-2 rounded-lg">
+                      <DollarSign className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-300">
+                      Team Investment
+                    </span>
+                  </div>
+                  <span className="text-2xl font-bold text-green-400">
+                    {networkStats.teamInvestment}
                   </span>
                 </div>
-                <span className="text-2xl font-bold text-green-400">
-                  {networkStats.teamInvestment}
-                </span>
               </div>
             </div>
           </div>
@@ -534,13 +566,13 @@ const Dashboard = () => {
                         className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
                       >
                         <td className="text-left py-3 px-2 text-sm text-gray-300">
-                          {formatDate(entry.created_at)}
+                          {formatDate(entry.date)}
                         </td>
                         <td className="text-left py-3 px-2 text-sm font-semibold text-green-400">
-                          {entry.amount || entry.roi || "N/A"} USDT
+                          {entry.amount || "N/A"} USDT
                         </td>
                         <td className="text-left py-3 px-2 text-sm text-gray-300">
-                          {entry.package_name || entry.package || "N/A"}
+                          { entry.package || "N/A"}
                         </td>
                       </tr>
                     ))
@@ -633,7 +665,7 @@ const Dashboard = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Available Wallet Balance */}
-            <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 p-4 rounded-lg flex items-center justify-between">
+            <div className="bg-linear-to-br from-cyan-900 to-slate-900 border-2 border-cyan-500 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium opacity-90 mb-1">
                   Available Wallet Balance
@@ -643,11 +675,13 @@ const Dashboard = () => {
                   USDT
                 </p>
               </div>
-              <Wallet className="w-8 h-8 opacity-50" />
+              <div className="bg-cyan-700/30 p-2 rounded-lg">
+                <Wallet className="w-8 h-8 text-cyan-400" />
+              </div>
             </div>
 
             {/* Main Wallet Balance */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 rounded-lg flex items-center justify-between">
+            <div className="bg-linear-to-br from-blue-900 to-slate-900 border-2 border-blue-500 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium opacity-90 mb-1">
                   Main Wallet Balance
@@ -656,20 +690,22 @@ const Dashboard = () => {
                   {dashboardData?.wallet_balances?.main_balance || "0.00"} USDT
                 </p>
               </div>
-              <Building2 className="w-8 h-8 opacity-50" />
+              <div className="bg-blue-700/30 p-2 rounded-lg">
+                <Building2 className="w-8 h-8 text-blue-400" />
+              </div>
             </div>
 
             {/* Action Buttons - Vertical Stack */}
             <div className="flex flex-col gap-4">
               <button
-                className="bg-red-600 hover:bg-red-700 text-white p-4 rounded-lg font-semibold text-base transition-colors flex items-center justify-center gap-2"
+                className="bg-linear-to-br from-red-900 to-red-600 hover:from-red-800 hover:to-red-500 border-2 border-red-500 text-white p-4 rounded-lg font-semibold text-base transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 onClick={() => navigate("/withdraw")}
               >
                 <ArrowUpFromLine className="w-5 h-5" />
                 Withdraw
               </button>
               <button
-                className="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-semibold text-base transition-colors flex items-center justify-center gap-2"
+                className="bg-linear-to-br from-green-900 to-green-600 hover:from-green-800 hover:to-green-500 border-2 border-green-500 text-white p-4 rounded-lg font-semibold text-base transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 onClick={() => navigate("/deposit")}
               >
                 <ArrowDownToLine className="w-5 h-5" />
