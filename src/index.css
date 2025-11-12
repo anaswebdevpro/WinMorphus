@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
+/* Custom Scrollbar Styles - Dark Theme */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #64748b #334155;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #334155;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #64748b;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 /* Custom Slider Styles */
 input[type="range"].slider-thumb {
   -webkit-appearance: none;

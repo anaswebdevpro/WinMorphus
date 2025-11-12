@@ -17,15 +17,28 @@ import NetworkTree from "./NetworkTree";
 /**
  * StatCard Component: Displays a single statistic card with a title, value, and icon.
  */
-const StatCard = ({ title, value, icon, bgColor }) => (
-  <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-yellow-500/50 transition-all">
-    <div className="flex items-start justify-between">
-      <div>
-        <p className="text-gray-400 text-sm font-medium mb-2">{title}</p>
-        <p className="text-3xl font-bold text-white">{value}</p>
+const StatCard = ({
+  title,
+  value,
+  icon,
+  gradient,
+  border,
+  iconBg,
+  iconColor,
+}) => (
+  <div
+    className={`bg-linear-to-br ${gradient} border-2 ${border} rounded-lg p-6 shadow-lg hover:shadow-xl transition-all relative overflow-hidden`}
+  >
+    <div className="absolute top-4 right-4">
+      <div className={`${iconBg} p-3 rounded-lg`}>
+        {React.cloneElement(icon, { className: `w-6 h-6 ${iconColor}` })}
       </div>
-      <div className={`${bgColor} p-3 rounded-lg`}>{icon}</div>
     </div>
+    <div className="flex items-center gap-2 mb-2">
+      {React.cloneElement(icon, { className: `w-5 h-5 ${iconColor}` })}
+      <p className="text-sm font-medium opacity-90">{title}</p>
+    </div>
+    <h2 className="text-3xl font-bold text-white">{value}</h2>
   </div>
 );
 
@@ -140,38 +153,56 @@ const Network = () => {
               <StatCard
                 title="Direct Referrals"
                 value={networkStats.directs}
-                icon={<Users className="w-6 h-6 text-blue-400" />}
-                bgColor="bg-blue-600/30"
+                icon={<Users />}
+                gradient="from-blue-900 to-slate-900"
+                border="border-blue-500"
+                iconBg="bg-blue-700/30"
+                iconColor="text-blue-400"
               />
               <StatCard
                 title="Total Team"
                 value={networkStats.totalTeam}
-                icon={<TrendingUp className="w-6 h-6 text-green-400" />}
-                bgColor="bg-green-600/30"
+                icon={<TrendingUp />}
+                gradient="from-green-900 to-slate-900"
+                border="border-green-500"
+                iconBg="bg-green-700/30"
+                iconColor="text-green-400"
               />
               <StatCard
                 title="Active Team"
                 value={networkStats.activeTeam}
-                icon={<UserCheck className="w-6 h-6 text-yellow-400" />}
-                bgColor="bg-yellow-600/30"
+                icon={<UserCheck />}
+                gradient="from-yellow-900 to-slate-900"
+                border="border-yellow-500"
+                iconBg="bg-yellow-700/30"
+                iconColor="text-yellow-400"
               />
               <StatCard
                 title="Team Business"
                 value={`$${networkStats.teamBusiness}`}
-                icon={<DollarSign className="w-6 h-6 text-purple-400" />}
-                bgColor="bg-purple-600/30"
+                icon={<DollarSign />}
+                gradient="from-purple-900 to-slate-900"
+                border="border-purple-500"
+                iconBg="bg-purple-700/30"
+                iconColor="text-purple-400"
               />
               <StatCard
                 title="Total Investment"
                 value={`$${networkStats.totalInvestment}`}
-                icon={<Briefcase className="w-6 h-6 text-indigo-400" />}
-                bgColor="bg-indigo-600/30"
+                icon={<Briefcase />}
+                gradient="from-indigo-900 to-slate-900"
+                border="border-indigo-500"
+                iconBg="bg-indigo-700/30"
+                iconColor="text-indigo-400"
               />
               <StatCard
                 title="Active Investment"
                 value={`$${networkStats.activeInvestment}`}
-                icon={<Activity className="w-6 h-6 text-pink-400" />}
-                bgColor="bg-pink-600/30"
+                icon={<Activity />}
+                gradient="from-pink-900 to-slate-900"
+                border="border-pink-500"
+                iconBg="bg-pink-700/30"
+                iconColor="text-pink-400"
               />
             </div>
           )}

@@ -537,7 +537,7 @@ const Dashboard = () => {
         {/* Commission Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* ROI Earnings History */}
-          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg">
+          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg max-h-100 overflow-auto">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-green-600" />
               <h3 className="text-lg font-semibold">ROI Earnings History</h3>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   TrendingUp,
@@ -13,19 +14,29 @@ import { ROI_ACTIVE_INVESTMENTS } from "../../Api/Api_variables";
 import { enqueueSnackbar } from "notistack";
 
 // Reusable StatCard Component
-
 // eslint-disable-next-line no-unused-vars
-const StatCard = ({ title, value, color, icon: IconComponent, bgColor }) => (
-  <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-yellow-500/50 transition-all">
-    <div className="flex items-start justify-between">
-      <div>
-        <p className="text-gray-400 text-sm font-medium mb-2">{title}</p>
-        <p className="text-3xl font-bold text-white">{value}</p>
-      </div>
-      <div className={`${bgColor} p-3 rounded-lg`}>
-        <IconComponent className={`w-6 h-6 ${color}`} />
+const StatCard = ({
+  title,
+  value,
+  gradient,
+  border,
+  iconBg,
+  iconColor,
+  icon: IconComponent,
+}) => (
+  <div
+    className={`bg-linear-to-br ${gradient} border-2 ${border} rounded-lg p-6 shadow-lg hover:shadow-xl transition-all relative overflow-hidden`}
+  >
+    <div className="absolute top-4 right-4">
+      <div className={`${iconBg} p-3 rounded-lg`}>
+        <IconComponent className={`w-6 h-6 ${iconColor}`} />
       </div>
     </div>
+    <div className="flex items-center gap-2 mb-2">
+      <IconComponent className={`w-5 h-5 ${iconColor}`} />
+      <p className="text-sm font-medium opacity-90">{title}</p>
+    </div>
+    <h2 className="text-3xl font-bold text-white">{value}</h2>
   </div>
 );
 
@@ -101,22 +112,28 @@ const ROIEarnings = () => {
             title="Total ROI Earned"
             value={`$${stats.total_earned.toFixed(2)}`}
             icon={TrendingUp}
-            color="text-green-400"
-            bgColor="bg-green-600/30"
+            gradient="from-green-900 to-slate-900"
+            border="border-green-500"
+            iconBg="bg-green-700/30"
+            iconColor="text-green-400"
           />
           <StatCard
             title="Total Investment"
             value={`$${stats.total_invest.toFixed(2)}`}
             icon={DollarSign}
-            color="text-blue-400"
-            bgColor="bg-blue-600/30"
+            gradient="from-blue-900 to-slate-900"
+            border="border-blue-500"
+            iconBg="bg-blue-700/30"
+            iconColor="text-blue-400"
           />
           <StatCard
             title="Active Investments"
             value={stats.active_invest}
             icon={Package}
-            color="text-yellow-400"
-            bgColor="bg-yellow-600/30"
+            gradient="from-yellow-900 to-slate-900"
+            border="border-yellow-500"
+            iconBg="bg-yellow-700/30"
+            iconColor="text-yellow-400"
           />
           <StatCard
             title="ROI Percentage"
@@ -124,14 +141,16 @@ const ROIEarnings = () => {
               investments.length > 0 ? investments[0].rate_percentage : "0.00"
             }%`}
             icon={Percent}
-            color="text-purple-400"
-            bgColor="bg-purple-600/30"
+            gradient="from-purple-900 to-slate-900"
+            border="border-purple-500"
+            iconBg="bg-purple-700/30"
+            iconColor="text-purple-400"
           />
         </div>
 
         {/* Data Table */}
         <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto min-h-100">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-700 bg-slate-700/50">

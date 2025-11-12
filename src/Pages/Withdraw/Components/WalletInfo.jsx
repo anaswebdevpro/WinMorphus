@@ -72,8 +72,10 @@ const WalletInfo = () => {
           }`
         : "0.00 USDT",
       icon: Wallet,
-      bgColor: "bg-gradient-to-br from-blue-600 to-blue-700",
-      iconBgColor: "bg-blue-500/30",
+      gradient: "from-blue-900 to-slate-900",
+      border: "border-blue-500",
+      iconBg: "bg-blue-700/30",
+      iconColor: "text-blue-400",
     },
     {
       title: "Available Balance",
@@ -83,8 +85,10 @@ const WalletInfo = () => {
           }`
         : "0.00 USDT",
       icon: DollarSign,
-      bgColor: "bg-gradient-to-br from-emerald-600 to-emerald-700",
-      iconBgColor: "bg-emerald-500/30",
+      gradient: "from-green-900 to-slate-900",
+      border: "border-green-500",
+      iconBg: "bg-green-700/30",
+      iconColor: "text-green-400",
     },
     {
       title: "Total Withdrawals",
@@ -92,16 +96,20 @@ const WalletInfo = () => {
         ? `${walletInfo.total_withdrawals} USDT`
         : "0.00 USDT",
       icon: ArrowDownUp,
-      bgColor: "bg-gradient-to-br from-purple-600 to-purple-700",
-      iconBgColor: "bg-purple-500/30",
+      gradient: "from-purple-900 to-slate-900",
+      border: "border-purple-500",
+      iconBg: "bg-purple-700/30",
+      iconColor: "text-purple-400",
       subtitle: null,
     },
     {
       title: "Pending Requests",
       amount: walletInfo?.pending_requests || 0,
       icon: RefreshCw,
-      bgColor: "bg-gradient-to-br from-amber-600 to-amber-700",
-      iconBgColor: "bg-amber-500/30",
+      gradient: "from-yellow-900 to-slate-900",
+      border: "border-yellow-500",
+      iconBg: "bg-yellow-700/30",
+      iconColor: "text-yellow-400",
       subtitle: `Amount: ${walletInfo?.pending_withdrawals || 0} USDT`,
     },
   ];
@@ -115,28 +123,23 @@ const WalletInfo = () => {
           return (
             <div
               key={index}
-              className={`${card.bgColor} rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105`}
+              className={`bg-linear-to-br ${card.gradient} border-2 ${card.border} rounded-lg p-6 shadow-lg hover:shadow-xl transition-all relative overflow-hidden`}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <p className="text-white/90 text-sm font-semibold mb-2">
-                    {card.title}
-                  </p>
-                  <p className="text-2xl sm:text-3xl font-bold">
-                    {card.amount}
-                  </p>
-                  {card.subtitle && (
-                    <p className="text-white/80 text-xs mt-2">
-                      {card.subtitle}
-                    </p>
-                  )}
-                </div>
-                <div
-                  className={`${card.iconBgColor} p-3 rounded-lg backdrop-blur-sm`}
-                >
-                  <IconComponent className="w-6 h-6" />
+              <div className="absolute top-4 right-4">
+                <div className={`${card.iconBg} p-3 rounded-lg`}>
+                  <IconComponent className={`w-6 h-6 ${card.iconColor}`} />
                 </div>
               </div>
+              <div className="flex items-center gap-2 mb-2">
+                <IconComponent className={`w-5 h-5 ${card.iconColor}`} />
+                <p className="text-sm font-medium opacity-90">{card.title}</p>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">
+                {card.amount}
+              </h2>
+              {card.subtitle && (
+                <p className="text-xs opacity-75 mt-1">{card.subtitle}</p>
+              )}
             </div>
           );
         })}

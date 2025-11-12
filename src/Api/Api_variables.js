@@ -56,6 +56,8 @@ export const NETWORK_STATS = "network/stats";
 export const NETWORK_LEVEL_WISE = "network/level-wise";
 
 //Commissions Routes
+export const COMMISSION_STATISTICS = "commission/statistics";
+export const COMMISSION_EARNINGS_HISTORY = "commission/earnings-history";
 
 
 //Withdraw Routes

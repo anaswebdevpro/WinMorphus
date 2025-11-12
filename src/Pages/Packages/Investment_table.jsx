@@ -59,7 +59,7 @@ const Investment_table = () => {
       <h2 className="text-2xl font-bold text-white mb-4">Investment History</h2>
 
       {transaction.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 bg-slate-700/30 rounded-lg border border-slate-600">
+        <div className="flex flex-col items-center justify-center py-16 bg-slate-700/30 rounded-lg border border-slate-600 overflow-auto ">
           <AlertCircle className="w-16 h-16 text-gray-500 mb-4" />
           <p className="text-gray-300 text-lg font-semibold">
             No Investment History Yet
@@ -70,7 +70,7 @@ const Investment_table = () => {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-auto min-h-100 max-h-100">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-600 bg-slate-700/50">

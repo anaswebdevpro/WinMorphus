@@ -110,7 +110,7 @@ const Withdraw_table = () => {
   return (
     <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto min-h-100">
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-700 bg-slate-700/50">
