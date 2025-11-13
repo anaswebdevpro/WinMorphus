@@ -19,9 +19,13 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
 
-  const { token, user } = useAuth();
+  const { token, user, refreshUser } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
+  const PayableAmount =
+    parseFloat(investmentAmount) +
+    parseFloat(packageDetails?.commission_percentage || 0);
+ console.log("Initiating purchase with amount:", PayableAmount);
   // Fetch package details by ID
   const fetchPackageDetails = () => {
     if (!packageId || !token) return;
@@ -81,21 +85,15 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
 
     setIsPurchasing(true);
     try {
-      // console.log("Purchase Payload:", {
-      //   package_id: packageId,
-      //   amount:
-      //     parseFloat(investmentAmount || 0) +
-      //     parseFloat(packageDetails.commission_percentage || 0),
-      // });
+     console.log("Initiating purchase with amount:", PayableAmount);
       apiRequest({
         endpoint: PACKAGES_PURCHASE,
         method: "POST",
         data: {
           package_id: packageId,
-          amount:
-            parseFloat(investmentAmount || 0) +
-            parseFloat(packageDetails.commission_percentage || 0),
+          amount: PayableAmount,
         },
+
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
@@ -108,6 +106,10 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                 variant: "success",
               }
             );
+            // Update user balance in context
+
+            const newBalance = parseFloat(user.balance) - PayableAmount;
+            refreshUser({ ...user, balance: newBalance });
           } else {
             enqueueSnackbar(` ${response?.message}. ${response.error} `, {
               variant: "error",
@@ -221,7 +223,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                   <div>
                     <p className="text-white/80 text-sm">Available Balance</p>
                     <p className="text-2xl font-bold text-white">
-                      {user?.balance?.toFixed(2)} USDT
+                      {user?.balance} USDT
                     </p>
                   </div>
                 </div>
@@ -245,45 +247,9 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                     </p>
                   </div>
 
-                  {/* Quick Select Buttons */}
-                  {/* <div className="grid grid-cols-4 gap-2">
-                    {{
-                      Math.ceil(
-                        parseFloat(packageDetails.min_amount) / 50
-                      ) * 50,
-                      500,
-                      1000,
-                      2000,
-                    }
-                      .filter(
-                        (amount) =>
-                          amount >= parseFloat(packageDetails.min_amount) &&
-                          amount <= parseFloat(packageDetails.max_amount) &&
-                          amount <= parseFloat(user?.balance || 0)
-                      )
-                      .map((amount) => (
-                        <button
-                          key={amount}
-                          onClick={() =>
-                            setInvestmentAmount(amount.toString())
-                          }
-                          className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
-                            parseFloat(investmentAmount) === amount
-                              ? "bg-yellow-400 text-slate-900"
-                              : "bg-slate-700 text-gray-300 hover:bg-slate-600"
-                          }`}
-                        >
-                          {amount}
-                        </button>
-                      ))}
-                  </div> */}
-
                   {/* Slider */}
                   <div>
-                    {console.log(
-                      "Package Details for Slider:",
-                      packageDetails.min_amount
-                    )}
+                   
                     <input
                       type="range"
                       min={packageDetails.min_amount}
@@ -343,10 +309,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                     </span>
                     <span className="text-green-400 font-bold">
                       $
-                      {parseFloat(investmentAmount || 0) +
-                        parseFloat(
-                          packageDetails.commission_percentage || 0
-                        )}{" "}
+                      {PayableAmount.toFixed(2)}{" "}
                       USDT
                     </span>
                   </div>

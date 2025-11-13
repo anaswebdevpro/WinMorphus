@@ -23,6 +23,8 @@ import RoiChart from "./Components/RoiChart";
 import RankProgress from "./Components/RankProgress";
 import Leaderprogress from "./Components/Leaderprogress";
 import Investerprogress from "./Components/Investerprogress";
+import TradingView from "./Components/TradingView";
+import TradingView2 from "./Components/TradingView2";
 
 const Dashboard = () => {
   const { token } = useAuth();
@@ -390,17 +392,26 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        {/* trading View Widgets  */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg min-h-[600px] flex flex-col">
+            <TradingView2 />
+          </div>
+          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg min-h-[600px] flex flex-col">
+            <TradingView />
+          </div>
+        </div>
 
         {/* My Network Section - Title */}
         <div className="bg-slate-800 text-white p-4 rounded-lg shadow-lg mb-4 text-center relative">
-          <h2 className="text-2xl font-bold">My Network</h2>
-          <button
+          <h2 className="text-2xl font-bold">Acount Overview</h2>
+          {/* <button
             className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1 border border-blue-600 px-4 py-2 rounded-lg"
             onClick={() => navigate("/network")}
           >
             <ChevronRight className="w-4 h-4" />
             View All Network
-          </button>
+          </button> */}
         </div>
 
         {/* Network Section - Two Cards Side by Side */}
@@ -631,7 +642,7 @@ const Dashboard = () => {
                   Available Wallet Balance
                 </p>
                 <p className="text-2xl font-bold">
-                  $ {dashboardData?.user_balances?.available_walllet || "0.00"}{" "}
+                  $ {dashboardData?.user_balance?.avail_walllet || "0.00"}{" "}
                   
                 </p>
               </div>
@@ -647,7 +658,7 @@ const Dashboard = () => {
                   INCOME Wallet Balance
                 </p>
                 <p className="text-2xl font-bold">
-                 $  {dashboardData?.user_balances?.income_wallet || "0.00"} USDT
+                 $  {dashboardData?.user_balance?.income_wallet || "0.00"} USDT
                 </p>
               </div>
               <div className="bg-blue-700/30 p-2 rounded-lg">
