@@ -19,7 +19,10 @@ import { useAuth } from "../../Context/UseAuth";
 import { apiRequest } from "../../Services/Api";
 import { DASHBOARD_DATA } from "../../Api/Api_variables";
 import { useNavigate } from "react-router-dom";
-import RoiChart from "./RoiChart";
+import RoiChart from "./Components/RoiChart";
+import RankProgress from "./Components/RankProgress";
+import Leaderprogress from "./Components/Leaderprogress";
+import Investerprogress from "./Components/Investerprogress";
 
 const Dashboard = () => {
   const { token } = useAuth();
@@ -79,8 +82,7 @@ const Dashboard = () => {
         currentROI: "0 USDT",
         totalCommission: "0 USDT",
       };
-
-  const baseUrl = "https://winmorphus.billioninfotech.com";
+  const baseUrl = window.location.origin;
   const referralLink = dashboardData?.referral_link
     ? `${baseUrl}${dashboardData.referral_link}`
     : `${baseUrl}/ref/0`;
@@ -282,9 +284,7 @@ const Dashboard = () => {
               </div>
               <div className="flex items-center gap-2 mb-2">
                 <Users className="w-5 h-5 text-orange-400" />
-                <p className="text-sm font-medium opacity-90">
-                  Total Commission
-                </p>
+                <p className="text-sm font-medium opacity-90">Level Income</p>
               </div>
               <h2 className="text-2xl font-bold mb-1">
                 {stats.totalCommission}
@@ -405,58 +405,18 @@ const Dashboard = () => {
 
         {/* Network Section - Two Cards Side by Side */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Network Tree Visualization Card - COMMENTED OUT */}
-          {/* <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
-            <div className="flex flex-col items-center">
-              <div className="w-24 h-24 rounded-full bg-purple-600 flex items-center justify-center mb-3">
-                <Users className="w-12 h-12 text-white" />
-              </div>
-              <div className="bg-gray-100 px-4 py-2 rounded-lg mb-8">
-                <p className="text-sm font-medium text-gray-700">
-                  Current User
-                </p>
-              </div>
-
-              <div className="w-0.5 h-12 bg-gray-300 mb-4"></div>
-
-              <div
-                className={`flex ${
-                  networkData && networkData.length > 1 ? "gap-12" : "gap-4"
-                } justify-center flex-wrap`}
-              >
-                {networkData && networkData.length > 0 ? (
-                  networkData.slice(0, 2).map((member) => (
-                    <div
-                      key={member.id || Math.random()}
-                      className="flex flex-col items-center"
-                    >
-                      <div className="w-20 h-20 rounded-full bg-orange-500 flex items-center justify-center mb-3">
-                        <Users className="w-10 h-10 text-white" />
-                      </div>
-                      <div className="bg-gray-100 px-3 py-1 rounded mb-2">
-                        <p className="text-xs font-medium text-gray-700 truncate max-w-[120px]">
-                          {member.email?.substring(0, 15)}...
-                        </p>
-                      </div>
-                      <p className="text-xs text-gray-600 truncate max-w-[120px]">
-                        {member.name || "Team Member"}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Level: {member.level || "N/A"}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-gray-400">No team members yet</p>
-                )}
-              </div>
-            </div>
-            <div> hii </div>
-          </div> */}
+          {/* {progrss bar cards } */}
+          <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
+            <RankProgress />
+          </div>
+          <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
+            <Investerprogress data={dashboardData?.leader_info} />
+            {/* <Leaderprogress /> */}
+          </div>
 
           {/* ROI Chart Component */}
           <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
-            <RoiChart />
+            <RoiChart stats={dashboardData} />
           </div>
 
           {/* Network Statistics Card */}
@@ -572,7 +532,7 @@ const Dashboard = () => {
                           {entry.amount || "N/A"} USDT
                         </td>
                         <td className="text-left py-3 px-2 text-sm text-gray-300">
-                          { entry.package || "N/A"}
+                          {entry.package || "N/A"}
                         </td>
                       </tr>
                     ))
@@ -671,8 +631,8 @@ const Dashboard = () => {
                   Available Wallet Balance
                 </p>
                 <p className="text-2xl font-bold">
-                  {dashboardData?.wallet_balances?.available_balance || "0.00"}{" "}
-                  USDT
+                  $ {dashboardData?.user_balances?.available_walllet || "0.00"}{" "}
+                  
                 </p>
               </div>
               <div className="bg-cyan-700/30 p-2 rounded-lg">
@@ -684,10 +644,10 @@ const Dashboard = () => {
             <div className="bg-linear-to-br from-blue-900 to-slate-900 border-2 border-blue-500 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium opacity-90 mb-1">
-                  Main Wallet Balance
+                  INCOME Wallet Balance
                 </p>
                 <p className="text-2xl font-bold">
-                  {dashboardData?.wallet_balances?.main_balance || "0.00"} USDT
+                 $  {dashboardData?.user_balances?.income_wallet || "0.00"} USDT
                 </p>
               </div>
               <div className="bg-blue-700/30 p-2 rounded-lg">
@@ -715,13 +675,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Overview Button */}
-        <div className="mt-6 flex justify-end">
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-slate-900 px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2">
-            Overview
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
+    
       </div>
     </div>
   );

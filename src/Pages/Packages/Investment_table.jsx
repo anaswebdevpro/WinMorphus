@@ -127,7 +127,7 @@ const Investment_table = () => {
                     </div>
                   </td>
                   <td className="py-4 px-4 text-cyan-400 font-medium">
-                    {item.rate_percentage}%
+                    ${item.rate_percentage}
                   </td>
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-2 text-gray-300">

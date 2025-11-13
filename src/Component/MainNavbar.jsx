@@ -23,7 +23,7 @@ const MainNavbar = () => {
   ];
 
   const isActive = (path) => location.pathname === path;
-
+ console.log("user in navbar:", user);
   return (
     <nav className="bg-[#0a1628] px-4 sm:px-6 py-3 sticky top-0 z-50 shadow-lg border-b border-slate-800">
       <div className="flex items-center justify-between max-w-7xl mx-auto">

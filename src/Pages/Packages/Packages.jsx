@@ -236,7 +236,7 @@ const Packages = () => {
                       <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
                         <span className="text-sm font-semibold text-gray-400 flex items-center gap-2">
                           <TrendingUp className="w-4 h-4 text-green-400" />
-                          ROI P.A.
+                          ROI Monthly
                         </span>
                         <span className="text-green-400 font-bold">
                           {pkg.monthly_roi || "N/A"}%
@@ -249,7 +249,7 @@ const Packages = () => {
                           Activation Fee
                         </span>
                         <span className="text-yellow-400 font-bold">
-                          {pkg.commission_percentage || "0"}%
+                         $ {pkg.commission_percentage || "0"}
                         </span>
                       </div>
                     </div>
@@ -301,7 +301,7 @@ const Packages = () => {
         {/* Commission Structure */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Advisor Commission */}
-          <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+          {/* <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
             <div className="bg-linear-to-r from-green-600 to-emerald-600 text-white p-6">
               <h3 className="text-xl font-bold flex items-center gap-2">
                 <TrendingUp className="w-6 h-6" />
@@ -341,10 +341,10 @@ const Packages = () => {
                 purchase
               </p>
             </div>
-          </div>
+          </div> */}
 
           {/* Franchise Commission */}
-          <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+          {/* <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
             <div className="bg-linear-to-r from-blue-600 to-indigo-600 text-white p-6">
               <h3 className="text-lg font-bold">FRANCHISE</h3>
             </div>
@@ -396,7 +396,7 @@ const Packages = () => {
                   : "Contact support"}
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

@@ -8,22 +8,18 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
-import {
-  PACKAGES_URL,
-  PACKAGES_WALLET_BALANCE,
-  PACKAGES_PURCHASE,
-} from "../../Api/Api_variables";
+import { PACKAGES_URL, PACKAGES_PURCHASE } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { useSnackbar } from "notistack";
 import ShimmerLoader from "../../Component/ui/ShimmerLoader";
 
 const PurchasePackage = ({ isOpen, onClose, packageId }) => {
   const [packageDetails, setPackageDetails] = useState(null);
-  const [walletBalance, setWalletBalance] = useState(0);
   const [investmentAmount, setInvestmentAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
-  const { token } = useAuth();
+
+  const { token, user } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
   // Fetch package details by ID
@@ -69,37 +65,6 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
     }
   };
 
-  // Fetch wallet balance
-  const fetchWalletBalance = () => {
-    if (!token) return;
-
-    try {
-      apiRequest({
-        endpoint: PACKAGES_WALLET_BALANCE,
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((response) => {
-          console.log("Wallet Balance Response:", response);
-
-          // Handle different response structures
-          const balance = response.data?.balance || response.balance || 0;
-          setWalletBalance(parseFloat(balance));
-        })
-        .catch((error) => {
-          console.error("Failed to fetch wallet balance:", error);
-          enqueueSnackbar("Failed to fetch wallet balance: " + error.message, {
-            variant: "error",
-          });
-        });
-    } catch (error) {
-      console.error("Failed to fetch wallet balance:", error);
-      enqueueSnackbar("Failed to fetch wallet balance. Please try again.", {
-        variant: "error",
-      });
-    }
-  };
-
   // Handle purchase
   const handlePurchase = () => {
     if (!token || !packageDetails) return;
@@ -114,48 +79,40 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
       return;
     }
 
-    if (amount < parseFloat(packageDetails.min_amount)) {
-      enqueueSnackbar(
-        `Minimum investment is ${packageDetails.min_amount} USDT`,
-        { variant: "error" }
-      );
-      return;
-    }
-
-    const effectiveMaxAmount = getEffectiveMaxAmount();
-    if (amount > effectiveMaxAmount) {
-      enqueueSnackbar(`Maximum investment is ${effectiveMaxAmount} USDT`, {
-        variant: "error",
-      });
-      return;
-    }
-
-    if (amount > walletBalance) {
-      enqueueSnackbar("Insufficient wallet balance", { variant: "error" });
-      return;
-    }
-
     setIsPurchasing(true);
     try {
+      // console.log("Purchase Payload:", {
+      //   package_id: packageId,
+      //   amount:
+      //     parseFloat(investmentAmount || 0) +
+      //     parseFloat(packageDetails.commission_percentage || 0),
+      // });
       apiRequest({
         endpoint: PACKAGES_PURCHASE,
         method: "POST",
         data: {
           package_id: packageId,
-          amount: amount,
+          amount:
+            parseFloat(investmentAmount || 0) +
+            parseFloat(packageDetails.commission_percentage || 0),
         },
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
           console.log("Purchase Response:", response);
           setIsPurchasing(false);
-
-          enqueueSnackbar(
-            response?.message || "Package purchased successfully!",
-            {
-              variant: "success",
-            }
-          );
+          if (response.success === true) {
+            enqueueSnackbar(
+              response?.message || "Package purchased successfully!",
+              {
+                variant: "success",
+              }
+            );
+          } else {
+            enqueueSnackbar(` ${response?.message}. ${response.error} `, {
+              variant: "error",
+            });
+          }
 
           // Reset and close
           setInvestmentAmount("");
@@ -181,48 +138,9 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
   useEffect(() => {
     if (isOpen && packageId) {
       fetchPackageDetails();
-      fetchWalletBalance();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, packageId]);
-
-  // Get effective max amount (use 50000 if max_amount is 0 for unlimited packages)
-  const getEffectiveMaxAmount = () => {
-    if (!packageDetails) return 50000;
-    const maxAmount = parseFloat(packageDetails.max_amount);
-    return maxAmount > 0 ? maxAmount : 50000;
-  };
-
-  // Calculate expected ROI and remaining balance
-  const calculateValues = () => {
-    const amount = parseFloat(investmentAmount) || 0;
-    const rate = parseFloat(packageDetails?.rate_percentage || 0);
-    const commissionRate = parseFloat(
-      packageDetails?.commission_percentage || 0
-    );
-
-    const expectedROI = (amount * rate) / 100;
-    const activationFee = (amount * commissionRate) / 100;
-    const totalAmount = amount + activationFee;
-    const remainingBalance = walletBalance - totalAmount;
-
-    return {
-      expectedROI: expectedROI.toFixed(2),
-      activationFee: activationFee.toFixed(2),
-      totalAmount: totalAmount.toFixed(2),
-      remainingBalance: remainingBalance.toFixed(2),
-    };
-  };
-
-  const { expectedROI, activationFee, totalAmount, remainingBalance } =
-    packageDetails
-      ? calculateValues()
-      : {
-          expectedROI: 0,
-          activationFee: 0,
-          totalAmount: 0,
-          remainingBalance: 0,
-        };
 
   if (!isOpen) return null;
 
@@ -265,14 +183,13 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                   <div className="flex justify-between">
                     <span className="text-gray-400">Rate:</span>
                     <span className="text-green-400 font-semibold">
-                      {packageDetails.formatted_rate ||
-                        `${packageDetails.rate_percentage}% P.A.`}
+                      {`${packageDetails?.monthly_roi}% Monthly`}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Commission:</span>
+                    <span className="text-gray-400">Activation Fee:</span>
                     <span className="text-yellow-400 font-semibold">
-                      {packageDetails.commission_percentage}%
+                      $ {packageDetails.commission_percentage}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -280,8 +197,11 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                     <span className="text-cyan-400 font-semibold">
                       {packageDetails.formatted_range ||
                         `${packageDetails.min_amount} - ${
-                          packageDetails.max_amount || "∞"
-                        } USDT`}
+                          packageDetails.max_amount === 0 ||
+                          packageDetails.max_amount === "0.00"
+                            ? "Onwards"
+                            : packageDetails.max_amount
+                        } `}
                     </span>
                   </div>
                 </div>
@@ -301,7 +221,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                   <div>
                     <p className="text-white/80 text-sm">Available Balance</p>
                     <p className="text-2xl font-bold text-white">
-                      {walletBalance.toFixed(2)} USDT
+                      {user?.balance?.toFixed(2)} USDT
                     </p>
                   </div>
                 </div>
@@ -325,91 +245,28 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                     </p>
                   </div>
 
-                  {/* Slider */}
-                  <div>
-                    <input
-                      type="range"
-                      min={
-                        Math.ceil(parseFloat(packageDetails.min_amount) / 50) *
-                        50
-                      }
-                      max={Math.min(
-                        Math.floor(getEffectiveMaxAmount() / 50) * 50,
-                        Math.floor(walletBalance / 50) * 50
-                      )}
-                      step="50"
-                      value={investmentAmount || packageDetails.min_amount}
-                      onChange={(e) => setInvestmentAmount(e.target.value)}
-                      className="w-full h-2 bg-slate-600 rounded-lg appearance-none cursor-pointer slider-thumb"
-                      style={{
-                        background: `linear-gradient(to right, #facc15 0%, #facc15 ${
-                          ((investmentAmount -
-                            Math.ceil(
-                              parseFloat(packageDetails.min_amount) / 50
-                            ) *
-                              50) /
-                            (Math.min(
-                              Math.floor(getEffectiveMaxAmount() / 50) * 50,
-                              Math.floor(walletBalance / 50) * 50
-                            ) -
-                              Math.ceil(
-                                parseFloat(packageDetails.min_amount) / 50
-                              ) *
-                                50)) *
-                          100
-                        }%, #475569 ${
-                          ((investmentAmount -
-                            Math.ceil(
-                              parseFloat(packageDetails.min_amount) / 50
-                            ) *
-                              50) /
-                            (Math.min(
-                              Math.floor(getEffectiveMaxAmount() / 50) * 50,
-                              Math.floor(walletBalance / 50) * 50
-                            ) -
-                              Math.ceil(
-                                parseFloat(packageDetails.min_amount) / 50
-                              ) *
-                                50)) *
-                          100
-                        }%, #475569 100%)`,
-                      }}
-                    />
-                    <div className="flex justify-between text-xs text-gray-400 mt-2">
-                      <span>
-                        {Math.ceil(parseFloat(packageDetails.min_amount) / 50) *
-                          50}{" "}
-                        USDT
-                      </span>
-                      <span>
-                        {Math.min(
-                          Math.floor(getEffectiveMaxAmount() / 50) * 50,
-                          Math.floor(walletBalance / 50) * 50
-                        )}{" "}
-                        USDT
-                      </span>
-                    </div>
-                  </div>
-
                   {/* Quick Select Buttons */}
-                  <div className="grid grid-cols-4 gap-2">
-                    {[
-                      Math.ceil(parseFloat(packageDetails.min_amount) / 50) *
-                        50,
+                  {/* <div className="grid grid-cols-4 gap-2">
+                    {{
+                      Math.ceil(
+                        parseFloat(packageDetails.min_amount) / 50
+                      ) * 50,
                       500,
                       1000,
                       2000,
-                    ]
+                    }
                       .filter(
                         (amount) =>
                           amount >= parseFloat(packageDetails.min_amount) &&
-                          amount <= getEffectiveMaxAmount() &&
-                          amount <= walletBalance
+                          amount <= parseFloat(packageDetails.max_amount) &&
+                          amount <= parseFloat(user?.balance || 0)
                       )
                       .map((amount) => (
                         <button
                           key={amount}
-                          onClick={() => setInvestmentAmount(amount.toString())}
+                          onClick={() =>
+                            setInvestmentAmount(amount.toString())
+                          }
                           className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                             parseFloat(investmentAmount) === amount
                               ? "bg-yellow-400 text-slate-900"
@@ -419,6 +276,37 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                           {amount}
                         </button>
                       ))}
+                  </div> */}
+
+                  {/* Slider */}
+                  <div>
+                    {console.log(
+                      "Package Details for Slider:",
+                      packageDetails.min_amount
+                    )}
+                    <input
+                      type="range"
+                      min={packageDetails.min_amount}
+                      max={
+                        packageDetails.max_amount === 0 ||
+                        packageDetails.max_amount === "0.00"
+                          ? 100000
+                          : packageDetails.max_amount
+                      }
+                      step="50"
+                      value={investmentAmount}
+                      onChange={(e) => setInvestmentAmount(e.target.value)}
+                      className="w-full h-2 bg-slate-600 rounded-lg appearance-none cursor-pointer slider-thumb"
+                    />
+                    <div className="flex justify-between text-xs text-gray-400 mt-2">
+                      <span>{packageDetails.min_amount} USDT</span>
+                      <span>
+                        {packageDetails.max_amount === "0.00"
+                          ? "Onwards"
+                          : packageDetails.max_amount}{" "}
+                        USDT
+                      </span>
+                    </div>
                   </div>
 
                   <p className="text-gray-500 text-xs flex items-center gap-1">
@@ -428,56 +316,38 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                 </div>
               </div>
 
-              {/* Purchase Summary */}
+              {/* Payment Summary */}
               <div>
-                <div className="flex items-center gap-2 text-purple-400 mb-4">
+                <div className="flex items-center gap-2 text-green-400 mb-4">
                   <TrendingUp className="w-5 h-5" />
-                  <h3 className="font-semibold">Purchase Summary</h3>
+                  <h3 className="font-semibold">Payment Summary</h3>
                 </div>
 
-                <div className="bg-slate-700/30 rounded-lg p-4 space-y-3">
-                  <div className="flex justify-between items-center">
+                <div className="bg-slate-700/50 rounded-lg p-4 space-y-3">
+                  <div className="flex justify-between">
                     <span className="text-gray-400">Investment Amount:</span>
-                    <span className="text-blue-400 font-bold text-lg">
-                      {parseFloat(investmentAmount || 0).toFixed(2)} USDT
+                    <span className="text-white font-semibold">
+                      ${parseFloat(investmentAmount || 0).toFixed(2)} USDT
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">
-                      Activation Fee ({packageDetails.commission_percentage}%):
-                    </span>
-                    <span className="text-yellow-400 font-bold">
-                      {activationFee} USDT
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Activation Fee:</span>
+                    <span className="text-yellow-400 font-semibold">
+                      ${packageDetails.commission_percentage}
                     </span>
                   </div>
-                  <div className="h-px bg-slate-600 my-2"></div>
-                  <div className="flex justify-between items-center">
+                  <hr className="border-slate-600" />
+                  <div className="flex justify-between text-lg">
                     <span className="text-gray-300 font-semibold">
                       Total Payable:
                     </span>
-                    <span className="text-white font-bold text-lg">
-                      {totalAmount} USDT
-                    </span>
-                  </div>
-                  <div className="h-px bg-slate-600 my-2"></div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">
-                      Expected ROI (Annual):
-                    </span>
                     <span className="text-green-400 font-bold">
-                      {expectedROI} USDT
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Remaining Balance:</span>
-                    <span
-                      className={`font-bold ${
-                        parseFloat(remainingBalance) < 0
-                          ? "text-red-400"
-                          : "text-cyan-400"
-                      }`}
-                    >
-                      {remainingBalance} USDT
+                      $
+                      {parseFloat(investmentAmount || 0) +
+                        parseFloat(
+                          packageDetails.commission_percentage || 0
+                        )}{" "}
+                      USDT
                     </span>
                   </div>
                 </div>
@@ -501,12 +371,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
           </button>
           <button
             onClick={handlePurchase}
-            disabled={
-              isPurchasing ||
-              isLoading ||
-              !packageDetails ||
-              parseFloat(remainingBalance) < 0
-            }
+            disabled={isPurchasing || isLoading || !packageDetails}
             className="flex-1 px-6 py-3 bg-green-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
           >
             {isPurchasing ? (

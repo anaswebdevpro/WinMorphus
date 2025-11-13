@@ -27,7 +27,7 @@ import {
 import ShimmerLoader from "../../Component/ui/ShimmerLoader";
 
 const Profile = () => {
-  const { token } = useAuth();
+  const { token, refreshUser, user } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -75,6 +75,29 @@ const Profile = () => {
           setIsLoading(false);
           const profile = response.data?.profile || response.data;
           setProfileData(response.data);
+
+         
+          // reflect the new profile picture immediately.
+          if (typeof refreshUser === "function") {
+            const pic =
+              profile?.profile_picture || profile?.profile_picture_url || null;
+            const updatedUser = {
+              ...(user || {}),
+              // Prefer API's profile_picture, fall back to existing key names or null
+              // Append a timestamp query param to bust browser cache after updates
+              profile_picture_url: pic
+                ? `${pic}${pic.includes("?") ? "&" : "?"}t=${Date.now()}`
+                : null,
+              // keep name/email in sync if available
+              name: profile?.name || user?.name,
+              email: profile?.email || user?.email,
+            };
+            try {
+              refreshUser(updatedUser);
+            } catch (err) {
+              console.error("Failed to refresh user in context:", err);
+            }
+          }
 
           // Set form values
           formik.setValues({
@@ -186,7 +209,8 @@ const Profile = () => {
         .catch((error) => {
           setIsSaving(false);
           console.error("Failed to update profile:", error);
-          const errorMessage = error.response?.data?.message || error.message || "Unknown error";
+          const errorMessage =
+            error.response?.data?.message || error.message || "Unknown error";
           enqueueSnackbar("Failed to update profile: " + errorMessage, {
             variant: "error",
           });
@@ -248,13 +272,11 @@ const Profile = () => {
         .catch((error) => {
           setIsUploadingImage(false);
           console.error("Failed to upload profile picture:", error);
-          const errorMessage = error.response?.data?.message || error.message || "Unknown error";
-          enqueueSnackbar(
-            "Failed to upload profile picture: " + errorMessage,
-            {
-              variant: "error",
-            }
-          );
+          const errorMessage =
+            error.response?.data?.message || error.message || "Unknown error";
+          enqueueSnackbar("Failed to upload profile picture: " + errorMessage, {
+            variant: "error",
+          });
         });
     } catch (error) {
       setIsUploadingImage(false);
@@ -291,13 +313,11 @@ const Profile = () => {
         .catch((error) => {
           setIsUploadingImage(false);
           console.error("Failed to delete profile picture:", error);
-          const errorMessage = error.response?.data?.message || error.message || "Unknown error";
-          enqueueSnackbar(
-            "Failed to delete profile picture: " + errorMessage,
-            {
-              variant: "error",
-            }
-          );
+          const errorMessage =
+            error.response?.data?.message || error.message || "Unknown error";
+          enqueueSnackbar("Failed to delete profile picture: " + errorMessage, {
+            variant: "error",
+          });
         });
     } catch (error) {
       setIsUploadingImage(false);

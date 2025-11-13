@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { createContext,  useEffect, useState, useMemo } from "react";
+import { createContext, useEffect, useState, useMemo } from "react";
 
 // Create Auth Context
 const AuthContext = createContext(null);
