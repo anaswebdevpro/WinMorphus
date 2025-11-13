@@ -11,12 +11,13 @@ import {
 const RoiChart = ({ stats }) => {
   // Demo data object
 
-  console.log(stats);
+ 
   const data = [
-    { name: "Level Income", value: parseInt(stats?.current_level_income) || 0 },
-    { name: "Total Investment", value: parseInt(stats?.total_investment) || 0 },
-    { name: "ROI Earned", value: parseInt(stats?.current_roi_earned) || 0 },
+   { name: "Total investment", value: parseFloat((parseFloat(stats?.total_investment) || 0).toFixed(2)) },
+   { name: "Level Income", value: parseFloat((parseFloat(stats?.current_level_income) || 0).toFixed(2)) },
+    { name: "ROI Earned", value: parseFloat((parseFloat(stats?.current_roi_earned) || 0).toFixed(2)) },
   ];
+ 
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 

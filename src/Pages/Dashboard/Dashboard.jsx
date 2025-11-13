@@ -73,9 +73,9 @@ const Dashboard = () => {
         packageValue: `${dashboardData.current_package?.amount || 0} USDT`,
         totalInvestment: `${dashboardData.total_investment || 0} USDT`,
         currentROI: `${
-          dashboardData.current_package?.current_roi_earned || 0
+          dashboardData?.current_roi_earned || 0
         } USDT`,
-        totalCommission: `${dashboardData.total_commission || 0} USDT`,
+        totalCommission: `${dashboardData.current_level_income || 0} USDT`,
       }
     : {
         currentPackage: "NO PACKAGE",

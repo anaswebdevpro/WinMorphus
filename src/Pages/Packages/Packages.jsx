@@ -11,6 +11,7 @@ import Investment_table from "./Investment_table";
 const Packages = () => {
   const [loading, setLoading] = useState(false);
   const [PackageData, setPackageData] = useState({});
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState(null);
@@ -127,6 +128,11 @@ const Packages = () => {
     setSelectedPackageId(null);
     // Refresh packages after purchase
     FetchPackages();
+  };
+
+  const handlePurchaseSuccess = () => {
+    // Trigger Investment_table refresh
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   // Show shimmer loader while loading
@@ -249,7 +255,7 @@ const Packages = () => {
                           Activation Fee
                         </span>
                         <span className="text-yellow-400 font-bold">
-                         $ {pkg.commission_percentage || "0"}
+                          $ {pkg.commission_percentage || "0"}
                         </span>
                       </div>
                     </div>
@@ -296,7 +302,7 @@ const Packages = () => {
         </div>
 
         {/* Investment History */}
-        <Investment_table />
+        <Investment_table Trigger={refreshTrigger} />
 
         {/* Commission Structure */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -405,6 +411,7 @@ const Packages = () => {
         isOpen={isPurchaseModalOpen}
         onClose={handleClosePurchaseModal}
         packageId={selectedPackageId}
+        onPurchaseSuccess={handlePurchaseSuccess}
       />
     </div>
   );

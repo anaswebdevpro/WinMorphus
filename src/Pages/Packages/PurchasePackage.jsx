@@ -13,7 +13,7 @@ import { useAuth } from "../../Context/UseAuth";
 import { useSnackbar } from "notistack";
 import ShimmerLoader from "../../Component/ui/ShimmerLoader";
 
-const PurchasePackage = ({ isOpen, onClose, packageId }) => {
+const PurchasePackage = ({ isOpen, onClose, packageId, onPurchaseSuccess }) => {
   const [packageDetails, setPackageDetails] = useState(null);
   const [investmentAmount, setInvestmentAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +25,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
   const PayableAmount =
     parseFloat(investmentAmount) +
     parseFloat(packageDetails?.commission_percentage || 0);
- console.log("Initiating purchase with amount:", PayableAmount);
+  console.log("Initiating purchase with amount:", PayableAmount);
   // Fetch package details by ID
   const fetchPackageDetails = () => {
     if (!packageId || !token) return;
@@ -85,13 +85,13 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
 
     setIsPurchasing(true);
     try {
-     console.log("Initiating purchase with amount:", PayableAmount);
+      console.log("Initiating purchase with amount:", PayableAmount);
       apiRequest({
         endpoint: PACKAGES_PURCHASE,
         method: "POST",
         data: {
           package_id: packageId,
-          amount: PayableAmount,
+          amount,
         },
 
         headers: { Authorization: `Bearer ${token}` },
@@ -110,6 +110,11 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
 
             const newBalance = parseFloat(user.balance) - PayableAmount;
             refreshUser({ ...user, balance: newBalance });
+            
+            // Call success callback to refresh Investment_table
+            if (onPurchaseSuccess) {
+              onPurchaseSuccess();
+            }
           } else {
             enqueueSnackbar(` ${response?.message}. ${response.error} `, {
               variant: "error",
@@ -123,14 +128,30 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
         .catch((error) => {
           setIsPurchasing(false);
           console.error("Failed to purchase package:", error);
-          enqueueSnackbar("Failed to purchase package: " + error.message, {
+
+          // Extract error message from API response
+          const errorMessage =
+            error?.response?.data?.error ||
+            error?.response?.data?.message ||
+            error?.message ||
+            "Failed to purchase package. Please try again.";
+
+          enqueueSnackbar(errorMessage, {
             variant: "error",
           });
         });
     } catch (error) {
       setIsPurchasing(false);
       console.error("Failed to purchase package:", error);
-      enqueueSnackbar("Failed to purchase package. Please try again.", {
+
+      // Extract error message from API response
+      const errorMessage =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to purchase package. Please try again.";
+
+      enqueueSnackbar(errorMessage, {
         variant: "error",
       });
     }
@@ -249,7 +270,6 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
 
                   {/* Slider */}
                   <div>
-                   
                     <input
                       type="range"
                       min={packageDetails.min_amount}
@@ -308,9 +328,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                       Total Payable:
                     </span>
                     <span className="text-green-400 font-bold">
-                      $
-                      {PayableAmount.toFixed(2)}{" "}
-                      USDT
+                      ${PayableAmount.toFixed(2)} USDT
                     </span>
                   </div>
                 </div>
@@ -335,10 +353,12 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
           <button
             onClick={handlePurchase}
             disabled={
-              isPurchasing || 
-              isLoading || 
-              !packageDetails || 
-              (parseFloat(investmentAmount || 0) + parseFloat(packageDetails?.commission_percentage || 0)) > parseFloat(user?.balance || 0)
+              isPurchasing ||
+              isLoading ||
+              !packageDetails ||
+              parseFloat(investmentAmount || 0) +
+                parseFloat(packageDetails?.commission_percentage || 0) >
+                parseFloat(user?.balance || 0)
             }
             className="flex-1 px-6 py-3 bg-green-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
           >
@@ -350,7 +370,9 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
             ) : (
               <>
                 <CheckCircle className="w-5 h-5" />
-                {(parseFloat(investmentAmount || 0) + parseFloat(packageDetails?.commission_percentage || 0)) > parseFloat(user?.balance || 0)
+                {parseFloat(investmentAmount || 0) +
+                  parseFloat(packageDetails?.commission_percentage || 0) >
+                parseFloat(user?.balance || 0)
                   ? "Insufficient Balance"
                   : "Confirm Purchase"}
               </>

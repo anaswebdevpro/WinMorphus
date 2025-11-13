@@ -6,7 +6,7 @@ import { useAuth } from "../../Context/UseAuth";
 import { AlertCircle, Package, Calendar, DollarSign } from "lucide-react";
 import { StatusBadge } from "../../Component/ui";
 
-const Investment_table = () => {
+const Investment_table = ({ Trigger }) => {
   const [transaction, setTransaction] = useState([]);
   const [Loading, setLoading] = useState(false);
   const { token } = useAuth();
@@ -41,7 +41,8 @@ const Investment_table = () => {
   };
   useEffect(() => {
     FetchTransactions();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Trigger]);
 
   if (Loading) {
     return (
