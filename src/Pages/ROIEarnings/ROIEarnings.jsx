@@ -135,17 +135,6 @@ const ROIEarnings = () => {
             iconBg="bg-yellow-700/30"
             iconColor="text-yellow-400"
           />
-          {/* <StatCard
-            title="ROI Percentage"
-            value={`${
-              investments.length > 0 ? investments[0].rate_percentage : "0.00"
-            }%`}
-            icon={Percent}
-            gradient="from-purple-900 to-slate-900"
-            border="border-purple-500"
-            iconBg="bg-purple-700/30"
-            iconColor="text-purple-400"
-          /> */}
         </div>
 
         {/* Data Table */}
@@ -170,10 +159,7 @@ const ROIEarnings = () => {
                     Purchase Date
                   </th>
                   <th className="text-left p-4 font-semibold text-gray-300">
-                    Days Active
-                  </th>
-                  <th className="text-left p-4 font-semibold text-gray-300">
-                    Progress
+                    Months Active
                   </th>
                   <th className="text-left p-4 font-semibold text-gray-300">
                     Earned So Far
@@ -197,6 +183,7 @@ const ROIEarnings = () => {
                         <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/30 text-blue-300 rounded-lg text-sm">
                           <Package className="w-4 h-4" />
                           {item.package_name}
+                          
                         </span>
                       </td>
                       <td className="p-4">
@@ -214,26 +201,16 @@ const ROIEarnings = () => {
                         </div>
                       </td>
                       <td className="p-4 text-gray-300">
-                        {Math.max(0, Math.floor(item.days_active))} /{" "}
-                        {item.total_days} days
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 bg-slate-700 rounded-full h-2">
-                            <div
-                              className="bg-green-500 h-2 rounded-full transition-all"
-                              style={{
-                                width: `${Math.max(
-                                  0,
-                                  Math.min(100, item.progress_percentage)
-                                )}%`,
-                              }}
-                            ></div>
-                          </div>
-                          <span className="text-xs text-gray-400">
-                            {Math.max(0, item.progress_percentage).toFixed(1)}%
+                        {item.total_entries >= 24 ? (
+                          <span className="inline-flex items-center gap-2 px-3 py-1 bg-green-600/30 text-green-300 rounded-lg text-sm font-medium">
+                            Completed
                           </span>
-                        </div>
+                        ) : (
+                          <>
+                            {Math.max(0, Math.floor(item.total_entries))} /{" "}
+                            {item.total_days} 24 Months
+                          </>
+                        )}
                       </td>
                       <td className="p-4">
                         <span className="font-semibold text-green-400">
@@ -252,7 +229,7 @@ const ROIEarnings = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={9} className="p-8 text-center text-gray-500">
+                    <td colSpan={8} className="p-8 text-center text-gray-500">
                       No active investments available
                     </td>
                   </tr>
