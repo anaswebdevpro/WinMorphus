@@ -12,7 +12,8 @@ dist
 dist-ssr
 *.local
 dist.rar
-Api_Variables.js
+Api_variables.js
+src/Api/Api_variables.js
 
 
 
