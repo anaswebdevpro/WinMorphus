@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 dist.rar
+Api_Variables.js
+
+
 
 # Editor directories and files
 .vscode/*
