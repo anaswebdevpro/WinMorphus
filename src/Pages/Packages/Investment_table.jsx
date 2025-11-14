@@ -85,7 +85,7 @@ const Investment_table = ({ Trigger }) => {
                   Amount
                 </th>
                 <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
-                  Rate
+                  Monthly ROI
                 </th>
                 <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
                   Purchase Date

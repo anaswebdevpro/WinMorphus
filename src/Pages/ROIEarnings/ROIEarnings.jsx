@@ -107,7 +107,7 @@ const ROIEarnings = () => {
         />
 
         {/* Stat Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatCard
             title="Total ROI Earned"
             value={`$${stats.total_earned.toFixed(2)}`}
@@ -135,7 +135,7 @@ const ROIEarnings = () => {
             iconBg="bg-yellow-700/30"
             iconColor="text-yellow-400"
           />
-          <StatCard
+          {/* <StatCard
             title="ROI Percentage"
             value={`${
               investments.length > 0 ? investments[0].rate_percentage : "0.00"
@@ -145,7 +145,7 @@ const ROIEarnings = () => {
             border="border-purple-500"
             iconBg="bg-purple-700/30"
             iconColor="text-purple-400"
-          />
+          /> */}
         </div>
 
         {/* Data Table */}
@@ -179,7 +179,7 @@ const ROIEarnings = () => {
                     Earned So Far
                   </th>
                   <th className="text-left p-4 font-semibold text-gray-300">
-                    Projected Earnings
+                    Total Earnings
                   </th>
                 </tr>
               </thead>
@@ -205,7 +205,7 @@ const ROIEarnings = () => {
                         </span>
                       </td>
                       <td className="p-4 text-cyan-400 font-medium">
-                        {item.rate_percentage}%
+                        ${item.rate_percentage}
                       </td>
                       <td className="p-4 text-gray-300">
                         <div className="flex items-center gap-2">
