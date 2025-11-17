@@ -8,18 +8,19 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
-import { PACKAGES_URL, PACKAGES_PURCHASE } from "../../Api/Api_variables";
+import { PACKAGES_URL, PACKAGES_PURCHASE, GET_BALANCE } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { useSnackbar } from "notistack";
 import ShimmerLoader from "../../Component/ui/ShimmerLoader";
 
-const PurchasePackage = ({ isOpen, onClose, packageId, onPurchaseSuccess }) => {
+const PurchasePackage = ({ isOpen, onClose, packageId }) => {
   const [packageDetails, setPackageDetails] = useState(null);
   const [investmentAmount, setInvestmentAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const [balance, setBalance] = useState(null);
 
-  const { token, user, refreshUser } = useAuth();
+  const { token } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
   const PayableAmount =
@@ -68,7 +69,36 @@ const PurchasePackage = ({ isOpen, onClose, packageId, onPurchaseSuccess }) => {
       });
     }
   };
+ 
 
+  // fetchbalace for wallet 
+
+   const fetchBalance = () => {
+      if (!token) return;
+  
+      try {
+        setIsLoading(true);
+  
+        apiRequest({
+          endpoint: GET_BALANCE,
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((response) => {
+            setBalance(response.data);
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            console.error("Failed to fetch balance data:", error);
+            const errorMessage =
+              error?.message || "Failed to fetch balance data";
+            enqueueSnackbar(errorMessage, { variant: "error" });
+            setIsLoading(false);
+          });
+      } catch (error) {
+        enqueueSnackbar(error?.message, { variant: "error" });
+      }
+    };
   // Handle purchase
   const handlePurchase = () => {
     if (!token || !packageDetails) return;
@@ -106,19 +136,10 @@ const PurchasePackage = ({ isOpen, onClose, packageId, onPurchaseSuccess }) => {
                 variant: "success",
               }
             );
-            // Update user balance in context
-
-            const newBalance = parseFloat(user.balance) - PayableAmount;
-            refreshUser({ ...user, balance: newBalance });
-            
-            // Call success callback to refresh Investment_table
-            if (onPurchaseSuccess) {
-              onPurchaseSuccess();
-            }
           } else {
-            enqueueSnackbar(` ${response?.message}. ${response.error} `, {
-              variant: "error",
-            });
+            enqueueSnackbar(
+              response?.message || "Failed to purchase package. Please try again.", 
+            );
           }
 
           // Reset and close
@@ -161,6 +182,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId, onPurchaseSuccess }) => {
   useEffect(() => {
     if (isOpen && packageId) {
       fetchPackageDetails();
+      fetchBalance();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, packageId]);
@@ -244,7 +266,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId, onPurchaseSuccess }) => {
                   <div>
                     <p className="text-white/80 text-sm">Available Balance</p>
                     <p className="text-2xl font-bold text-white">
-                      {user?.balance} USDT
+                      {balance?.main_balance || "0.00"} USDT
                     </p>
                   </div>
                 </div>
@@ -358,7 +380,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId, onPurchaseSuccess }) => {
               !packageDetails ||
               parseFloat(investmentAmount || 0) +
                 parseFloat(packageDetails?.commission_percentage || 0) >
-                parseFloat(user?.balance || 0)
+                parseFloat(balance?.main_balance || 0)
             }
             className="flex-1 px-6 py-3 bg-green-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
           >
@@ -372,7 +394,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId, onPurchaseSuccess }) => {
                 <CheckCircle className="w-5 h-5" />
                 {parseFloat(investmentAmount || 0) +
                   parseFloat(packageDetails?.commission_percentage || 0) >
-                parseFloat(user?.balance || 0)
+                parseFloat(balance?.main_balance || 0)
                   ? "Insufficient Balance"
                   : "Confirm Purchase"}
               </>

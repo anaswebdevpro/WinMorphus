@@ -8,10 +8,11 @@ import PurchasePackage from "./PurchasePackage";
 import { ShimmerLoader, PageHeader } from "../../Component/ui";
 import Investment_table from "./Investment_table";
 
+
 const Packages = () => {
   const [loading, setLoading] = useState(false);
   const [PackageData, setPackageData] = useState({});
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+ 
 
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState(null);
@@ -130,10 +131,6 @@ const Packages = () => {
     FetchPackages();
   };
 
-  const handlePurchaseSuccess = () => {
-    // Trigger Investment_table refresh
-    setRefreshTrigger((prev) => prev + 1);
-  };
 
   // Show shimmer loader while loading
   if (loading && !PackageData?.packages) {
@@ -302,108 +299,14 @@ const Packages = () => {
         </div>
 
         {/* Investment History */}
-        <Investment_table Trigger={refreshTrigger} />
+        <Investment_table  />
 
-        {/* Commission Structure */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Advisor Commission */}
-          {/* <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
-            <div className="bg-linear-to-r from-green-600 to-emerald-600 text-white p-6">
-              <h3 className="text-xl font-bold flex items-center gap-2">
-                <TrendingUp className="w-6 h-6" />
-                Advisor Commission
-              </h3>
-            </div>
-            <div className="p-6">
-              <p className="text-sm text-gray-400 mb-6">
-                {PackageData?.commission_info?.description ||
-                  "To qualify for advisor commissions, you must make at least one direct referral"}
-              </p>
-              <div className="space-y-3">
-                {PackageData?.commission_info?.advisor ? (
-                  Object.entries(PackageData.commission_info.advisor).map(
-                    ([name, commission], index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-4 bg-slate-700/50 border border-slate-600 rounded-lg hover:border-green-500/50 transition-colors"
-                      >
-                        <span className="text-gray-300 font-medium capitalize">
-                          {name} Package
-                        </span>
-                        <span className="text-lg font-bold text-green-400">
-                          {commission}%
-                        </span>
-                      </div>
-                    )
-                  )
-                ) : (
-                  <div className="text-gray-400 text-center py-4">
-                    No commission data available
-                  </div>
-                )}
-              </div>
-              <p className="text-xs text-gray-500 mt-6 bg-slate-700/30 p-3 rounded border border-slate-600">
-                💡 Commission will be paid based on the packages your referrals
-                purchase
-              </p>
-            </div>
-          </div> */}
 
-          {/* Franchise Commission */}
-          {/* <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
-            <div className="bg-linear-to-r from-blue-600 to-indigo-600 text-white p-6">
-              <h3 className="text-lg font-bold">FRANCHISE</h3>
-            </div>
-            <div className="p-6">
-              <p className="text-sm text-gray-300 mb-6">
-                {PackageData?.franchise_info?.description ||
-                  "To qualify as a Franchise Partner, an advisor must recruit at least 10 direct advisors."}
-              </p>
+        {/* <AllTransactionTable /> */}
+        {/* <AllTransactionTable /> */}
 
-              <div className="space-y-3 mb-6">
-                {PackageData?.franchise_info?.tiers?.length > 0 ? (
-                  PackageData.franchise_info.tiers.map((tier, index) => {
-                    // Handle both direct object and nested array index formats
-                    const tierData = tier[index] || tier;
-                    const colorMap = {
-                      red: "bg-red-500",
-                      purple: "bg-purple-500",
-                      blue: "bg-blue-500",
-                      orange: "bg-orange-500",
-                      teal: "bg-teal-500",
-                      cyan: "bg-cyan-500",
-                      green: "bg-green-500",
-                    };
-                    const bgColor = colorMap[tierData?.color] || "bg-gray-500";
-
-                    return (
-                      <div key={index} className="flex items-center gap-3">
-                        <div
-                          className={`${bgColor} w-3 h-3 rounded-full`}
-                        ></div>
-                        <span className="text-gray-300 font-medium text-sm">
-                          {tierData?.percentage || index + 1}% - Tier{" "}
-                          {index + 1}
-                        </span>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="text-gray-400 text-center py-4">
-                    No tier data available
-                  </div>
-                )}
-              </div>
-
-              <p className="text-xs text-gray-400">
-                💡 Minimum investment required:{" "}
-                {PackageData?.franchise_info?.minimum_investment
-                  ? `${PackageData.franchise_info.minimum_investment.toLocaleString()} USDT`
-                  : "Contact support"}
-              </p>
-            </div>
-          </div> */}
-        </div>
+       
+        
       </div>
 
       {/* Purchase Package Modal */}
@@ -411,7 +314,7 @@ const Packages = () => {
         isOpen={isPurchaseModalOpen}
         onClose={handleClosePurchaseModal}
         packageId={selectedPackageId}
-        onPurchaseSuccess={handlePurchaseSuccess}
+        // onPurchaseSuccess={handlePurchaseSuccess}
       />
     </div>
   );

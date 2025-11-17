@@ -151,9 +151,9 @@ function TradingViewWidget() {
           rel="noopener nofollow"
           target="_blank"
         >
-          <span className="blue-text">Market summary</span>
+          {/* <span className="blue-text">Market summary</span> */}
         </a>
-        <span className="trademark"> by TradingView</span>
+        {/* <span className="trademark"> by TradingView</span> */}
       </div>
     </div>
   );

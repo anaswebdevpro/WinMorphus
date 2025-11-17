@@ -3,13 +3,14 @@ import { DollarSign, Wallet, ArrowDownUp, RefreshCw } from "lucide-react";
 import { useSnackbar } from "notistack";
 import { useAuth } from "../../../Context/UseAuth";
 import { apiRequest } from "../../../Services/Api";
-import { WITHDRAWAL_WALLET_INFO } from "../../../Api/Api_variables";
+import { GET_BALANCE, WITHDRAWAL_WALLET_INFO } from "../../../Api/Api_variables";
 
 const WalletInfo = () => {
   const { token } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
   const [walletInfo, setWalletInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [balance, setBalance] = useState(null);
 
   // Fetch wallet info
   const fetchWalletInfo = () => {
@@ -47,8 +48,37 @@ const WalletInfo = () => {
     }
   };
 
+
+    const fetchBalance = () => {
+        if (!token) return;
+    
+        try {
+          setLoading(true);
+    
+          apiRequest({
+            endpoint: GET_BALANCE,
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+          })
+            .then((response) => {
+              setBalance(response.data);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Failed to fetch balance data:", error);
+              const errorMessage =
+                error?.message || "Failed to fetch balance data";
+              enqueueSnackbar(errorMessage, { variant: "error" });
+              setLoading(false);
+            });
+        } catch (error) {
+          enqueueSnackbar(error?.message, { variant: "error" });
+        }
+      };
+
   useEffect(() => {
     fetchWalletInfo();
+    fetchBalance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -64,25 +94,23 @@ const WalletInfo = () => {
 
   // Wallet cards configuration
   const walletCards = [
-    {
-      title: "Main Wallet",
-      amount: walletInfo?.wallets?.main?.balance
-        ? `${walletInfo.wallets.main.balance} ${
-            walletInfo.wallets.main.currency || "USDT"
-          }`
-        : "0.00 USDT",
-      icon: Wallet,
-      gradient: "from-blue-900 to-slate-900",
-      border: "border-blue-500",
-      iconBg: "bg-blue-700/30",
-      iconColor: "text-blue-400",
-    },
+    // {
+    //   title: "Main Wallet",
+    //   amount: walletInfo?.wallets?.main?.balance
+    //     ? `${walletInfo.wallets.main.balance} ${
+    //         walletInfo.wallets.main.currency || "USDT"
+    //       }`
+    //     : "0.00 USDT",
+    //   icon: Wallet,
+    //   gradient: "from-blue-900 to-slate-900",
+    //   border: "border-blue-500",
+    //   iconBg: "bg-blue-700/30",
+    //   iconColor: "text-blue-400",
+    // },
     {
       title: "Available Balance",
-      amount: walletInfo?.wallets?.available?.balance
-        ? `${walletInfo.wallets.available.balance} ${
-            walletInfo.wallets.available.currency || "USDT"
-          }`
+      amount: balance?.main_balance
+        ? `${balance.main_balance} USDT`
         : "0.00 USDT",
       icon: DollarSign,
       gradient: "from-green-900 to-slate-900",
@@ -117,7 +145,7 @@ const WalletInfo = () => {
   return (
     <>
       {/* Balance Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {walletCards.map((card, index) => {
           const IconComponent = card.icon;
           return (

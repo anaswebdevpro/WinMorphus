@@ -13,6 +13,7 @@ import { NETWORK_LEVEL_WISE, NETWORK_STATS } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { enqueueSnackbar } from "notistack";
 import NetworkTree from "./NetworkTree";
+import Accordian from "./Accordian";
 
 /**
  * StatCard Component: Displays a single statistic card with a title, value, and icon.
@@ -207,8 +208,12 @@ const Network = () => {
             </div>
           )}
 
-          <div>
+          {/* <div>
             <NetworkTree networkData={networkData} />
+          </div> */}
+
+          <div>
+            <Accordian networkData={networkData} />
           </div>
         </div>
       </div>

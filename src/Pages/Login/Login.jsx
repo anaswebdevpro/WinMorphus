@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
-import { LOGIN_URL } from "../../Api/Api_variables";
+import { LOGIN_URL, LOGIN_WITH_TOKEN_URL } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { logo, loginImage, loginBackground } from "../../assets";
 import MainNavbar from "../../Component/MainNavbar";
@@ -21,8 +21,56 @@ const validationSchema = Yup.object({
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isForceLoading, setIsForceLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleForceLogin = useCallback(
+    async (token) => {
+      setIsForceLoading(true);
+      try {
+        const payload = JSON.stringify({ token });
+
+        const response = await apiRequest({
+          endpoint: LOGIN_WITH_TOKEN_URL,
+          method: "POST",
+          data: payload,
+        });
+
+        if (response?.token && response?.user) {
+          // Use the login function from AuthContext
+          login(response.user, response.token);
+
+          // Clear URL parameters and redirect to dashboard
+          navigate("/dashboard", { replace: true });
+          console.log("Force login successful:", response);
+        } else {
+          throw new Error(response?.message || "Invalid token response");
+        }
+      } catch (error) {
+        console.error("Force login failed:", error);
+        alert("Automatic login failed. Please try logging in manually.");
+
+        // Clear URL parameters and stay on login page
+        navigate("/login", { replace: true });
+      } finally {
+        setIsForceLoading(false);
+      }
+    },
+    [login, navigate]
+  );
+
+  // Check for force login on component mount
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const token = searchParams.get("token");
+    const forceLogin = searchParams.get("force_login");
+
+    if (token && forceLogin === "true") {
+      handleForceLogin(token);
+    }
+  }, [location, handleForceLogin]);
 
   const formik = useFormik({
     initialValues: {
@@ -115,7 +163,8 @@ const Login = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.username}
-                    className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 sm:py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base ${
+                    disabled={isForceLoading}
+                    className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 sm:py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed ${
                       formik.touched.username && formik.errors.username
                         ? "border-red-400"
                         : ""
@@ -142,7 +191,8 @@ const Login = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.password}
-                      className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 pr-12 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base ${
+                      disabled={isForceLoading}
+                      className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 pr-12 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed ${
                         formik.touched.password && formik.errors.password
                           ? "border-red-400"
                           : ""
@@ -152,7 +202,8 @@ const Login = () => {
                       type="button"
                       aria-label="Toggle password"
                       onClick={() => setShowPassword((s) => !s)}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 touch-manipulation"
+                      disabled={isForceLoading}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -181,13 +232,18 @@ const Login = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || isForceLoading}
                   className="w-full bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-900 font-bold py-3 sm:py-4 rounded-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg text-sm sm:text-base touch-manipulation flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <>
                       <Loader size={20} className="animate-spin" />
                       <span>Logging in...</span>
+                    </>
+                  ) : isForceLoading ? (
+                    <>
+                      <Loader size={20} className="animate-spin" />
+                      <span>Auto-login in progress...</span>
                     </>
                   ) : (
                     "Login"

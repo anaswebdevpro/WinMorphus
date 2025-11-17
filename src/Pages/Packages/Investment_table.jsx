@@ -93,9 +93,9 @@ const Investment_table = ({ Trigger }) => {
                 <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
                   Closing Date
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+                {/* <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
                   Payout Date
-                </th>
+                </th> */}
                 <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
                   ROI Earned
                 </th>
@@ -139,9 +139,9 @@ const Investment_table = ({ Trigger }) => {
                   <td className="py-4 px-4 text-gray-300">
                     {item.formatted_closing_date}
                   </td>
-                  <td className="py-4 px-4 text-gray-300">
+                  {/* <td className="py-4 px-4 text-gray-300">
                     {item.formatted_payout_date}
-                  </td>
+                  </td> */}
                   <td className="py-4 px-4">
                     <span className="text-emerald-400 font-semibold">
                       {item.formatted_roi}

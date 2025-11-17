@@ -15,7 +15,7 @@ const MainNavbar = () => {
     { name: "Dashboard", path: "/dashboard" },
     { name: "Packages", path: "/packages" },
     { name: "Deposit", path: "/deposit" },
-    // { name: "My Network", path: "/network" },
+    { name: "Network", path: "/network" },
     { name: "ROI Earnings", path: "/roi-earnings" },
     { name: "Leadership Income", path: "/commissions" },
     { name: "Loyalty Allowance", path: "/loyalty-allowance" },

@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../Context/UseAuth";
 import { apiRequest } from "../../Services/Api";
-import { DASHBOARD_DATA } from "../../Api/Api_variables";
+import { DASHBOARD_DATA, GET_BALANCE } from "../../Api/Api_variables";
 import { useNavigate } from "react-router-dom";
 import RoiChart from "./Components/RoiChart";
 import RankProgress from "./Components/RankProgress";
@@ -37,6 +37,7 @@ const Dashboard = () => {
   const [copiedLink, setCopiedLink] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
+  const [balance , setBalance] = useState(null);
   const navigate = useNavigate();
 
   // Fetch dashboard data from API
@@ -66,10 +67,37 @@ const Dashboard = () => {
       enqueueSnackbar(error?.message, { variant: "error" });
     }
   };
+ const fetchBalance = () => {
+    if (!token) return;
 
+    try {
+      setLoading(true);
+
+      apiRequest({
+        endpoint: GET_BALANCE,
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((response) => {
+          setBalance(response.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch balance data:", error);
+          const errorMessage =
+            error?.message || "Failed to fetch balance data";
+          enqueueSnackbar(errorMessage, { variant: "error" });
+          setLoading(false);
+        });
+    } catch (error) {
+      enqueueSnackbar(error?.message, { variant: "error" });
+    }
+  };
   useEffect(() => {
     if (token) {
+      
       fetchDashboardData();
+      fetchBalance();
     }
   }, []);
 
@@ -231,7 +259,7 @@ const Dashboard = () => {
                 <p className="text-sm font-medium opacity-90">Level Income</p>
               </div>
               <h2 className="text-2xl font-bold mb-1">
-                $ {dashboardData?.total_commission || 0}
+                $ {dashboardData?.current_level_income || 0}
               </h2>
             </div>
           )}
@@ -305,11 +333,11 @@ const Dashboard = () => {
           </div>
         </div>
         {/* trading View Widgets  */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg min-h-[600px] flex flex-col">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6 ">
+          <div className="bg-slate-800 text-white  rounded-lg shadow-lg min-h-[600px] flex flex-col">
             <TradingView2 />
           </div>
-          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg min-h-[600px] flex flex-col">
+          <div className="bg-slate-800 text-white  rounded-lg shadow-lg min-h-[600px] flex flex-col">
             <TradingView />
           </div>
         </div>
@@ -317,13 +345,13 @@ const Dashboard = () => {
         {/* My Network Section - Title */}
         <div className="bg-slate-800 text-white p-4 rounded-lg shadow-lg mb-4 text-center relative">
           <h2 className="text-2xl font-bold">Acount Overview</h2>
-          {/* <button
+          <button
             className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1 border border-blue-600 px-4 py-2 rounded-lg"
             onClick={() => navigate("/network")}
           >
             <ChevronRight className="w-4 h-4" />
             View All Network
-          </button> */}
+          </button>
         </div>
 
         {/* Network Section - Two Cards Side by Side */}
@@ -555,7 +583,7 @@ const Dashboard = () => {
                   Available Wallet Balance
                 </p>
                 <p className="text-2xl font-bold">
-                  $ {dashboardData?.user_balance?.avail_walllet || "0.00"}{" "}
+                  $ {balance?.main_balance || "0.00"}{" "}
                 </p>
               </div>
               <div className="bg-cyan-700/30 p-2 rounded-lg">
