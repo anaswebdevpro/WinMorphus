@@ -110,7 +110,7 @@ const WalletInfo = () => {
     {
       title: "Available Balance",
       amount: balance?.main_balance
-        ? `${balance.main_balance} USDT`
+        ? `$  ${parseFloat(balance.main_balance).toFixed(2)} `
         : "0.00 USDT",
       icon: DollarSign,
       gradient: "from-green-900 to-slate-900",
@@ -121,8 +121,8 @@ const WalletInfo = () => {
     {
       title: "Total Withdrawals",
       amount: walletInfo?.total_withdrawals
-        ? `${walletInfo.total_withdrawals} USDT`
-        : "0.00 USDT",
+        ? `$  ${parseFloat(walletInfo.total_withdrawals).toFixed(2)} `
+        : "$ 0.00 ",
       icon: ArrowDownUp,
       gradient: "from-purple-900 to-slate-900",
       border: "border-purple-500",

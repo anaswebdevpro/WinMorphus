@@ -141,7 +141,7 @@ const Network = () => {
 
   return (
     <>
-      <div className="p-6 bg-[#121212] min-h-screen text-white">
+      <div className="p-6 bg-slate-900 min-h-screen text-white">
         <div className="max-w-7xl mx-auto">
           <PageHeader
             title="Track your Network Members"

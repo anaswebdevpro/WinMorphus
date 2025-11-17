@@ -266,7 +266,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                   <div>
                     <p className="text-white/80 text-sm">Available Balance</p>
                     <p className="text-2xl font-bold text-white">
-                      {balance?.main_balance || "0.00"} USDT
+                      $ {parseFloat(balance?.main_balance || 0).toFixed(2)} 
                     </p>
                   </div>
                 </div>

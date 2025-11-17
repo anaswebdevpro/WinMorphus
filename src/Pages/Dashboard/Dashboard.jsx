@@ -37,7 +37,7 @@ const Dashboard = () => {
   const [copiedLink, setCopiedLink] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
-  const [balance , setBalance] = useState(null);
+  const [balance, setBalance] = useState(null);
   const navigate = useNavigate();
 
   // Fetch dashboard data from API
@@ -67,7 +67,7 @@ const Dashboard = () => {
       enqueueSnackbar(error?.message, { variant: "error" });
     }
   };
- const fetchBalance = () => {
+  const fetchBalance = () => {
     if (!token) return;
 
     try {
@@ -84,8 +84,7 @@ const Dashboard = () => {
         })
         .catch((error) => {
           console.error("Failed to fetch balance data:", error);
-          const errorMessage =
-            error?.message || "Failed to fetch balance data";
+          const errorMessage = error?.message || "Failed to fetch balance data";
           enqueueSnackbar(errorMessage, { variant: "error" });
           setLoading(false);
         });
@@ -95,7 +94,6 @@ const Dashboard = () => {
   };
   useEffect(() => {
     if (token) {
-      
       fetchDashboardData();
       fetchBalance();
     }
@@ -105,8 +103,6 @@ const Dashboard = () => {
   const referralLink = dashboardData?.referral_link
     ? `${baseUrl}${dashboardData.referral_link}`
     : `${baseUrl}/ref/0`;
-
-
 
   // Helper function to format date
   const formatDate = (dateString) => {
@@ -221,7 +217,7 @@ const Dashboard = () => {
                 </p>
               </div>
               <h2 className="text-2xl font-bold mb-1">
-                $ {dashboardData?.total_investment || 0}
+                $ {parseFloat(dashboardData?.total_investment || 0).toFixed(2)}
               </h2>
             </div>
           )}
@@ -241,7 +237,7 @@ const Dashboard = () => {
                 </p>
               </div>
               <h2 className="text-2xl font-bold mb-1">
-                ${dashboardData?.current_roi_earned || 0}
+                ${parseFloat(dashboardData?.current_roi_earned || 0).toFixed(2)}
               </h2>
             </div>
           )}
@@ -259,7 +255,7 @@ const Dashboard = () => {
                 <p className="text-sm font-medium opacity-90">Level Income</p>
               </div>
               <h2 className="text-2xl font-bold mb-1">
-                $ {dashboardData?.current_level_income || 0}
+                $ {parseFloat(dashboardData?.current_level_income || 0).toFixed(2)}
               </h2>
             </div>
           )}
@@ -471,7 +467,8 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dashboardData?.roi_earnings_history && dashboardData?.roi_earnings_history.length > 0 ? (
+                  {dashboardData?.roi_earnings_history &&
+                  dashboardData?.roi_earnings_history.length > 0 ? (
                     dashboardData?.roi_earnings_history.map((entry, index) => (
                       <tr
                         key={index}
@@ -531,27 +528,31 @@ const Dashboard = () => {
                 <tbody>
                   {dashboardData?.commission_earnings_history &&
                   dashboardData?.commission_earnings_history.length > 0 ? (
-                    dashboardData?.commission_earnings_history.map((entry, index) => (
-                      <tr
-                        key={index}
-                        className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
-                      >
-                        <td className="text-left py-3 px-2 text-sm text-gray-300">
-                          {formatDate(entry.created_at)}
-                        </td>
-                        <td className="text-left py-3 px-2 text-sm">
-                          <span className="bg-blue-900/50 text-blue-300 px-2 py-1 rounded text-xs font-semibold">
-                            Level {entry.level || "N/A"}
-                          </span>
-                        </td>
-                        <td className="text-left py-3 px-2 text-sm text-gray-300 truncate">
-                          {entry.referral_email || entry.referral_name || "N/A"}
-                        </td>
-                        <td className="text-right py-3 px-2 text-sm font-semibold text-green-400">
-                          {entry.amount || entry.commission || "N/A"} USDT
-                        </td>
-                      </tr>
-                    ))
+                    dashboardData?.commission_earnings_history.map(
+                      (entry, index) => (
+                        <tr
+                          key={index}
+                          className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
+                        >
+                          <td className="text-left py-3 px-2 text-sm text-gray-300">
+                            {formatDate(entry.created_at)}
+                          </td>
+                          <td className="text-left py-3 px-2 text-sm">
+                            <span className="bg-blue-900/50 text-blue-300 px-2 py-1 rounded text-xs font-semibold">
+                              Level {entry.level || "N/A"}
+                            </span>
+                          </td>
+                          <td className="text-left py-3 px-2 text-sm text-gray-300 truncate">
+                            {entry.referral_email ||
+                              entry.referral_name ||
+                              "N/A"}
+                          </td>
+                          <td className="text-right py-3 px-2 text-sm font-semibold text-green-400">
+                            {entry.amount || entry.commission || "N/A"} USDT
+                          </td>
+                        </tr>
+                      )
+                    )
                   ) : (
                     <tr>
                       <td
@@ -583,7 +584,7 @@ const Dashboard = () => {
                   Available Wallet Balance
                 </p>
                 <p className="text-2xl font-bold">
-                  $ {balance?.main_balance || "0.00"}{" "}
+                  $ {parseFloat(balance?.main_balance || 0).toFixed(2)}
                 </p>
               </div>
               <div className="bg-cyan-700/30 p-2 rounded-lg">
@@ -598,7 +599,11 @@ const Dashboard = () => {
                   INCOME Wallet Balance
                 </p>
                 <p className="text-2xl font-bold">
-                  $ {dashboardData?.user_balance?.income_wallet || "0.00"} USDT
+                  ${" "}
+                  {parseFloat(
+                    dashboardData?.user_balance?.income_wallet
+                  ).toFixed(2) || "0.00"}{" "}
+                  USDT
                 </p>
               </div>
               <div className="bg-blue-700/30 p-2 rounded-lg">
