@@ -165,10 +165,9 @@ const Dashboard = () => {
         </div>
 
         {/* Alert Banner */}
-
-        {!dashboardData?.is_activated && (
+        {!loading && dashboardData && !dashboardData?.is_activated && (
           <div className="bg-yellow-400 text-slate-900 p-4 rounded-lg mb-6 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 mt-0.5" />
             <p className="text-sm sm:text-base font-medium">
               Activate your account by purchasing a package to start earning
               rewards.
@@ -255,7 +254,10 @@ const Dashboard = () => {
                 <p className="text-sm font-medium opacity-90">Level Income</p>
               </div>
               <h2 className="text-2xl font-bold mb-1">
-                $ {parseFloat(dashboardData?.current_level_income || 0).toFixed(2)}
+                ${" "}
+                {parseFloat(dashboardData?.current_level_income || 0).toFixed(
+                  2
+                )}
               </h2>
             </div>
           )}
@@ -350,15 +352,14 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Network Section - Two Cards Side by Side */}
+        {/* Rank Progress  - Two Cards Side by Side */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* {progrss bar cards } */}
           <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
             <RankProgress />
           </div>
           <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
-            <Investerprogress data={dashboardData?.leader_info} />
-            {/* <Leaderprogress /> */}
+            {dashboardData?.inv_info.inv_type===0?<Investerprogress data={dashboardData?.leader_info} />:<Leaderprogress />}
           </div>
 
           {/* ROI Chart Component */}
@@ -446,9 +447,18 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* ROI Earnings History */}
           <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg max-h-100 overflow-auto">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-5 h-5 text-green-600" />
-              <h3 className="text-lg font-semibold">ROI Earnings History</h3>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                <h3 className="text-lg font-semibold">ROI Earnings History</h3>
+              </div>
+              <button
+                onClick={() => navigate("/roi-earnings")}
+                className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center   gap-2"
+              >
+                <ChevronRight className="w-4 h-4" />
+                View More
+              </button>
             </div>
 
             <div className="overflow-x-auto">
@@ -501,54 +511,62 @@ const Dashboard = () => {
           </div>
 
           {/* Commission Earnings */}
-          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg">
-            <div className="flex items-center gap-2 mb-4">
-              <DollarSign className="w-5 h-5 text-green-600" />
-              <h3 className="text-lg font-semibold">Commission Earnings</h3>
+          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                <h3 className="text-lg font-semibold">
+                  Leadership Earnings History
+                </h3>
+              </div>
+              <button
+                onClick={() => navigate("/commissions")}
+                className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center  gap-2"
+              >
+                <ChevronRight className="w-4 h-4" />
+                View More
+              </button>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[600px]">
                 <thead>
                   <tr className="border-b-2 border-slate-600">
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
+                    <th className="text-left py-3 px-3 text-sm font-semibold text-gray-300 w-28">
                       Date
                     </th>
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
+                    <th className="text-left py-3 px-3 text-sm font-semibold text-gray-300 w-24">
+                      Amount
+                    </th>
+                    <th className="text-left py-3 px-3 text-sm font-semibold text-gray-300 w-20">
                       Level
                     </th>
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
-                      Referral
-                    </th>
-                    <th className="text-right py-3 px-2 text-sm font-semibold text-gray-300">
-                      Earned
+                    <th className="text-left py-3 px-3 text-sm font-semibold text-gray-300 min-w-[200px]">
+                      Description
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {dashboardData?.commission_earnings_history &&
-                  dashboardData?.commission_earnings_history.length > 0 ? (
-                    dashboardData?.commission_earnings_history.map(
+                  {dashboardData?.commission_earnings_history.earnings &&
+                  dashboardData?.commission_earnings_history.earnings.length >
+                    0 ? (
+                    dashboardData?.commission_earnings_history.earnings.map(
                       (entry, index) => (
                         <tr
                           key={index}
                           className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
                         >
-                          <td className="text-left py-3 px-2 text-sm text-gray-300">
-                            {formatDate(entry.created_at)}
+                          <td className="text-left py-3 px-3 text-sm text-gray-300 w-28">
+                            {formatDate(entry.date)}
                           </td>
-                          <td className="text-left py-3 px-2 text-sm">
-                            <span className="bg-blue-900/50 text-blue-300 px-2 py-1 rounded text-xs font-semibold">
-                              Level {entry.level || "N/A"}
-                            </span>
+                          <td className="text-left py-3 px-3 text-sm font-semibold text-green-400 w-24">
+                            $ {entry.amount || "N/A"}
                           </td>
-                          <td className="text-left py-3 px-2 text-sm text-gray-300 truncate">
-                            {entry.referral_email ||
-                              entry.referral_name ||
-                              "N/A"}
+                          <td className="text-left py-3 px-3 text-sm text-gray-300 w-20">
+                            <span className="font-bold ">Level {" " + (entry.level || "N/A")}</span>
                           </td>
-                          <td className="text-right py-3 px-2 text-sm font-semibold text-green-400">
-                            {entry.amount || entry.commission || "N/A"} USDT
+                          <td className="text-left py-3 px-3 text-sm text-gray-300 min-w-[200px] wrap-break-word">
+                            {entry.description || "N/A"}
                           </td>
                         </tr>
                       )
@@ -559,7 +577,7 @@ const Dashboard = () => {
                         colSpan="4"
                         className="text-center py-12 text-gray-400 text-xl"
                       >
-                        No commission earnings history available
+                        No Leadership earnings history available
                       </td>
                     </tr>
                   )}

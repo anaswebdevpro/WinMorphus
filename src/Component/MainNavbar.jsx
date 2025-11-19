@@ -23,7 +23,7 @@ const MainNavbar = () => {
   ];
 
   const isActive = (path) => location.pathname === path;
-//  console.log("user in navbar:", user);
+  //  console.log("user in navbar:", user);
   return (
     <nav className="bg-[#0a1628] px-4 sm:px-6 py-3 sticky top-0 z-50 shadow-lg border-b border-slate-800">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -75,15 +75,7 @@ const MainNavbar = () => {
                 className="flex items-center space-x-2  text-gray-300 hover:text-white transition-colors"
               >
                 <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 text-sm font-medium">
-                  {user?.profile_picture_url ? (
-                    <img
-                      src={user.profile_picture_url}
-                      alt="Profile"
-                      className="w-10 h-10 rounded-full"
-                    />
-                  ) : (
-                    <User className="w-4 h-4" />
-                  )}
+                  <User className="w-6 h-6" />
                 </div>
                 <span className="hidden sm:block text-sm font-medium">
                   {user?.name || "User"}
