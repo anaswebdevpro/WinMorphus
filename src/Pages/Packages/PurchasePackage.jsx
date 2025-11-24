@@ -26,7 +26,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
   const PayableAmount =
     parseFloat(investmentAmount) +
     parseFloat(packageDetails?.commission_percentage || 0);
-  console.log("Initiating purchase with amount:", PayableAmount);
+  // console.log("Initiating purchase with amount:", PayableAmount);
   // Fetch package details by ID
   const fetchPackageDetails = () => {
     if (!packageId || !token) return;
@@ -39,7 +39,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
-          console.log("Package Details Response:", response);
+          // console.log("Package Details Response:", response);
           setIsLoading(false);
 
           // Extract package data from response
@@ -115,7 +115,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
 
     setIsPurchasing(true);
     try {
-      console.log("Initiating purchase with amount:", PayableAmount);
+      // console.log("Initiating purchase with amount:", PayableAmount);
       apiRequest({
         endpoint: PACKAGES_PURCHASE,
         method: "POST",
@@ -127,7 +127,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
-          console.log("Purchase Response:", response);
+          // console.log("Purchase Response:", response);
           setIsPurchasing(false);
           
           if (response.success === true) {
@@ -304,7 +304,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                       max={
                         packageDetails.max_amount === 0 ||
                         packageDetails.max_amount === "0.00"
-                          ? 100000
+                          ? 10000
                           : packageDetails.max_amount
                       }
                       step="50"
