@@ -359,7 +359,7 @@ const Dashboard = () => {
             <RankProgress />
           </div>
           <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
-            {dashboardData?.inv_info.inv_type===0?<Investerprogress data={dashboardData?.leader_info} />:<Leaderprogress />}
+            {!loading && dashboardData?.inv_info.inv_type===0?<Investerprogress data={dashboardData?.leader_info} />:<Leaderprogress data={dashboardData}/>}
           </div>
 
           {/* ROI Chart Component */}

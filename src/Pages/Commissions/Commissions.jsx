@@ -101,7 +101,7 @@ const Commissions = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatCard
             title="Leadership Income"
-            value={`$${stats?.result?.total || 0}`}
+            value={`$${parseFloat(stats?.result?.total  || 0).toFixed(2)}`}
             icon={DollarSign}
             gradient="from-green-900 to-slate-900"
             border="border-green-500"
@@ -110,7 +110,7 @@ const Commissions = () => {
           />
           <StatCard
             title="Total Referrals"
-            value={stats?.result?.total_active_directs || 0}
+            value={`${parseInt(stats?.result?.total_active_directs || 0)}`}
             icon={Users}
             gradient="from-blue-900 to-slate-900"
             border="border-blue-500"
@@ -119,7 +119,7 @@ const Commissions = () => {
           />
           <StatCard
             title="Active Referrals"
-            value={stats?.result?.total_directs || 0}
+            value={`${parseInt(stats?.result?.total_directs || 0)}`}
             icon={Target}
             gradient="from-yellow-900 to-slate-900"
             border="border-yellow-500"

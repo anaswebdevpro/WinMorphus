@@ -17,7 +17,7 @@ const TRANSACTION_TYPES = [
   { value: "level_income", label: "Level Income" },
   { value: "roi_earning", label: "ROI Earning" },
   { value: "package_purchase", label: "Package Purchase" },
-  { value: "rank_rewards", label: "Rank Rewards" },
+  { value: "reward_income", label: "Reward Income" },
 ];
 
 const AllTransactionTable = () => {
@@ -65,6 +65,8 @@ const AllTransactionTable = () => {
       level_income: "bg-blue-600/30 text-blue-300 border-blue-500/20",
       roi_earning: "bg-green-600/30 text-green-300 border-green-500/20",
       package_purchase: "bg-purple-600/30 text-purple-300 border-purple-500/20",
+      reward_income: "bg-gray-600/30 text-gray-300 border-gray-500/20", 
+      
     };
     return (
       typeColors[type] || "bg-gray-600/30 text-gray-300 border-gray-500/20"
@@ -389,7 +391,7 @@ const AllTransactionTable = () => {
                       <div className="flex items-start gap-2">
                         <Award className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm leading-relaxed wrap-break-word">
-                          {item.description}
+                          {item.description || "N/A"} 
                         </span>
                       </div>
                     </td>

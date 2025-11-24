@@ -29,11 +29,11 @@ const MainNavbar = () => {
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
         <div className="shrink-0">
-          <Link to="/dashboard" className="flex items-center gap-2">
+          <Link to="/dashboard" className="flex items-center gap-1">
             <img
               src={logo}
               alt="Logo"
-              className="h-8 sm:h-10 w-auto"
+              className="w-10 h-10 object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
@@ -74,8 +74,19 @@ const MainNavbar = () => {
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center space-x-2  text-gray-300 hover:text-white transition-colors"
               >
-                <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 text-sm font-medium">
-                  <User className="w-6 h-6" />
+                <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 text-sm font-medium overflow-hidden">
+                  {user?.profile_picture_url ? (
+                    <img
+                      src={user.profile_picture_url}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : null}
+                  <User
+                    className={`w-6 h-6 ${
+                      user?.profile_picture_url ? "hidden" : ""
+                    }`}
+                  />
                 </div>
                 <span className="hidden sm:block text-sm font-medium">
                   {user?.name || "User"}

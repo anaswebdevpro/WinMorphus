@@ -129,6 +129,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
         .then((response) => {
           console.log("Purchase Response:", response);
           setIsPurchasing(false);
+          
           if (response.success === true) {
             enqueueSnackbar(
               response?.message || "Package purchased successfully!",
@@ -136,15 +137,20 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                 variant: "success",
               }
             );
+            
+            // Reset form state
+            setInvestmentAmount("");
+            
+            // Delay closing to allow snackbar to show
+            setTimeout(() => {
+              onClose();
+            }, 200);
           } else {
             enqueueSnackbar(
-              response?.message || "Failed to purchase package. Please try again.", 
+              response?.message || "Failed to purchase package. Please try again.",
+              { variant: "error" }
             );
           }
-
-          // Reset and close
-          setInvestmentAmount("");
-          onClose();
         })
         .catch((error) => {
           setIsPurchasing(false);

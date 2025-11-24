@@ -16,10 +16,11 @@ const RoiChart = ({ stats }) => {
    { name: "Total investment", value: parseFloat((parseFloat(stats?.total_investment) || 0).toFixed(2)) },
    { name: "Level Income", value: parseFloat((parseFloat(stats?.current_level_income) || 0).toFixed(2)) },
     { name: "ROI Earned", value: parseFloat((parseFloat(stats?.current_roi_earned) || 0).toFixed(2)) },
+    { name: "Reward Income", value: parseFloat((parseFloat(stats?.reward_income) || 0).toFixed(2)) },
   ];
  
 
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   return (
     <div style={{ width: "100%", height: 300 }}>
