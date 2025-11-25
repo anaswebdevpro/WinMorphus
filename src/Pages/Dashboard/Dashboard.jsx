@@ -30,6 +30,7 @@ import Leaderprogress from "./Components/Leaderprogress";
 import Investerprogress from "./Components/Investerprogress";
 import TradingView from "./Components/TradingView";
 import TradingView2 from "./Components/TradingView2";
+import RankChart from "./Components/RankChart";
 
 const Dashboard = () => {
   const { token } = useAuth();
@@ -177,29 +178,8 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {/* Current Package */}
-          {loading ? (
-            <ShimmerLoader />
-          ) : (
-            <div className="bg-linear-to-br from-purple-900 to-slate-900 border-2 border-purple-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="absolute top-4 right-4 bg-purple-700/30 px-3 py-1 rounded-lg">
-                <Package className="w-4 h-4 text-purple-400" />
-              </div>
-              <div className="flex items-center gap-2 mb-2">
-                <Package className="w-5 h-5 text-purple-400" />
-                <p className="text-sm font-medium opacity-90">
-                  Current Package
-                </p>
-              </div>
-              <h2 className="text-2xl font-bold mb-1">
-                {dashboardData?.current_package?.name || "NO PACKAGE"}
-              </h2>
-              <p className="text-sm opacity-75">
-                {" "}
-                ${dashboardData?.current_package?.amount || 0}{" "}
-              </p>
-            </div>
-          )}
+          
+          
 
           {/* Total Investment */}
           {loading ? (
@@ -259,6 +239,26 @@ const Dashboard = () => {
                   2
                 )}
               </h2>
+            </div>
+          )}
+
+          {loading ? (
+            <ShimmerLoader />
+          ) : (
+            <div className="bg-linear-to-br from-purple-900 to-slate-900 border-2 border-purple-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-purple-700/30 px-3 py-1 rounded-lg">
+                <Package className="w-4 h-4 text-purple-400" />
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <Package className="w-5 h-5 text-purple-400" />
+                <p className="text-sm font-medium opacity-90">
+                    Reward Income
+                </p>
+              </div>
+              <h2 className="text-2xl font-bold mb-1">
+               ${parseFloat(dashboardData?.reward_income || 0).toFixed(2)}
+              </h2>
+             
             </div>
           )}
         </div>
@@ -359,8 +359,14 @@ const Dashboard = () => {
             <RankProgress />
           </div>
           <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
-            {!loading && dashboardData?.inv_info.inv_type===0?<Investerprogress data={dashboardData?.leader_info} />:<Leaderprogress data={dashboardData}/>}
+            {!loading && dashboardData?.inv_info.inv_type === 0 ? (
+              <Investerprogress data={dashboardData?.leader_info} />
+            ) : (
+              <Leaderprogress data={dashboardData} />
+            )}
           </div>
+      
+          
 
           {/* ROI Chart Component */}
           <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
@@ -441,6 +447,17 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* rank bar graph */}
+
+
+        <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Building2 className="w-5 h-5 text-yellow-400" />
+            <h3 className="text-2xl font-semibold">Business Carry Forward</h3>
+          </div>
+          <RankChart />
         </div>
 
         {/* Commission Section */}
@@ -563,7 +580,9 @@ const Dashboard = () => {
                             $ {entry.amount || "N/A"}
                           </td>
                           <td className="text-left py-3 px-3 text-sm text-gray-300 w-20">
-                            <span className="font-bold ">Level {" " + (entry.level || "N/A")}</span>
+                            <span className="font-bold ">
+                              Level {" " + (entry.level || "N/A")}
+                            </span>
                           </td>
                           <td className="text-left py-3 px-3 text-sm text-gray-300 min-w-[200px] wrap-break-word">
                             {entry.description || "N/A"}

@@ -4,6 +4,7 @@ import { apiRequest } from "../../../Services/Api";
 import { DASHBOARD_RANKS, GET_BALANCE } from "../../../Api/Api_variables";
 import { useAuth } from "../../../Context/UseAuth";
 import { useSnackbar } from "notistack";
+import RankChart from "./RankChart";
 
 const RankProgress = () => {
   // Dummy data
@@ -132,6 +133,11 @@ const RankProgress = () => {
         </p>
       </div> */}
     </div>
+
+//     <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+// <RankChart data={RankData} />      
+
+    // </div>
   );
 };
 
