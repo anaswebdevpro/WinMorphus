@@ -11,8 +11,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 1200}
             height={height || 600}
             viewBox="0 0 1200 600"
-            backgroundColor="#1f2937"
-            foregroundColor="#374151"
+            backgroundColor={"var(--bg-tertiary)"}
+            foregroundColor={"var(--bg-secondary)"}
             className={className}
           >
             {/* Header */}
@@ -38,8 +38,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 1000}
             height={height || 400}
             viewBox="0 0 1000 400"
-            backgroundColor="#1e1e1e"
-            foregroundColor="#2d2d2d"
+            backgroundColor={"var(--bg-tertiary)"}
+            foregroundColor={"var(--bg-secondary)"}
             className={className}
           >
             {/* Table Header */}
@@ -62,8 +62,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 300}
             height={height || 200}
             viewBox="0 0 300 200"
-            backgroundColor="#1e1e1e"
-            foregroundColor="#2d2d2d"
+            backgroundColor={"var(--bg-tertiary)"}
+            foregroundColor={"var(--bg-secondary)"}
             className={className}
           >
             <rect x="0" y="0" rx="8" ry="8" width="300" height="200" />
@@ -77,8 +77,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 400}
             height={height || 500}
             viewBox="0 0 400 500"
-            backgroundColor="#1e1e1e"
-            foregroundColor="#2d2d2d"
+            backgroundColor={"var(--bg-tertiary)"}
+            foregroundColor={"var(--bg-secondary)"}
             className={className}
           >
             {/* Form Title */}
@@ -103,8 +103,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 400}
             height={height || 300}
             viewBox="0 0 400 300"
-            backgroundColor="#1e1e1e"
-            foregroundColor="#2d2d2d"
+            backgroundColor={"var(--bg-tertiary)"}
+            foregroundColor={"var(--bg-secondary)"}
             className={className}
           >
             {/* Chart Title */}
@@ -126,8 +126,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 400}
             height={height || 300}
             viewBox="0 0 400 300"
-            backgroundColor="#1e1e1e"
-            foregroundColor="#2d2d2d"
+            backgroundColor={"var(--bg-tertiary)"}
+            foregroundColor={"var(--bg-secondary)"}
             className={className}
           >
             {/* List Items */}
@@ -146,8 +146,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 300}
             height={height || 400}
             viewBox="0 0 300 400"
-            backgroundColor="#1e1e1e"
-            foregroundColor="#2d2d2d"
+            backgroundColor={"var(--bg-tertiary)"}
+            foregroundColor={"var(--bg-secondary)"}
             className={className}
           >
             {/* Profile Picture */}
@@ -174,8 +174,8 @@ const ShimmerLoader = ({ variant = "card", width, height, className = "" }) => {
             width={width || 300}
             height={height || 200}
             viewBox="0 0 300 200"
-            backgroundColor="#1e1e1e"
-            foregroundColor="#2d2d2d"
+            backgroundColor={"var(--bg-tertiary)"}
+            foregroundColor={"var(--bg-secondary)"}
             className={className}
           >
             <rect x="0" y="0" rx="8" ry="8" width="300" height="200" />

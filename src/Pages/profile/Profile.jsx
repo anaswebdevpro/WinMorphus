@@ -76,7 +76,6 @@ const Profile = () => {
           const profile = response.data?.profile || response.data;
           setProfileData(response.data);
 
-         
           // reflect the new profile picture immediately.
           if (typeof refreshUser === "function") {
             const pic =
@@ -350,13 +349,13 @@ const Profile = () => {
   // Show shimmer loader while loading
   if (isLoading && !profileData) {
     return (
-      <div className="min-h-screen bg-slate-900">
+      <div className="min-h-screen bg-(--bg-primary)">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-yellow-400">
+            <h1 className="text-3xl font-bold text-(--accent-primary)">
               Profile Settings
             </h1>
-            <p className="text-gray-400 mt-2">
+            <p className="text-(--text-secondary) mt-2">
               Manage your account information and settings
             </p>
           </div>
@@ -370,14 +369,14 @@ const Profile = () => {
   const accountStatus = profileData?.account_status;
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-(--bg-primary)">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-yellow-400">
+          <h1 className="text-3xl font-bold text-(--accent-primary)">
             Profile Settings
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-(--text-secondary) mt-2">
             Manage your account information and settings
           </p>
         </div>
@@ -386,11 +385,11 @@ const Profile = () => {
           {/* Left Column - Profile Card & Account Status */}
           <div className="lg:col-span-1 space-y-6">
             {/* Profile Picture Card */}
-            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+            <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl p-6 shadow-lg">
               <div className="flex flex-col items-center">
                 {/* Profile Image */}
                 <div className="relative mb-4 group">
-                  <div className="w-32 h-32 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden border-4 border-slate-600">
+                  <div className="w-32 h-32 rounded-full bg-(--bg-tertiary) flex items-center justify-center overflow-hidden border-4 border-(--border-secondary)">
                     {profileImage ? (
                       <img
                         src={profileImage}
@@ -398,12 +397,12 @@ const Profile = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <User className="w-16 h-16 text-gray-400" />
+                      <User className="w-16 h-16 text-(--text-muted)" />
                     )}
                   </div>
                   <label
                     htmlFor="profileImage"
-                    className="absolute bottom-0 right-0 bg-yellow-500 text-slate-900 p-2 rounded-full cursor-pointer hover:bg-yellow-600 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="absolute bottom-0 right-0 bg-(--accent-primary) text-(--text-primary) p-2 rounded-full cursor-pointer hover:bg-(--accent-hover) transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Camera className="w-5 h-5" />
                   </label>
@@ -419,7 +418,7 @@ const Profile = () => {
                     <button
                       onClick={handleDeleteProfilePicture}
                       disabled={isUploadingImage}
-                      className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full cursor-pointer shadow-lg transition-all duration-200 transform group-hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="absolute top-0 right-0 bg-(--status-error) hover:opacity-95 text-white p-2 rounded-full cursor-pointer shadow-lg transition-all duration-200 transform group-hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Delete profile picture"
                     >
                       <X className="w-4 h-4" />
@@ -428,25 +427,31 @@ const Profile = () => {
                 </div>
 
                 {isUploadingImage && (
-                  <p className="text-sm text-yellow-400 mb-2">Uploading...</p>
+                  <p className="text-sm text-(--accent-primary) mb-2">
+                    Uploading...
+                  </p>
                 )}
 
                 {/* User Info */}
-                <h3 className="text-xl font-bold text-white text-center mb-1">
+                <h3 className="text-xl font-bold text-(--text-primary) text-center mb-1">
                   {profile?.name || "User"}
                 </h3>
-                <p className="text-gray-400 text-sm mb-4">{profile?.email}</p>
+                <p className="text-(--text-secondary) text-sm mb-4">
+                  {profile?.email}
+                </p>
 
                 {/* Referral Code */}
-                <div className="w-full bg-slate-700/50 border border-slate-600 rounded-lg p-3">
-                  <p className="text-gray-400 text-xs mb-1">Referral Code</p>
+                <div className="w-full bg-(--bg-tertiary) border border-(--border-secondary) rounded-lg p-3">
+                  <p className="text-(--text-secondary) text-xs mb-1">
+                    Referral Code
+                  </p>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-yellow-400 font-bold text-lg font-mono">
+                    <span className="text-(--accent-primary) font-bold text-lg font-mono">
                       {profile?.referral_code || "N/A"}
                     </span>
                     <button
                       onClick={handleCopyReferral}
-                      className="text-yellow-400 hover:text-yellow-500 transition-colors"
+                      className="text-(--accent-primary) hover:text-(--accent-hover) transition-colors"
                     >
                       {copiedReferral ? (
                         <Check className="w-5 h-5" />
@@ -460,13 +465,13 @@ const Profile = () => {
             </div>
 
             {/* Account Status */}
-            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
-              <h3 className="text-lg font-bold text-white mb-4">
+            <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl p-6 shadow-lg">
+              <h3 className="text-lg font-bold text-(--text-primary) mb-4">
                 Account Status
               </h3>
               <div className="space-y-3">
                 {/* Account Verified */}
-                <div className="flex items-start gap-3 p-3 bg-slate-700/30 rounded-lg">
+                <div className="flex items-start gap-3 p-3 bg-(--bg-tertiary) rounded-lg">
                   <div
                     className={`p-2 rounded-full ${
                       accountStatus?.account_verified?.status
@@ -483,33 +488,33 @@ const Profile = () => {
                     />
                   </div>
                   <div className="flex-1">
-                    <p className="text-white font-semibold text-sm">
+                    <p className="text-(--text-primary) font-semibold text-sm">
                       {accountStatus?.account_verified?.label ||
                         "Account Status"}
                     </p>
-                    <p className="text-gray-400 text-xs">
+                    <p className="text-(--text-muted) text-xs">
                       {accountStatus?.account_verified?.description}
                     </p>
                   </div>
                 </div>
 
                 {/* Member Since */}
-                <div className="flex items-start gap-3 p-3 bg-slate-700/30 rounded-lg">
+                <div className="flex items-start gap-3 p-3 bg-(--bg-tertiary) rounded-lg">
                   <div className="p-2 rounded-full bg-blue-500/20">
                     <Calendar className="w-5 h-5 text-blue-400" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-white font-semibold text-sm">
+                    <p className="text-(--text-primary) font-semibold text-sm">
                       {accountStatus?.member_since?.label || "Member Since"}
                     </p>
-                    <p className="text-gray-400 text-xs">
+                    <p className="text-(--text-secondary) text-xs">
                       {accountStatus?.member_since?.description}
                     </p>
                   </div>
                 </div>
 
                 {/* Premium User */}
-                <div className="flex items-start gap-3 p-3 bg-slate-700/30 rounded-lg">
+                <div className="flex items-start gap-3 p-3 bg-(--bg-tertiary) rounded-lg">
                   <div
                     className={`p-2 rounded-full ${
                       accountStatus?.premium_user?.status
@@ -526,10 +531,10 @@ const Profile = () => {
                     />
                   </div>
                   <div className="flex-1">
-                    <p className="text-white font-semibold text-sm">
+                    <p className="text-(--text-primary) font-semibold text-sm">
                       {accountStatus?.premium_user?.label || "Account Type"}
                     </p>
-                    <p className="text-gray-400 text-xs">
+                    <p className="text-(--text-secondary) text-xs">
                       {accountStatus?.premium_user?.description}
                     </p>
                   </div>
@@ -540,20 +545,20 @@ const Profile = () => {
 
           {/* Right Column - Profile Form */}
           <div className="lg:col-span-2">
-            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-white mb-6">
+            <div className="bg-(--bg-card) border border-(--border-primary) rounded-xl p-6 shadow-lg">
+              <h3 className="text-xl font-bold text-(--text-primary) mb-6">
                 Personal Information
               </h3>
 
               <form onSubmit={formik.handleSubmit} className="space-y-6">
                 {/* Name */}
                 <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">
-                    Full Name <span className="text-red-400">*</span>
+                  <label className="block text-(--text-secondary) text-sm font-medium mb-2">
+                    Full Name <span className="text-(--status-error)">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <User className="w-5 h-5 text-gray-400" />
+                      <User className="w-5 h-5 text-(--text-muted)" />
                     </div>
                     <input
                       type="text"
@@ -561,12 +566,12 @@ const Profile = () => {
                       value={formik.values.name}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 bg-(--input-bg) border border-(--input-border) rounded-lg text-(--text-primary) placeholder-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent"
                       placeholder="Enter your full name"
                     />
                   </div>
                   {formik.touched.name && formik.errors.name && (
-                    <p className="text-red-400 text-xs mt-1">
+                    <p className="text-(--status-error) text-xs mt-1">
                       {formik.errors.name}
                     </p>
                   )}
@@ -575,12 +580,13 @@ const Profile = () => {
                 {/* Email & Phone */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">
-                      Email Address <span className="text-red-400">*</span>
+                    <label className="block text-(--text-secondary) text-sm font-medium mb-2">
+                      Email Address{" "}
+                      <span className="text-(--status-error)">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Mail className="w-5 h-5 text-gray-400" />
+                        <Mail className="w-5 h-5 text-(--text-muted)" />
                       </div>
                       <input
                         type="email"
@@ -588,24 +594,24 @@ const Profile = () => {
                         value={formik.values.email}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-3 bg-(--input-bg) border border-(--input-border) rounded-lg text-(--text-primary) placeholder-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent"
                         placeholder="your@email.com"
                       />
                     </div>
                     {formik.touched.email && formik.errors.email && (
-                      <p className="text-red-400 text-xs mt-1">
+                      <p className="text-(--status-error) text-xs mt-1">
                         {formik.errors.email}
                       </p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">
+                    <label className="block text-(--text-secondary) text-sm font-medium mb-2">
                       Phone Number
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Phone className="w-5 h-5 text-gray-400" />
+                        <Phone className="w-5 h-5 text-(--text-muted)" />
                       </div>
                       <input
                         type="tel"
@@ -613,12 +619,12 @@ const Profile = () => {
                         value={formik.values.phone}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-3 bg-(--input-bg) border border-(--input-border) rounded-lg text-(--text-primary) placeholder-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent"
                         placeholder="+1 234 567 8900"
                       />
                     </div>
                     {formik.touched.phone && formik.errors.phone && (
-                      <p className="text-red-400 text-xs mt-1">
+                      <p className="text-(--status-error) text-xs mt-1">
                         {formik.errors.phone}
                       </p>
                     )}
@@ -627,12 +633,12 @@ const Profile = () => {
 
                 {/* Date of Birth */}
                 <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">
+                  <label className="block text-(--text-secondary) text-sm font-medium mb-2">
                     Date of Birth
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Calendar className="w-5 h-5 text-gray-400" />
+                      <Calendar className="w-5 h-5 text-(--text-muted)" />
                     </div>
                     <input
                       type="date"
@@ -640,12 +646,12 @@ const Profile = () => {
                       value={formik.values.date_of_birth}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 bg-(--input-bg) border border-(--input-border) rounded-lg text-(--text-primary) placeholder-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent"
                     />
                   </div>
                   {formik.touched.date_of_birth &&
                     formik.errors.date_of_birth && (
-                      <p className="text-red-400 text-xs mt-1">
+                      <p className="text-(--status-error) text-xs mt-1">
                         {formik.errors.date_of_birth}
                       </p>
                     )}
@@ -653,12 +659,12 @@ const Profile = () => {
 
                 {/* Address */}
                 <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">
+                  <label className="block text-(--text-secondary) text-sm font-medium mb-2">
                     Address
                   </label>
                   <div className="relative">
                     <div className="absolute top-3 left-0 pl-3 pointer-events-none">
-                      <MapPin className="w-5 h-5 text-gray-400" />
+                      <MapPin className="w-5 h-5 text-(--text-muted)" />
                     </div>
                     <textarea
                       name="address"
@@ -666,12 +672,12 @@ const Profile = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       rows="3"
-                      className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent resize-none"
+                      className="w-full pl-10 pr-4 py-3 bg-(--input-bg) border border-(--input-border) rounded-lg text-(--text-primary) placeholder-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent resize-none"
                       placeholder="Enter your address"
                     />
                   </div>
                   {formik.touched.address && formik.errors.address && (
-                    <p className="text-red-400 text-xs mt-1">
+                    <p className="text-(--status-error) text-xs mt-1">
                       {formik.errors.address}
                     </p>
                   )}
@@ -680,7 +686,7 @@ const Profile = () => {
                 {/* City, State, Country */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">
+                    <label className="block text-(--text-secondary) text-sm font-medium mb-2">
                       City
                     </label>
                     <input
@@ -689,18 +695,18 @@ const Profile = () => {
                       value={formik.values.city}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                      className="w-full px-4 py-3 bg-(--input-bg) border border-(--input-border) rounded-lg text-(--text-primary) placeholder-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent"
                       placeholder="City"
                     />
                     {formik.touched.city && formik.errors.city && (
-                      <p className="text-red-400 text-xs mt-1">
+                      <p className="text-(--status-error) text-xs mt-1">
                         {formik.errors.city}
                       </p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">
+                    <label className="block text-(--text-secondary) text-sm font-medium mb-2">
                       State
                     </label>
                     <input
@@ -709,18 +715,18 @@ const Profile = () => {
                       value={formik.values.state}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                      className="w-full px-4 py-3 bg-(--input-bg) border border-(--input-border) rounded-lg text-(--text-primary) placeholder-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent"
                       placeholder="State"
                     />
                     {formik.touched.state && formik.errors.state && (
-                      <p className="text-red-400 text-xs mt-1">
+                      <p className="text-(--status-error) text-xs mt-1">
                         {formik.errors.state}
                       </p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">
+                    <label className="block text-(--text-secondary) text-sm font-medium mb-2">
                       Country
                     </label>
                     <input
@@ -729,11 +735,11 @@ const Profile = () => {
                       value={formik.values.country}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                      className="w-full px-4 py-3 bg-(--input-bg) border border-(--input-border) rounded-lg text-(--text-primary) placeholder-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent"
                       placeholder="Country"
                     />
                     {formik.touched.country && formik.errors.country && (
-                      <p className="text-red-400 text-xs mt-1">
+                      <p className="text-(--status-error) text-xs mt-1">
                         {formik.errors.country}
                       </p>
                     )}
@@ -742,7 +748,7 @@ const Profile = () => {
 
                 {/* Postal Code */}
                 <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">
+                  <label className="block text-(--text-secondary) text-sm font-medium mb-2">
                     Postal Code
                   </label>
                   <input
@@ -751,11 +757,11 @@ const Profile = () => {
                     value={formik.values.postal_code}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-(--input-bg) border border-(--input-border) rounded-lg text-(--text-primary) placeholder-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent"
                     placeholder="Enter postal code"
                   />
                   {formik.touched.postal_code && formik.errors.postal_code && (
-                    <p className="text-red-400 text-xs mt-1">
+                    <p className="text-(--status-error) text-xs mt-1">
                       {formik.errors.postal_code}
                     </p>
                   )}
@@ -766,11 +772,11 @@ const Profile = () => {
                   <button
                     type="submit"
                     disabled={isSaving || !formik.isValid}
-                    className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-slate-900 rounded-lg font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg"
+                    className="px-6 py-3 bg-(--accent-primary) hover:bg-(--accent-hover) text-(--text-primary) rounded-lg font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg"
                   >
                     {isSaving ? (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-slate-900"></div>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-(--text-primary)"></div>
                         Saving...
                       </>
                     ) : (

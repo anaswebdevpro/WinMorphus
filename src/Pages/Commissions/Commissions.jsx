@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { Users, DollarSign, Award, Target } from "lucide-react";
 import { PageHeader, ShimmerLoader } from "../../Component/ui";
@@ -9,29 +10,20 @@ import CommissionTable from "./CommitionTable";
 import AllTransactionTable from "./AllTransactionTable";
 
 // Reusable StatCard Component
-const StatCard = ({
-  title,
-  value,
-  gradient,
-  border,
-  iconBg,
-  iconColor,
-  // eslint-disable-next-line no-unused-vars
-  icon: IconComponent,
-}) => (
-  <div
-    className={`bg-linear-to-br ${gradient} border-2 ${border} rounded-lg p-6 shadow-lg hover:shadow-xl transition-all relative overflow-hidden`}
-  >
+const StatCard = ({ title, value, icon: IconComponent }) => (
+  <div className="bg-(--bg-card-gradient-start) bg-linear-to-br from-(--bg-card-gradient-start) to-(--bg-card-gradient-end) border-2 border-(--border-accent) rounded-lg p-6 shadow-lg hover:shadow-xl transition-all relative overflow-hidden">
     <div className="absolute top-4 right-4">
-      <div className={`${iconBg} p-3 rounded-lg`}>
-        <IconComponent className={`w-6 h-6 ${iconColor}`} />
+      <div className="bg-(--accent-primary)/20 p-3 rounded-lg">
+        <IconComponent className="w-6 h-6 text-(--accent-primary)" />
       </div>
     </div>
     <div className="flex items-center gap-2 mb-2">
-      <IconComponent className={`w-5 h-5 ${iconColor}`} />
-      <p className="text-sm font-medium opacity-90">{title}</p>
+      <IconComponent className="w-5 h-5 text-(--accent-primary)" />
+      <p className="text-sm font-medium text-(--text-secondary) opacity-90">
+        {title}
+      </p>
     </div>
-    <h2 className="text-3xl font-bold text-white">{value}</h2>
+    <h2 className="text-3xl font-bold text-(--text-primary)">{value}</h2>
   </div>
 );
 
@@ -77,7 +69,7 @@ const Commissions = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white">
+      <div className="min-h-screen bg-(--bg-primary) text-(--text-primary)">
         <div className="max-w-7xl mx-auto p-6">
           <PageHeader
             title="LeaderShip Income"
@@ -90,7 +82,7 @@ const Commissions = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-(--bg-primary) text-(--text-primary)">
       <div className="max-w-7xl mx-auto p-6">
         <PageHeader
           title="LeaderShip Income"
@@ -101,7 +93,7 @@ const Commissions = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatCard
             title="Leadership Income"
-            value={`$${parseFloat(stats?.result?.total  || 0).toFixed(2)}`}
+            value={`$${parseFloat(stats?.result?.total || 0).toFixed(2)}`}
             icon={DollarSign}
             gradient="from-green-900 to-slate-900"
             border="border-green-500"
@@ -143,9 +135,9 @@ const Commissions = () => {
 
         {/* Commission Table */}
         <CommissionTable />
-       
+
         {/* All Transactions Table */}
-        <AllTransactionTable /> 
+        <AllTransactionTable />
       </div>
     </div>
   );

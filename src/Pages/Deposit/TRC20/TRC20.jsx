@@ -1,18 +1,66 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Copy, Check, AlertCircle, QrCode, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { useAuth } from "../../../Context/UseAuth";
+import { apiRequest } from "../../../Services/Api";
+import { DEPOSIT_METHODS_TYPE_USDT_BEP20_URL, DEPOSIT_METHODS_TYPE_USDT_TRC20_URL } from "../../../Api/Api_variables";
 
 const TRC20 = () => {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
-
-  const walletAddress = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
+  const [Loading, setLoading] = useState(false);
+  const [DepositMethod, setDepositMethod] = useState(null);
+  const { token } = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleCopyAddress = () => {
-    navigator.clipboard.writeText(walletAddress);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (DepositMethod?.wallet_address) {
+      navigator.clipboard.writeText(DepositMethod.wallet_address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
+
+  const FetchMethods = useCallback(() => {
+    setLoading(true);
+    apiRequest({
+      endpoint: DEPOSIT_METHODS_TYPE_USDT_TRC20_URL,
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        console.log("Deposit Methods API Response:", response);
+
+        
+        setDepositMethod(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch Deposit Methods:", error);
+        const errorMessage =
+          error?.message ||
+          error?.response?.data?.message ||
+          "Failed to fetch Deposit Methods";
+        enqueueSnackbar(errorMessage, { variant: "error" });
+        setLoading(false);
+      });
+  }, [token, enqueueSnackbar]);
+
+  useEffect(() => {
+    FetchMethods();
+  }, []);
+
+if (Loading ) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="loader mb-4"></div>
+          <p className="text-gray-400">Loading Deposit Method...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -27,17 +75,36 @@ const TRC20 = () => {
         </button>
 
         {/* Header with Status */}
-        <div className="bg-linear-to-r from-teal-600 to-teal-700 rounded-lg p-6 mb-8 flex items-start justify-between">
+        <div
+          className="rounded-lg p-6 mb-8 flex items-start justify-between"
+          style={{
+            background: DepositMethod?.color_theme
+              ? `linear-gradient(to right, ${DepositMethod.color_theme}, ${DepositMethod.color_theme}99)`
+              : "linear-gradient(to right, rgb(5, 150, 105), rgb(5, 150, 105))",
+          }}
+        >
           <div className="flex items-center gap-4">
-            <div className="bg-teal-500 p-3 rounded-full">
+            <div
+              className="p-3 rounded-full"
+              style={{
+                backgroundColor: DepositMethod?.color_theme || "#059669",
+              }}
+            >
               <span className="text-2xl text-white font-bold">₮</span>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">USDT TRC20</h1>
-              <p className="text-teal-100 text-sm">TRC20 Network Payment</p>
+              <h1 className="text-3xl font-bold text-white">
+                {DepositMethod?.name || "Loading..."}
+              </h1>
+              <p className="text-white/80 text-sm">
+                {DepositMethod?.description || "Cryptocurrency Payment"}
+              </p>
             </div>
           </div>
-          <div className="bg-teal-500 text-white px-4 py-2 rounded-full font-bold text-sm">
+          <div
+            className="text-white px-4 py-2 rounded-full font-bold text-sm"
+            style={{ backgroundColor: DepositMethod?.color_theme || "#059669" }}
+          >
             Active
           </div>
         </div>
@@ -51,13 +118,13 @@ const TRC20 = () => {
                 Use your crypto wallet to scan
               </p>
 
-              <div className="bg-white p-6 rounded-lg mb-6 border-4 border-dashed border-teal-500">
+              <div className="bg-white p-6 rounded-lg mb-6 border-4 border-dashed border-emerald-500">
                 <div className="bg-white w-full aspect-square flex items-center justify-center rounded">
                   <QrCode className="w-32 h-32 text-gray-800" />
                 </div>
               </div>
 
-              <p className="text-teal-400 text-xs text-center font-semibold">
+              <p className="text-emerald-400 text-xs text-center font-semibold">
                 Secure Payment
               </p>
             </div>
@@ -71,13 +138,17 @@ const TRC20 = () => {
                 <p className="text-blue-600 text-xs font-bold uppercase mb-2">
                   Currency
                 </p>
-                <p className="text-slate-900 text-2xl font-bold">USDT</p>
+                <p className="text-slate-900 text-2xl font-bold">
+                  {DepositMethod?.currency || "USDT"}
+                </p>
               </div>
               <div className="bg-orange-100 rounded-lg p-6">
                 <p className="text-orange-600 text-xs font-bold uppercase mb-2">
                   Network
                 </p>
-                <p className="text-slate-900 text-2xl font-bold">TRC20</p>
+                <p className="text-slate-900 text-2xl font-bold">
+                  {DepositMethod?.network || "TRC20"}
+                </p>
               </div>
             </div>
 
@@ -86,7 +157,7 @@ const TRC20 = () => {
               <h3 className="text-white font-bold mb-4">Wallet Address</h3>
               <div className="bg-slate-700 border border-slate-600 rounded-lg p-4 mb-4 flex items-center justify-between gap-4">
                 <p className="text-gray-300 font-mono text-sm break-all">
-                  {walletAddress}
+                  {DepositMethod?.wallet_address || "NA..."}
                 </p>
                 <button
                   onClick={handleCopyAddress}
@@ -108,39 +179,84 @@ const TRC20 = () => {
             </div>
 
             {/* Payment Instructions */}
-            <div className="bg-teal-100 border-2 border-teal-400 rounded-lg p-6">
-              <h3 className="text-teal-900 font-bold mb-4">
+            <div
+              className="border-2 rounded-lg p-6"
+              style={{
+                backgroundColor: DepositMethod?.color_theme
+                  ? `${DepositMethod.color_theme}20`
+                  : "rgb(236, 253, 245)",
+                borderColor: DepositMethod?.color_theme || "#10b981",
+              }}
+            >
+              <h3
+                className="font-bold mb-4"
+                style={{ color: DepositMethod?.color_theme || "#047857" }}
+              >
                 Payment Instructions
               </h3>
               <div className="space-y-3">
                 <div className="flex gap-3">
-                  <div className="bg-teal-500 text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold">
+                  <div
+                    className="text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold"
+                    style={{
+                      backgroundColor: DepositMethod?.color_theme || "#10b981",
+                    }}
+                  >
                     1
                   </div>
-                  <p className="text-teal-900 text-sm">
+                  <p
+                    className="text-sm"
+                    style={{ color: DepositMethod?.color_theme || "#047857" }}
+                  >
                     Scan QR code with wallet app
                   </p>
                 </div>
                 <div className="flex gap-3">
-                  <div className="bg-teal-500 text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold">
+                  <div
+                    className="text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold"
+                    style={{
+                      backgroundColor: DepositMethod?.color_theme || "#10b981",
+                    }}
+                  >
                     2
                   </div>
-                  <p className="text-teal-900 text-sm">
+                  <p
+                    className="text-sm"
+                    style={{ color: DepositMethod?.color_theme || "#047857" }}
+                  >
                     Or copy wallet address manually
                   </p>
                 </div>
                 <div className="flex gap-3">
-                  <div className="bg-teal-500 text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold">
+                  <div
+                    className="text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold"
+                    style={{
+                      backgroundColor: DepositMethod?.color_theme || "#10b981",
+                    }}
+                  >
                     3
                   </div>
-                  <p className="text-teal-900 text-sm">Send only USDT tokens</p>
+                  <p
+                    className="text-sm"
+                    style={{ color: DepositMethod?.color_theme || "#047857" }}
+                  >
+                    Send only {DepositMethod?.currency || "USDT"} tokens
+                  </p>
                 </div>
                 <div className="flex gap-3">
-                  <div className="bg-teal-500 text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold">
+                  <div
+                    className="text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold"
+                    style={{
+                      backgroundColor: DepositMethod?.color_theme || "#10b981",
+                    }}
+                  >
                     4
                   </div>
-                  <p className="text-teal-900 text-sm">
-                    Use TRC20 network only
+                  <p
+                    className="text-sm"
+                    style={{ color: DepositMethod?.color_theme || "#047857" }}
+                  >
+                    Use {DepositMethod?.network || "BEP20"} network only
                   </p>
                 </div>
               </div>
@@ -154,8 +270,12 @@ const TRC20 = () => {
                   Important
                 </p>
                 <p className="text-gray-300 text-sm">
-                  Deposits will be confirmed within 5-15 minutes on the TRC20
-                  network.
+                  Deposits will be confirmed within{" "}
+                  {DepositMethod?.formatted_processing_time || "10-30 minutes"}{" "}
+                  on the {DepositMethod?.network || "BEP20"} network. Min:{" "}
+                  {DepositMethod?.min_amount} {DepositMethod?.currency}, Max:{" "}
+                  {DepositMethod?.max_amount} {DepositMethod?.currency}. Fee:{" "}
+                  {DepositMethod?.formatted_fee}
                 </p>
               </div>
             </div>

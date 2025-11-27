@@ -32,19 +32,21 @@ const CommissionTable = () => {
   // Level color mapping
   const getLevelColors = (level) => {
     const levelColors = {
-      1: "bg-emerald-600/30 text-emerald-300 border-emerald-500/20",
-      2: "bg-blue-600/30 text-blue-300 border-blue-500/20",
-      3: "bg-purple-600/30 text-purple-300 border-purple-500/20",
-      4: "bg-orange-600/30 text-orange-300 border-orange-500/20",
-      5: "bg-pink-600/30 text-pink-300 border-pink-500/20",
-      6: "bg-cyan-600/30 text-cyan-300 border-cyan-500/20",
-      7: "bg-yellow-600/30 text-yellow-300 border-yellow-500/20",
-      8: "bg-red-600/30 text-red-300 border-red-500/20",
-      9: "bg-cyan-600/30 text-cyan-300 border-cyan-500/20",
-      10: "bg-violet-600/30 text-violet-300 border-violet-500/20",
+      1: "bg-emerald-600/30 border-emerald-500/20",
+      2: "bg-blue-600/30 border-blue-500/20",
+      3: "bg-purple-600/30 border-purple-500/20",
+      4: "bg-orange-600/30 border-orange-500/20",
+      5: "bg-pink-600/30 border-pink-500/20",
+      6: "bg-cyan-600/30 border-cyan-500/20",
+      7: "bg-yellow-600/30 border-yellow-500/20",
+      8: "bg-red-600/30 border-red-500/20",
+      9: "bg-cyan-600/30 border-cyan-500/20",
+      10: "bg-violet-600/30 border-violet-500/20",
     };
+    // Use theme primary text color for badge label to ensure contrast in light theme
     return (
-      levelColors[level] || "bg-slate-600/30 text-slate-300 border-slate-500/20"
+      (levelColors[level] || "bg-slate-600/30 border-slate-500/20") +
+      " text-(--text-primary)"
     );
   };
 
@@ -151,11 +153,11 @@ const CommissionTable = () => {
 
   if (loading) {
     return (
-      <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden animate-pulse">
+      <div className="bg-(--bg-card) border border-(--border-primary) rounded-lg overflow-hidden animate-pulse">
         <div className="p-4 space-y-4">
-          <div className="h-12 bg-slate-700 rounded"></div>
+          <div className="h-12 bg-(--bg-tertiary) rounded"></div>
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-slate-700 rounded"></div>
+            <div key={i} className="h-16 bg-(--bg-tertiary) rounded"></div>
           ))}
         </div>
       </div>
@@ -165,12 +167,12 @@ const CommissionTable = () => {
   return (
     <>
       {/* Header with Title and Filters - Separate from table */}
-      <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden mb-6">
-        <div className="p-4 bg-slate-700/30">
+      <div className="bg-(--bg-card) border border-(--border-primary) rounded-lg overflow-hidden mb-6">
+        <div className="p-4 bg-(--bg-tertiary)">
           <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
             {/* Title */}
             <div className="shrink-0">
-              <h2 className="text-xl font-semibold text-white">
+              <h2 className="text-xl font-semibold text-(--text-primary)">
                 Leadership Income History
               </h2>
             </div>
@@ -179,7 +181,7 @@ const CommissionTable = () => {
             <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:flex-wrap">
               {/* Date Filter */}
               <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-                <label className="text-sm font-medium text-gray-300 whitespace-nowrap">
+                <label className="text-sm font-medium text-(--text-secondary) whitespace-nowrap">
                   Filter by Date:
                 </label>
                 <div className="flex gap-2 items-center">
@@ -187,15 +189,15 @@ const CommissionTable = () => {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="bg-slate-600 border border-slate-500 rounded px-3 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
+                    className="bg-(--input-bg) border border-(--input-border) rounded px-3 py-1 text-(--text-primary) text-sm focus:outline-none focus:ring-2 focus:ring-(--accent-primary) w-full sm:w-auto"
                     placeholder="Start Date"
                   />
-                  <span className="text-gray-400 text-sm">to</span>
+                  <span className="text-(--text-muted) text-sm">to</span>
                   <input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="bg-slate-600 border border-slate-500 rounded px-3 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
+                    className="bg-(--input-bg) border border-(--input-border) rounded px-3 py-1 text-(--text-primary) text-sm focus:outline-none focus:ring-2 focus:ring-(--accent-primary) w-full sm:w-auto"
                     placeholder="End Date"
                   />
                 </div>
@@ -206,7 +208,7 @@ const CommissionTable = () => {
                 <button
                   onClick={handleClearFilter}
                   disabled={isFiltering}
-                  className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-600/50 text-white px-4 py-1 rounded text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 whitespace-nowrap"
+                  className="bg-(--accent-secondary) hover:bg-(--accent-hover) disabled:bg-(--bg-tertiary) text-(--text-primary) px-4 py-1 rounded text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-(--accent-primary) whitespace-nowrap"
                 >
                   Clear Filter
                 </button>
@@ -216,7 +218,7 @@ const CommissionTable = () => {
 
           {/* Filter Status Messages */}
           {startDate && endDate && (
-            <div className="mt-3 text-sm text-gray-400">
+            <div className="mt-3 text-sm text-(--text-secondary)">
               Showing results from {new Date(startDate).toLocaleDateString()} to{" "}
               {new Date(endDate).toLocaleDateString()}
             </div>
@@ -225,25 +227,25 @@ const CommissionTable = () => {
       </div>
 
       {/* Table Component - Separate */}
-      <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <div className="bg-(--bg-card) border border-(--border-primary) rounded-lg overflow-hidden">
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px]">
             <thead>
-              <tr className="border-b border-slate-700 px-10 bg-slate-700/50">
-                <th className="text-left py-4 pl-30 pr-6 font-semibold text-gray-300 w-20">
+              <tr className="border-b-2 border-(--border-secondary) px-10 bg-(--bg-secondary)">
+                <th className="text-left py-4 pl-30 pr-6 font-semibold text-(--text-secondary) w-20">
                   S.No
                 </th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-300 w-40">
+                <th className="text-left py-4 px-6 font-semibold text-(--text-secondary) w-40">
                   Date
                 </th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-300 w-32">
+                <th className="text-left py-4 px-6 font-semibold text-(--text-secondary) w-32">
                   Amount
                 </th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-300 w-32">
+                <th className="text-left py-4 px-6 font-semibold text-(--text-secondary) w-32">
                   Level
                 </th>
-                <th className="text-left py-4 pl-6 pr-8 font-semibold text-gray-300 min-w-[300px]">
+                <th className="text-left py-4 pl-6 pr-8 font-semibold text-(--text-secondary) min-w-[300px]">
                   Description
                 </th>
               </tr>
@@ -253,16 +255,16 @@ const CommissionTable = () => {
                 paginatedData.map((item, index) => (
                   <tr
                     key={item.id || index}
-                    className="border-b border-slate-700  hover:bg-slate-700/50 transition-colors"
+                    className="border-b border-(--border-primary) hover:bg-(--bg-tertiary) transition-colors"
                   >
-                    <td className="py-4 pl-32 pr-6 text-gray-300 w-4">
+                    <td className="py-4 pl-32 pr-6 text-(--text-primary) font-medium w-4">
                       <span className="font-medium">
                         {(currentPage - 1) * entriesPerPage + index + 1}
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-gray-300 w-40">
+                    <td className="py-4 px-6 text-(--text-secondary) w-40">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-yellow-400 shrink-0" />
+                        <Calendar className="w-4 h-4 text-blue-500 shrink-0" />
                         <span className="whitespace-nowrap">
                           {new Date(item.date).toLocaleDateString("en-US", {
                             year: "numeric",
@@ -273,7 +275,7 @@ const CommissionTable = () => {
                       </div>
                     </td>
                     <td className="py-4 px-6 w-32">
-                      <span className="font-semibold text-green-400 whitespace-nowrap">
+                      <span className="font-semibold text-green-600 whitespace-nowrap">
                         ${parseFloat(item.amount).toFixed(2)}
                       </span>
                     </td>
@@ -289,8 +291,8 @@ const CommissionTable = () => {
                     </td>
                     <td className="py-4 pl-6 pr-8 min-w-[300px]">
                       <div className="flex items-start gap-2">
-                        <Award className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
-                        <span className="text-gray-300 text-sm leading-relaxed wrap-break-word">
+                        <Award className="w-4 h-4 text-(--accent-primary) mt-0.5 shrink-0" />
+                        <span className="text-(--text-secondary) text-sm leading-relaxed wrap-break-word">
                           {item.description}
                         </span>
                       </div>
@@ -301,7 +303,7 @@ const CommissionTable = () => {
                 <tr>
                   <td
                     colSpan={5}
-                    className="py-12 pl-12 pr-8 text-center text-gray-500"
+                    className="py-12 pl-12 pr-8 text-center text-(--text-secondary)"
                   >
                     No commission earnings available
                   </td>
@@ -312,13 +314,13 @@ const CommissionTable = () => {
         </div>
 
         {/* Pagination */}
-        <div className="px-4 py-4 border-t border-slate-700 bg-slate-700/30">
+        <div className="px-4 py-4 border-t border-(--border-primary) bg-(--bg-tertiary)">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-(--text-muted)">
               <select
                 value={entriesPerPage}
                 onChange={handleEntriesPerPageChange}
-                className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
+                className="bg-(--input-bg) border border-(--input-border) rounded px-2 py-1 text-(--text-primary) text-sm focus:outline-none focus:ring-2 focus:ring-(--accent-primary) w-full sm:w-auto"
               >
                 {ENTRIES_PER_PAGE_OPTIONS.map((option) => (
                   <option key={option} value={option}>

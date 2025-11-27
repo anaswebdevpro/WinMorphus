@@ -153,21 +153,21 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-200">
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--accent-primary)] mb-2">
             Dashboard
           </h1>
-          <p className="text-gray-400 text-sm sm:text-base">
+          <p className="text-[var(--text-secondary)] text-sm sm:text-base">
             Welcome back to your trading portal
           </p>
         </div>
 
         {/* Alert Banner */}
         {!loading && dashboardData && !dashboardData?.is_activated && (
-          <div className="bg-yellow-400 text-slate-900 p-4 rounded-lg mb-6 flex items-start gap-3">
+          <div className="bg-[var(--accent-primary)] text-slate-900 p-4 rounded-lg mb-6 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 mt-0.5" />
             <p className="text-sm sm:text-base font-medium">
               Activate your account by purchasing a package to start earning
@@ -178,24 +178,21 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          
-          
-
           {/* Total Investment */}
           {loading ? (
             <ShimmerLoader />
           ) : (
-            <div className="bg-linear-to-br from-blue-900 to-slate-900 border-2 border-blue-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="absolute top-4 right-4 bg-blue-700/30 px-3 py-1 rounded-lg">
-                <TrendingUp className="w-4 h-4 text-blue-400" />
+            <div className="bg-[var(--bg-card)] border-2 border-blue-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-blue-500/10 px-3 py-1 rounded-lg">
+                <TrendingUp className="w-4 h-4 text-blue-500" />
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-5 h-5 text-blue-400" />
-                <p className="text-sm font-medium opacity-90">
+                <TrendingUp className="w-5 h-5 text-blue-500" />
+                <p className="text-sm font-medium text-[var(--text-secondary)]">
                   Total Investment
                 </p>
               </div>
-              <h2 className="text-2xl font-bold mb-1">
+              <h2 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">
                 $ {parseFloat(dashboardData?.total_investment || 0).toFixed(2)}
               </h2>
             </div>
@@ -205,17 +202,17 @@ const Dashboard = () => {
           {loading ? (
             <ShimmerLoader />
           ) : (
-            <div className="bg-linear-to-br from-green-900 to-slate-900 border-2 border-green-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="absolute top-4 right-4 bg-green-700/30 px-3 py-1 rounded-lg">
-                <DollarSign className="w-4 h-4 text-green-400" />
+            <div className="bg-[var(--bg-card)] border-2 border-green-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-green-500/10 px-3 py-1 rounded-lg">
+                <DollarSign className="w-4 h-4 text-green-500" />
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="w-5 h-5 text-green-400" />
-                <p className="text-sm font-medium opacity-90">
+                <DollarSign className="w-5 h-5 text-green-500" />
+                <p className="text-sm font-medium text-[var(--text-secondary)]">
                   Current ROI Earned
                 </p>
               </div>
-              <h2 className="text-2xl font-bold mb-1">
+              <h2 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">
                 ${parseFloat(dashboardData?.current_roi_earned || 0).toFixed(2)}
               </h2>
             </div>
@@ -225,15 +222,17 @@ const Dashboard = () => {
           {loading ? (
             <ShimmerLoader />
           ) : (
-            <div className="bg-linear-to-br from-orange-900 to-slate-900 border-2 border-orange-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="absolute top-4 right-4 bg-orange-700/30 px-3 py-1 rounded-lg">
-                <Users className="w-4 h-4 text-orange-400" />
+            <div className="bg-[var(--bg-card)] border-2 border-orange-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-orange-500/10 px-3 py-1 rounded-lg">
+                <Users className="w-4 h-4 text-orange-500" />
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <Users className="w-5 h-5 text-orange-400" />
-                <p className="text-sm font-medium opacity-90">Level Income</p>
+                <Users className="w-5 h-5 text-orange-500" />
+                <p className="text-sm font-medium text-[var(--text-secondary)]">
+                  Level Income
+                </p>
               </div>
-              <h2 className="text-2xl font-bold mb-1">
+              <h2 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">
                 ${" "}
                 {parseFloat(dashboardData?.current_level_income || 0).toFixed(
                   2
@@ -245,42 +244,43 @@ const Dashboard = () => {
           {loading ? (
             <ShimmerLoader />
           ) : (
-            <div className="bg-linear-to-br from-purple-900 to-slate-900 border-2 border-purple-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="absolute top-4 right-4 bg-purple-700/30 px-3 py-1 rounded-lg">
-                <Package className="w-4 h-4 text-purple-400" />
+            <div className="bg-[var(--bg-card)] border-2 border-purple-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-purple-500/10 px-3 py-1 rounded-lg">
+                <Package className="w-4 h-4 text-purple-500" />
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <Package className="w-5 h-5 text-purple-400" />
-                <p className="text-sm font-medium opacity-90">
-                    Reward Income
+                <Package className="w-5 h-5 text-purple-500" />
+                <p className="text-sm font-medium text-[var(--text-secondary)]">
+                  Reward Income
                 </p>
               </div>
-              <h2 className="text-2xl font-bold mb-1">
-               ${parseFloat(dashboardData?.reward_income || 0).toFixed(2)}
+              <h2 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">
+                ${parseFloat(dashboardData?.reward_income || 0).toFixed(2)}
               </h2>
-             
             </div>
           )}
         </div>
 
         {/* Referral Link Section */}
-        <div className="bg-slate-800 p-6 rounded-lg shadow-lg mb-6">
+        <div className="bg-[var(--bg-card)] p-6 rounded-lg shadow-lg mb-6 border border-[var(--border-primary)]">
           <div className="flex items-center gap-2 mb-4">
-            <Share2 className="w-5 h-5 text-yellow-400" />
-            <h3 className="text-lg font-semibold">Your Referral Link</h3>
+            <Share2 className="w-5 h-5 text-[var(--accent-primary)]" />
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+              Your Referral Link
+            </h3>
           </div>
-          <p className="text-gray-400 text-sm mb-4">
+          <p className="text-[var(--text-secondary)] text-sm mb-4">
             Share this link with friends and earn commissions on their
             investments
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
-            <div className="flex-1 bg-slate-900 p-3 rounded border border-slate-700 font-mono text-sm overflow-x-auto">
+            <div className="flex-1 bg-[var(--bg-secondary)] p-3 rounded border border-[var(--border-primary)] font-mono text-sm overflow-x-auto text-[var(--text-primary)]">
               {referralLink}
             </div>
             <button
               onClick={handleCopyLink}
-              className="bg-yellow-400 text-slate-900 px-6 py-3 rounded font-medium hover:bg-yellow-500 transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
+              className="bg-[var(--accent-primary)] text-slate-900 px-6 py-3 rounded font-medium hover:bg-[var(--accent-hover)] transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
             >
               <Copy className="w-4 h-4" />
               {copiedLink ? "Copied!" : "Copy Link"}
@@ -288,7 +288,7 @@ const Dashboard = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-[var(--text-secondary)]">
               Share on social media:
             </span>
             <div className="flex gap-2">
@@ -332,19 +332,19 @@ const Dashboard = () => {
         </div>
         {/* trading View Widgets  */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6 ">
-          <div className="bg-slate-800 text-white  rounded-lg shadow-lg min-h-[600px] flex flex-col">
+          <div className="bg-[var(--bg-card)] text-[var(--text-primary)] rounded-lg shadow-lg min-h-[600px] flex flex-col border border-[var(--border-primary)]">
             <TradingView2 />
           </div>
-          <div className="bg-slate-800 text-white  rounded-lg shadow-lg min-h-[600px] flex flex-col">
+          <div className="bg-[var(--bg-card)] text-[var(--text-primary)] rounded-lg shadow-lg min-h-[600px] flex flex-col border border-[var(--border-primary)]">
             <TradingView />
           </div>
         </div>
 
         {/* My Network Section - Title */}
-        <div className="bg-slate-800 text-white p-4 rounded-lg shadow-lg mb-4 text-center relative">
+        <div className="bg-[var(--bg-card)] text-[var(--text-primary)] p-4 rounded-lg shadow-lg mb-4 text-center relative border border-[var(--border-primary)]">
           <h2 className="text-2xl font-bold">Acount Overview</h2>
           <button
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1 border border-blue-600 px-4 py-2 rounded-lg"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--status-info)] hover:text-[var(--accent-primary)] text-sm font-medium flex items-center gap-1 border border-[var(--status-info)] px-4 py-2 rounded-lg"
             onClick={() => navigate("/network")}
           >
             <ChevronRight className="w-4 h-4" />
@@ -355,87 +355,85 @@ const Dashboard = () => {
         {/* Rank Progress  - Two Cards Side by Side */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* {progrss bar cards } */}
-          <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
+          <div className="bg-[var(--bg-card)] text-[var(--text-primary)] p-8 rounded-lg shadow-lg border border-[var(--border-primary)]">
             <RankProgress />
           </div>
-          <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
+          <div className="bg-[var(--bg-card)] text-[var(--text-primary)] p-8 rounded-lg shadow-lg border border-[var(--border-primary)]">
             {!loading && dashboardData?.inv_info.inv_type === 0 ? (
               <Investerprogress data={dashboardData?.leader_info} />
             ) : (
               <Leaderprogress data={dashboardData} />
             )}
           </div>
-      
-          
 
           {/* ROI Chart Component */}
-          <div className="bg-slate-800 text-white p-8 rounded-lg shadow-lg">
+          <div className="bg-[var(--bg-card)] text-[var(--text-primary)] p-8 rounded-lg shadow-lg border border-[var(--border-primary)]">
             <RoiChart stats={dashboardData} />
           </div>
 
           {/* Network Statistics Card */}
-          <div className="bg-slate-800 text-white rounded-lg shadow-lg border border-slate-700">
-            <div className="p-6 border-b border-slate-700">
-              <h3 className="text-xl font-semibold text-white">
+          <div className="bg-[var(--bg-card)] text-[var(--text-primary)] rounded-lg shadow-lg border border-[var(--border-primary)]">
+            <div className="p-6 border-b border-[var(--border-primary)]">
+              <h3 className="text-xl font-semibold text-[var(--text-primary)]">
                 Network Statistics
               </h3>
             </div>
             <div className="p-6 space-y-4">
-              <div className="bg-linear-to-br from-blue-900 to-slate-900 border-2 border-blue-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
+              <div className="bg-[var(--bg-card)] border-2 border-blue-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="bg-blue-700/30 p-2 rounded-lg">
+                    <div className="bg-blue-500/10 p-2 rounded-lg">
                       <Users className="w-5 h-5 text-blue-400" />
                     </div>
-                    <span className="text-sm font-semibold text-gray-300">
+                    <span className="text-sm font-semibold text-[var(--text-secondary)]">
                       Direct Referrals
                     </span>
                   </div>
-                  <span className="text-3xl font-bold text-white">
+                  <span className="text-3xl font-bold text-[var(--text-primary)]">
                     {dashboardData?.network_statistics?.direct_referrals || 0}
                   </span>
                 </div>
               </div>
 
-              <div className="bg-linear-to-br from-green-900 to-slate-900 border-2 border-green-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
+              <div className="bg-[var(--bg-card)] border-2 border-green-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="bg-green-700/30 p-2 rounded-lg">
+                    <div className="bg-green-500/10 p-2 rounded-lg">
                       <Users className="w-5 h-5 text-green-400" />
                     </div>
-                    <span className="text-sm font-semibold text-gray-300">
+                    <span className="text-sm font-semibold text-[var(--text-secondary)]">
                       Total Team Size
                     </span>
                   </div>
-                  <span className="text-3xl font-bold text-white">
+                  <span className="text-3xl font-bold text-[var(--text-primary)]">
                     {dashboardData?.network_statistics?.total_team_size || 0}
                   </span>
                 </div>
               </div>
 
-              <div className="bg-linear-to-br from-orange-900 to-slate-900 border-2 border-orange-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
+              <div className="bg-[var(--bg-card)] border-2 border-orange-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="bg-orange-700/30 p-2 rounded-lg">
+                    <div className="bg-orange-500/10 p-2 rounded-lg">
                       <Users className="w-5 h-5 text-orange-400" />
                     </div>
-                    <span className="text-sm font-semibold text-gray-300">
+                    <span className="text-sm font-semibold text-[var(--text-secondary)]">
                       Active Members
                     </span>
                   </div>
-                  <span className="text-3xl font-bold text-white">
+                  <span className="text-3xl font-bold text-[var(--text-primary)]">
                     {dashboardData?.network_statistics?.active_members || 0}
                   </span>
                 </div>
               </div>
 
-              <div className="bg-linear-to-br from-purple-900 to-slate-900 border-2 border-purple-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
+              <div className="bg-[var(--bg-card)] border-2 border-purple-500 rounded-lg p-5 hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="bg-purple-700/30 p-2 rounded-lg">
+                    <div className="bg-purple-500/10 p-2 rounded-lg">
                       <DollarSign className="w-5 h-5 text-purple-400" />
                     </div>
-                    <span className="text-sm font-semibold text-gray-300">
+                    <span className="text-sm font-semibold text-[var(--text-secondary)]">
                       Team Investment
                     </span>
                   </div>
@@ -451,10 +449,9 @@ const Dashboard = () => {
 
         {/* rank bar graph */}
 
-
-        <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg mb-6">
+        <div className="bg-[var(--bg-card)] text-[var(--text-primary)] p-6 rounded-lg shadow-lg mb-6 border border-[var(--border-primary)]">
           <div className="flex items-center gap-2 mb-4">
-            <Building2 className="w-5 h-5 text-yellow-400" />
+            <Building2 className="w-5 h-5 text-[var(--accent-primary)]" />
             <h3 className="text-2xl font-semibold">Business Carry Forward</h3>
           </div>
           <RankChart />
@@ -463,15 +460,15 @@ const Dashboard = () => {
         {/* Commission Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* ROI Earnings History */}
-          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg max-h-100 overflow-auto">
+          <div className="bg-[var(--bg-card)] text-[var(--text-primary)] p-6 rounded-lg shadow-lg max-h-100 overflow-auto border border-[var(--border-primary)]">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-green-600" />
+                <TrendingUp className="w-5 h-5 text-[var(--status-success)]" />
                 <h3 className="text-lg font-semibold">ROI Earnings History</h3>
               </div>
               <button
                 onClick={() => navigate("/roi-earnings")}
-                className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center   gap-2"
+                className="bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
               >
                 <ChevronRight className="w-4 h-4" />
                 View More
@@ -481,14 +478,14 @@ const Dashboard = () => {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b-2 border-slate-600">
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
+                  <tr className="border-b-2 border-[var(--border-secondary)]">
+                    <th className="text-left py-3 px-2 text-sm font-semibold text-[var(--text-secondary)]">
                       Date
                     </th>
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
+                    <th className="text-left py-3 px-2 text-sm font-semibold text-[var(--text-secondary)]">
                       Amount
                     </th>
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-300">
+                    <th className="text-left py-3 px-2 text-sm font-semibold text-[var(--text-secondary)]">
                       Package
                     </th>
                   </tr>
@@ -499,15 +496,15 @@ const Dashboard = () => {
                     dashboardData?.roi_earnings_history.map((entry, index) => (
                       <tr
                         key={index}
-                        className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
+                        className="border-b border-[var(--border-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
                       >
-                        <td className="text-left py-3 px-2 text-sm text-gray-300">
+                        <td className="text-left py-3 px-2 text-sm text-[var(--text-secondary)]">
                           {formatDate(entry.date)}
                         </td>
-                        <td className="text-left py-3 px-2 text-sm font-semibold text-green-400">
+                        <td className="text-left py-3 px-2 text-sm font-semibold text-[var(--status-success)]">
                           {entry.amount || "N/A"} USDT
                         </td>
-                        <td className="text-left py-3 px-2 text-sm text-gray-300">
+                        <td className="text-left py-3 px-2 text-sm text-[var(--text-secondary)]">
                           {entry.package || "N/A"}
                         </td>
                       </tr>
@@ -516,7 +513,7 @@ const Dashboard = () => {
                     <tr>
                       <td
                         colSpan="3"
-                        className="text-center py-12 text-gray-400 text-xl"
+                        className="text-center py-12 text-[var(--text-muted)] text-xl"
                       >
                         No ROI earnings history available
                       </td>
@@ -528,17 +525,17 @@ const Dashboard = () => {
           </div>
 
           {/* Commission Earnings */}
-          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+          <div className="bg-[var(--bg-card)] text-[var(--text-primary)] p-6 rounded-lg shadow-lg max-h-96 overflow-y-auto border border-[var(--border-primary)]">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-green-600" />
+                <TrendingUp className="w-5 h-5 text-[var(--status-success)]" />
                 <h3 className="text-lg font-semibold">
                   Leadership Earnings History
                 </h3>
               </div>
               <button
                 onClick={() => navigate("/commissions")}
-                className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center  gap-2"
+                className="bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
               >
                 <ChevronRight className="w-4 h-4" />
                 View More
@@ -548,17 +545,17 @@ const Dashboard = () => {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[600px]">
                 <thead>
-                  <tr className="border-b-2 border-slate-600">
-                    <th className="text-left py-3 px-3 text-sm font-semibold text-gray-300 w-28">
+                  <tr className="border-b-2 border-[var(--border-secondary)]">
+                    <th className="text-left py-3 px-3 text-sm font-semibold text-[var(--text-secondary)] w-28">
                       Date
                     </th>
-                    <th className="text-left py-3 px-3 text-sm font-semibold text-gray-300 w-24">
+                    <th className="text-left py-3 px-3 text-sm font-semibold text-[var(--text-secondary)] w-24">
                       Amount
                     </th>
-                    <th className="text-left py-3 px-3 text-sm font-semibold text-gray-300 w-20">
+                    <th className="text-left py-3 px-3 text-sm font-semibold text-[var(--text-secondary)] w-20">
                       Level
                     </th>
-                    <th className="text-left py-3 px-3 text-sm font-semibold text-gray-300 min-w-[200px]">
+                    <th className="text-left py-3 px-3 text-sm font-semibold text-[var(--text-secondary)] min-w-[200px]">
                       Description
                     </th>
                   </tr>
@@ -571,20 +568,20 @@ const Dashboard = () => {
                       (entry, index) => (
                         <tr
                           key={index}
-                          className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
+                          className="border-b border-[var(--border-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
                         >
-                          <td className="text-left py-3 px-3 text-sm text-gray-300 w-28">
+                          <td className="text-left py-3 px-3 text-sm text-[var(--text-secondary)] w-28">
                             {formatDate(entry.date)}
                           </td>
-                          <td className="text-left py-3 px-3 text-sm font-semibold text-green-400 w-24">
+                          <td className="text-left py-3 px-3 text-sm font-semibold text-[var(--status-success)] w-24">
                             $ {entry.amount || "N/A"}
                           </td>
-                          <td className="text-left py-3 px-3 text-sm text-gray-300 w-20">
+                          <td className="text-left py-3 px-3 text-sm text-[var(--text-secondary)] w-20">
                             <span className="font-bold ">
                               Level {" " + (entry.level || "N/A")}
                             </span>
                           </td>
-                          <td className="text-left py-3 px-3 text-sm text-gray-300 min-w-[200px] wrap-break-word">
+                          <td className="text-left py-3 px-3 text-sm text-[var(--text-secondary)] min-w-[200px] wrap-break-word">
                             {entry.description || "N/A"}
                           </td>
                         </tr>
@@ -594,7 +591,7 @@ const Dashboard = () => {
                     <tr>
                       <td
                         colSpan="4"
-                        className="text-center py-12 text-gray-400 text-xl"
+                        className="text-center py-12 text-[var(--text-muted)] text-xl"
                       >
                         No Leadership earnings history available
                       </td>
@@ -607,35 +604,37 @@ const Dashboard = () => {
         </div>
 
         {/* Wallet Balance Section - Full Width */}
-        <div className="bg-slate-800 p-6 rounded-lg shadow-lg mb-6">
+        <div className="bg-[var(--bg-card)] p-6 rounded-lg shadow-lg mb-6 border border-[var(--border-primary)]">
           <div className="flex items-center gap-2 mb-6">
-            <Wallet className="w-5 h-5 text-cyan-400" />
-            <h3 className="text-lg font-semibold">Wallet Balances</h3>
+            <Wallet className="w-5 h-5 text-[var(--status-info)]" />
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+              Wallet Balances
+            </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Available Wallet Balance */}
-            <div className="bg-linear-to-br from-cyan-900 to-slate-900 border-2 border-cyan-500 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow flex items-center justify-between">
+            <div className="bg-[var(--bg-card)] border-2 border-cyan-500 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium opacity-90 mb-1">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">
                   Available Wallet Balance
                 </p>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold text-[var(--text-primary)]">
                   $ {parseFloat(balance?.main_balance || 0).toFixed(2)}
                 </p>
               </div>
-              <div className="bg-cyan-700/30 p-2 rounded-lg">
-                <Wallet className="w-8 h-8 text-cyan-400" />
+              <div className="bg-cyan-500/10 p-2 rounded-lg">
+                <Wallet className="w-8 h-8 text-cyan-500" />
               </div>
             </div>
 
             {/* Main Wallet Balance */}
-            <div className="bg-linear-to-br from-blue-900 to-slate-900 border-2 border-blue-500 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow flex items-center justify-between">
+            <div className="bg-[var(--bg-card)] border-2 border-blue-500 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium opacity-90 mb-1">
+                <p className="text-xs font-medium text-[var(--text-secondary)] mb-1">
                   INCOME Wallet Balance
                 </p>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold text-[var(--text-primary)]">
                   ${" "}
                   {parseFloat(
                     dashboardData?.user_balance?.income_wallet
@@ -643,22 +642,22 @@ const Dashboard = () => {
                   USDT
                 </p>
               </div>
-              <div className="bg-blue-700/30 p-2 rounded-lg">
-                <Building2 className="w-8 h-8 text-blue-400" />
+              <div className="bg-blue-500/10 p-2 rounded-lg">
+                <Building2 className="w-8 h-8 text-blue-500" />
               </div>
             </div>
 
             {/* Action Buttons - Vertical Stack */}
             <div className="flex flex-col gap-4">
               <button
-                className="bg-linear-to-br from-red-900 to-red-600 hover:from-red-800 hover:to-red-500 border-2 border-red-500 text-white p-4 rounded-lg font-semibold text-base transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                className="bg-red-600 hover:bg-red-700 border-2 border-red-500 text-white p-4 rounded-lg font-semibold text-base transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 onClick={() => navigate("/withdraw")}
               >
                 <ArrowUpFromLine className="w-5 h-5" />
                 Withdraw
               </button>
               <button
-                className="bg-linear-to-br from-green-900 to-green-600 hover:from-green-800 hover:to-green-500 border-2 border-green-500 text-white p-4 rounded-lg font-semibold text-base transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                className="bg-green-600 hover:bg-green-700 border-2 border-green-500 text-white p-4 rounded-lg font-semibold text-base transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 onClick={() => navigate("/deposit")}
               >
                 <ArrowDownToLine className="w-5 h-5" />

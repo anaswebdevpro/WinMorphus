@@ -16,7 +16,7 @@ const Stats_30days = () => {
 
     setLoading(true);
     try {
-     apiRequest({
+      apiRequest({
         endpoint: WITHDRAWAL_STATISTICS,
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
@@ -24,16 +24,14 @@ const Stats_30days = () => {
         .then((response) => {
           if (response?.data) {
             setStatistics(response.data);
-             setLoading(false);
+            setLoading(false);
           }
-
         })
         .catch((error) => {
           console.error("Error fetching withdrawal statistics:", error);
           setLoading(false);
           enqueueSnackbar("Failed to load withdrawal statistics", {
             variant: "error",
-            
           });
         });
     } catch (error) {
@@ -52,10 +50,10 @@ const Stats_30days = () => {
   if (loading) {
     return (
       <div className="mb-8">
-        <div className="bg-slate-800 rounded-lg h-8 w-48 mb-4 animate-pulse"></div>
+        <div className="bg-[var(--bg-card)] rounded-lg h-8 w-48 mb-4 animate-pulse"></div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-pulse">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="bg-slate-800 rounded-lg h-24"></div>
+            <div key={i} className="bg-[var(--bg-card)] rounded-lg h-24"></div>
           ))}
         </div>
       </div>
@@ -69,66 +67,66 @@ const Stats_30days = () => {
     {
       label: "Total Withdrawals",
       value: statistics.total_withdrawals || 0,
-      color: "text-white",
+      color: "text-(--accent-primary)",
       format: (val) => val,
     },
     {
       label: "Completed",
       value: statistics.completed_withdrawals || 0,
-      color: "text-green-400",
+      color: "text-(--status-success)",
       format: (val) => val,
     },
     {
       label: "Pending",
       value: statistics.pending_withdrawals || 0,
-      color: "text-yellow-400",
+      color: "text-(--status-warning)",
       format: (val) => val,
     },
     {
       label: "Failed",
       value: statistics.failed_withdrawals || 0,
-      color: "text-red-400",
+      color: "text-(--status-error)",
       format: (val) => val,
     },
     {
       label: "Average Amount",
       value: statistics.average_withdrawal || 0,
-      color: "text-blue-400",
+      color: "text-(--status-info)",
       format: (val) => `$${val}`,
     },
     {
       label: "Success Rate",
       value: statistics.success_rate || 0,
-      color: "text-emerald-400",
+      color: "text-(--status-success)",
       format: (val) => `${val}%`,
     },
     {
       label: "Total Transactions",
       value: statistics.total_transactions || 0,
-      color: "text-purple-400",
+      color: "text-(--accent-primary)",
       format: (val) => val,
     },
     {
       label: "Period",
       value: statistics.period_days || 0,
-      color: "text-cyan-400",
+      color: "text-(--status-info)",
       format: (val) => `${val} Days`,
     },
   ];
 
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold text-white mb-4">
+      <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">
         Withdrawal Statistics (Last {statistics.period_days} Days)
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {statsConfig.map((stat, index) => (
           <div
             key={index}
-            className="bg-slate-800 border border-slate-700 rounded-lg p-6"
+            className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg p-6"
           >
             <div className="flex flex-col">
-              <span className="text-gray-400 text-sm font-medium mb-2">
+              <span className="text-[var(--text-secondary)] text-sm font-medium mb-2">
                 {stat.label}
               </span>
               <span className={`text-3xl font-bold ${stat.color}`}>

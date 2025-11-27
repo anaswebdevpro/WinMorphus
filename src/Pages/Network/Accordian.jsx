@@ -28,39 +28,43 @@ const Accordian = ({ networkData }) => {
   // Get level color based on level number
   const getLevelColor = (level) => {
     const colors = {
-      1: "border-emerald-500 bg-emerald-500/10 text-emerald-300",
-      2: "border-blue-500 bg-blue-500/10 text-blue-300",
-      3: "border-purple-500 bg-purple-500/10 text-purple-300",
-      4: "border-orange-500 bg-orange-500/10 text-orange-300",
-      5: "border-pink-500 bg-pink-500/10 text-pink-300",
-      6: "border-cyan-500 bg-cyan-500/10 text-cyan-300",
-      7: "border-yellow-500 bg-yellow-500/10 text-yellow-300",
-      8: "border-red-500 bg-red-500/10 text-red-300",
-      9: "border-violet-500 bg-violet-500/10 text-violet-300",
-      10: "border-indigo-500 bg-indigo-500/10 text-indigo-300",
+      1: "border-emerald-500 bg-emerald-500/10 text-emerald-600",
+      2: "border-blue-500 bg-blue-500/10 text-blue-600",
+      3: "border-purple-500 bg-purple-500/10 text-purple-600",
+      4: "border-orange-500 bg-orange-500/10 text-orange-600",
+      5: "border-pink-500 bg-pink-500/10 text-pink-600",
+      6: "border-cyan-500 bg-cyan-500/10 text-cyan-600",
+      7: "border-yellow-500 bg-yellow-500/10 text-yellow-600",
+      8: "border-red-500 bg-red-500/10 text-red-600",
+      9: "border-violet-500 bg-violet-500/10 text-violet-600",
+      10: "border-indigo-500 bg-indigo-500/10 text-indigo-600",
     };
-    return colors[level] || "border-gray-500 bg-gray-500/10 text-gray-300";
+    return colors[level] || "border-gray-500 bg-gray-500/10 text-gray-600";
   };
 
   // Get status color
   const getStatusColor = (isActive) => {
     return isActive
-      ? "bg-green-500/20 text-green-300 border border-green-500/30"
-      : "bg-red-500/20 text-red-300 border border-red-500/30";
+      ? "bg-green-500/10 text-green-600 border border-green-500/30"
+      : "bg-red-500/10 text-red-600 border border-red-500/30";
   };
 
   // Render individual member card
   const MemberCard = ({ member }) => (
-    <div className="bg-linear-to-r from-slate-800 to-slate-700 border border-slate-600 rounded-lg p-3 hover:from-slate-700 hover:to-slate-600 transition-all duration-300">
+    <div className="bg-[var(--bg-card)] border-2 border-[var(--border-secondary)] rounded-lg p-3 hover:border-blue-500 transition-all duration-300 shadow-sm">
       {/* Header Row */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
-            <User className="w-4 h-4 text-blue-400" />
+          <div className="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/20">
+            <User className="w-4 h-4 text-blue-500" />
           </div>
           <div>
-            <h4 className="font-bold text-white text-2xl">{member.name}</h4>
-            <p className="text-gray-400 text-lg -mt-1">{member.email}</p>
+            <h4 className="font-bold text-[var(--text-primary)] text-2xl">
+              {member.name}
+            </h4>
+            <p className="text-[var(--text-secondary)] text-lg -mt-1">
+              {member.email}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -72,8 +76,10 @@ const Accordian = ({ networkData }) => {
             {member.is_active ? "Active" : "Inactive"}
           </span>
           <div className="text-right">
-            <p className="text-gray-400 text-sm">ID</p>
-            <p className="text-white font-medium text-base">{member.id}</p>
+            <p className="text-[var(--text-secondary)] text-sm">ID</p>
+            <p className="text-[var(--text-primary)] font-medium text-base">
+              {member.id}
+            </p>
           </div>
         </div>
       </div>
@@ -83,12 +89,12 @@ const Accordian = ({ networkData }) => {
         {/* Investment */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 mb-1">
-            <DollarSign className="w-3 h-3 text-green-400" />
-            <span className="text-green-400 font-medium text-sm">
+            <DollarSign className="w-3 h-3 text-green-500" />
+            <span className="text-green-500 font-medium text-sm">
               Investment
             </span>
           </div>
-          <p className="text-white font-bold text-base">
+          <p className="text-[var(--text-primary)] font-bold text-base">
             ${member.total_invested?.toLocaleString() || "0"}
           </p>
         </div>
@@ -96,10 +102,10 @@ const Accordian = ({ networkData }) => {
         {/* Business */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 mb-1">
-            <TrendingUp className="w-3 h-3 text-blue-400" />
-            <span className="text-blue-400 font-medium text-sm">Business</span>
+            <TrendingUp className="w-3 h-3 text-blue-500" />
+            <span className="text-blue-500 font-medium text-sm">Business</span>
           </div>
-          <p className="text-white font-bold text-base">
+          <p className="text-[var(--text-primary)] font-bold text-base">
             ${member.total_business?.toLocaleString() || "0"}
           </p>
         </div>
@@ -107,10 +113,10 @@ const Accordian = ({ networkData }) => {
         {/* Team */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 mb-1">
-            <Users className="w-3 h-3 text-purple-400" />
-            <span className="text-purple-400 font-medium text-sm">Team</span>
+            <Users className="w-3 h-3 text-purple-500" />
+            <span className="text-purple-500 font-medium text-sm">Team</span>
           </div>
-          <p className="text-white font-bold text-base">
+          <p className="text-[var(--text-primary)] font-bold text-base">
             {member.team_size || 0}
           </p>
         </div>
@@ -118,10 +124,10 @@ const Accordian = ({ networkData }) => {
         {/* Direct */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 mb-1">
-            <Users className="w-3 h-3 text-orange-400" />
-            <span className="text-orange-400 font-medium text-sm">Direct</span>
+            <Users className="w-3 h-3 text-orange-500" />
+            <span className="text-orange-500 font-medium text-sm">Direct</span>
           </div>
-          <p className="text-white font-bold text-base">
+          <p className="text-[var(--text-primary)] font-bold text-base">
             {member.direct_referrals || 0}
           </p>
         </div>
@@ -129,12 +135,12 @@ const Accordian = ({ networkData }) => {
         {/* Package */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 mb-1">
-            <Building className="w-4 h-4 text-yellow-400" />
-            <span className="text-yellow-400 font-medium text-base">
+            <Building className="w-4 h-4 text-[var(--accent-primary)]" />
+            <span className="text-[var(--accent-primary)] font-medium text-base">
               Package
             </span>
           </div>
-          <p className="text-white font-bold text-lg">
+          <p className="text-[var(--text-primary)] font-bold text-lg">
             {member.current_package?.name || "None"}
           </p>
         </div>
@@ -142,19 +148,19 @@ const Accordian = ({ networkData }) => {
         {/* Package Amount */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 mb-1">
-            <DollarSign className="w-4 h-4 text-yellow-400" />
-            <span className="text-yellow-400 font-medium text-base">
+            <DollarSign className="w-4 h-4 text-[var(--accent-primary)]" />
+            <span className="text-[var(--accent-primary)] font-medium text-base">
               Amount
             </span>
           </div>
-          <p className="text-white font-bold text-lg">
+          <p className="text-[var(--text-primary)] font-bold text-lg">
             ${member.current_package?.amount?.toLocaleString() || "0"}
           </p>
         </div>
       </div>
 
       {/* Bottom Row - Additional Details */}
-      <div className="flex items-center justify-between text-base text-gray-400 pt-1 border-t border-slate-600">
+      <div className="flex items-center justify-between text-base text-[var(--text-secondary)] pt-1 border-t border-[var(--border-primary)]">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
             <Calendar className="w-4 h-4" />
@@ -177,12 +183,14 @@ const Accordian = ({ networkData }) => {
 
   if (!networkData || Object.keys(networkData).length === 0) {
     return (
-      <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 text-center">
-        <Users className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-        <h3 className="text-xl font-semibold text-gray-300 mb-2">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg p-8 text-center">
+        <Users className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-[var(--text-secondary)] mb-2">
           No Network Data
         </h3>
-        <p className="text-gray-500">No network members found at this time.</p>
+        <p className="text-[var(--text-muted)]">
+          No network members found at this time.
+        </p>
       </div>
     );
   }
@@ -194,11 +202,11 @@ const Accordian = ({ networkData }) => {
         .map(([level, members]) => (
           <div
             key={level}
-            className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden"
+            className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg overflow-hidden"
           >
             {/* Level Header */}
             <div
-              className={`p-4 cursor-pointer hover:bg-slate-700/50 transition-colors border-l-4 ${getLevelColor(
+              className={`p-4 cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors border-l-4 ${getLevelColor(
                 level
               )}`}
               onClick={() => toggleLevel(level)}
@@ -207,11 +215,11 @@ const Accordian = ({ networkData }) => {
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     {expandedLevels[level] ? (
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                      <ChevronDown className="w-5 h-5 text-[var(--text-muted)]" />
                     ) : (
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                      <ChevronRight className="w-5 h-5 text-[var(--text-muted)]" />
                     )}
-                    <h3 className="text-xl font-bold text-white">
+                    <h3 className="text-xl font-bold text-[var(--text-primary)]">
                       Level {level}
                     </h3>
                   </div>
@@ -225,7 +233,7 @@ const Accordian = ({ networkData }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-sm text-gray-400">
+                <div className="flex items-center gap-4 text-sm text-[var(--text-muted)]">
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
                     <span>
@@ -247,7 +255,7 @@ const Accordian = ({ networkData }) => {
 
             {/* Level Content */}
             {expandedLevels[level] && (
-              <div className="p-3 bg-slate-900/50 border-t border-slate-700">
+              <div className="p-3 bg-[var(--bg-secondary)] border-t border-[var(--border-primary)]">
                 <div className="space-y-3">
                   {members.map((member) => (
                     <MemberCard key={member.id} member={member} />

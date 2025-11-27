@@ -115,7 +115,7 @@ const Login = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[var(--bg-secondary)] transition-colors duration-200">
       {/* Top Navbar */}
       <MainNavbar />
 
@@ -131,14 +131,14 @@ const Login = () => {
       >
         <div className="max-w-5xl w-full rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
           {/* Left - Form Section */}
-          <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 bg-white flex flex-col justify-center order-1">
+          <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 bg-[var(--bg-primary)] flex flex-col justify-center order-1 border-r border-[var(--border-primary)]">
             <div className="max-w-sm mx-auto w-full">
               {/* Logo and Title */}
               <div className="text-center mb-6 sm:mb-8">
                 <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full mb-4 sm:mb-6">
                   <img src={logo} alt="Win" className="h-16 sm:h-20 w-auto" />
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">
+                <h1 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] mb-2">
                   Let's get you
                   <br />
                   signed in
@@ -152,7 +152,7 @@ const Login = () => {
               >
                 {/* Username Field */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                     User ID
                   </label>
                   <input
@@ -164,7 +164,8 @@ const Login = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.username}
                     disabled={isForceLoading}
-                    className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 sm:py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed ${
+                    className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 
+                       text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed ${
                       formik.touched.username && formik.errors.username
                         ? "border-red-400"
                         : ""

@@ -15,28 +15,20 @@ import { enqueueSnackbar } from "notistack";
 
 // Reusable StatCard Component
 // eslint-disable-next-line no-unused-vars
-const StatCard = ({
-  title,
-  value,
-  gradient,
-  border,
-  iconBg,
-  iconColor,
-  icon: IconComponent,
-}) => (
-  <div
-    className={`bg-linear-to-br ${gradient} border-2 ${border} rounded-lg p-6 shadow-lg hover:shadow-xl transition-all relative overflow-hidden`}
-  >
+const StatCard = ({ title, value, icon: IconComponent }) => (
+  <div className="bg-(--bg-card-gradient-start) bg-linear-to-br from-(--bg-card-gradient-start) to-(--bg-card-gradient-end) border-2 border-(--border-accent) rounded-lg p-6 shadow-lg hover:shadow-xl transition-all relative overflow-hidden">
     <div className="absolute top-4 right-4">
-      <div className={`${iconBg} p-3 rounded-lg`}>
-        <IconComponent className={`w-6 h-6 ${iconColor}`} />
+      <div className="bg-(--accent-primary)/20 p-3 rounded-lg">
+        <IconComponent className="w-6 h-6 text-(--accent-primary)" />
       </div>
     </div>
     <div className="flex items-center gap-2 mb-2">
-      <IconComponent className={`w-5 h-5 ${iconColor}`} />
-      <p className="text-sm font-medium opacity-90">{title}</p>
+      <IconComponent className="w-5 h-5 text-(--accent-primary)" />
+      <p className="text-sm font-medium text-(--text-secondary) opacity-90">
+        {title}
+      </p>
     </div>
-    <h2 className="text-3xl font-bold text-white">{value}</h2>
+    <h2 className="text-3xl font-bold text-(--text-primary)">{value}</h2>
   </div>
 );
 
@@ -86,7 +78,7 @@ const ROIEarnings = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white">
+      <div className="min-h-screen bg-(--bg-primary) text-(--text-primary)">
         <div className="max-w-7xl mx-auto p-6">
           <PageHeader
             title="ROI Earnings"
@@ -99,7 +91,7 @@ const ROIEarnings = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-(--bg-primary) text-(--text-primary)">
       <div className="max-w-7xl mx-auto p-6">
         <PageHeader
           title="ROI Earnings"
@@ -138,33 +130,33 @@ const ROIEarnings = () => {
         </div>
 
         {/* Data Table */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+        <div className="bg-(--bg-card) border border-(--border-primary) rounded-lg overflow-hidden">
           <div className="overflow-x-auto min-h-100">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-700 bg-slate-700/50">
-                  <th className="text-left p-4 font-semibold text-gray-300">
-                    S.No
+                <tr className="border-b border-(--border-primary) bg-(--bg-tertiary)">
+                  <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
+                   S.No
                   </th>
-                  <th className="text-left p-4 font-semibold text-gray-300">
+                  <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                     Package
                   </th>
-                  <th className="text-left p-4 font-semibold text-gray-300">
+                  <th className="text-left p-4 font-semibold text-(--text-secondary)">
                     Amount
                   </th>
-                  <th className="text-left p-4 font-semibold text-gray-300">
+                  <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                     Rate
                   </th>
-                  <th className="text-left p-4 font-semibold text-gray-300">
+                  <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                     Purchase Date
                   </th>
-                  <th className="text-left p-4 font-semibold text-gray-300">
+                  <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                     Months Active
                   </th>
-                  <th className="text-left p-4 font-semibold text-gray-300">
+                  <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                     Earned So Far
                   </th>
-                  <th className="text-left p-4 font-semibold text-gray-300">
+                  <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                     Total Earnings
                   </th>
                 </tr>
@@ -174,35 +166,34 @@ const ROIEarnings = () => {
                   investments.map((item, index) => (
                     <tr
                       key={item.id || index}
-                      className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
+                      className="border-b border-(--border-primary) hover:bg-(--bg-tertiary) transition-colors"
                     >
-                      <td className="p-4 text-gray-300">
+                      <td className="p-4 text-[var(--text-secondary)]">
                         <span className="font-medium">{index + 1}</span>
                       </td>
-                      <td className="p-4 text-gray-300">
-                        <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/30 text-blue-300 rounded-lg text-sm">
+                      <td className="p-4 text-[var(--text-secondary)]">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 text-blue-600 rounded-lg text-sm border border-blue-500/20">
                           <Package className="w-4 h-4" />
                           {item.package_name}
-                          
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="font-semibold text-white">
+                        <span className="font-semibold text-[var(--text-primary)]">
                           ${parseFloat(item.amount || 0).toFixed(2)}
                         </span>
                       </td>
-                      <td className="p-4 text-cyan-400 font-medium">
+                      <td className="p-4 text-cyan-500 font-medium">
                         ${item.rate_percentage}
                       </td>
-                      <td className="p-4 text-gray-300">
+                      <td className="p-4 text-[var(--text-secondary)]">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-yellow-400" />
+                          <Calendar className="w-4 h-4 text-[var(--accent-primary)]" />
                           {item.purchase_date}
                         </div>
                       </td>
-                      <td className="p-4 text-gray-300">
+                      <td className="p-4 text-[var(--text-secondary)]">
                         {item.total_entries >= 24 ? (
-                          <span className="inline-flex items-center gap-2 px-3 py-1 bg-green-600/30 text-green-300 rounded-lg text-sm font-medium">
+                          <span className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-600 rounded-lg text-sm font-medium border border-green-500/20">
                             Completed
                           </span>
                         ) : (
@@ -213,12 +204,12 @@ const ROIEarnings = () => {
                         )}
                       </td>
                       <td className="p-4">
-                        <span className="font-semibold text-green-400">
+                        <span className="font-semibold text-green-600">
                           ${Math.max(0, item.earned_so_far).toFixed(2)}
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="font-semibold text-emerald-400">
+                        <span className="font-semibold text-green-600">
                           $
                           {parseFloat(
                             item.projected_total_earnings || 0
@@ -229,7 +220,10 @@ const ROIEarnings = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className="p-8 text-center text-gray-500">
+                    <td
+                      colSpan={8}
+                      className="p-8 text-center text-(--text-muted)"
+                    >
                       No active investments available
                     </td>
                   </tr>
@@ -239,8 +233,8 @@ const ROIEarnings = () => {
           </div>
 
           {/* Table Footer with Pagination */}
-          <div className="px-4 py-4 border-t border-slate-700 bg-slate-700/30">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-400">
+          <div className="px-4 py-4 border-t border-(--border-primary) bg-(--bg-tertiary)">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-(--text-muted)">
               <div>Total: {investments.length} entries</div>
             </div>
           </div>

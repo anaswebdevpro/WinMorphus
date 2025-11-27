@@ -8,71 +8,75 @@ import PurchasePackage from "./PurchasePackage";
 import { ShimmerLoader, PageHeader } from "../../Component/ui";
 import Investment_table from "./Investment_table";
 
-
 const Packages = () => {
   const [loading, setLoading] = useState(false);
   const [PackageData, setPackageData] = useState({});
- 
 
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const { token } = useAuth();
 
-  // Theme mapping for packages with different colors
+  // Theme mapping for packages with different colors - optimized for light/dark theme
   const packageThemes = [
     {
       name: "Blue",
       borderColor: "border-blue-500",
-      bgGradient: "from-blue-900 to-slate-900",
-      buttonColor: "bg-blue-500 hover:bg-blue-600",
-      accentColor: "text-blue-400",
+      bgCard: "bg-[var(--bg-card)]",
+      buttonColor: "bg-blue-600 hover:bg-blue-700",
+      accentColor: "text-blue-500",
       badgeColor: "bg-blue-500",
-      iconBg: "bg-blue-700/30",
+      iconBg: "bg-blue-500/10",
+      rowBg: "bg-blue-500/5",
     },
     {
       name: "Purple",
       borderColor: "border-purple-500",
-      bgGradient: "from-purple-900 to-slate-900",
-      buttonColor: "bg-purple-500 hover:bg-purple-600",
-      accentColor: "text-purple-400",
+      bgCard: "bg-[var(--bg-card)]",
+      buttonColor: "bg-purple-600 hover:bg-purple-700",
+      accentColor: "text-purple-500",
       badgeColor: "bg-purple-500",
-      iconBg: "bg-purple-700/30",
+      iconBg: "bg-purple-500/10",
+      rowBg: "bg-purple-500/5",
     },
     {
       name: "Green",
       borderColor: "border-green-500",
-      bgGradient: "from-green-900 to-slate-900",
-      buttonColor: "bg-green-500 hover:bg-green-600",
-      accentColor: "text-green-400",
+      bgCard: "bg-[var(--bg-card)]",
+      buttonColor: "bg-green-600 hover:bg-green-700",
+      accentColor: "text-green-500",
       badgeColor: "bg-green-500",
-      iconBg: "bg-green-700/30",
+      iconBg: "bg-green-500/10",
+      rowBg: "bg-green-500/5",
     },
     {
       name: "Orange",
       borderColor: "border-orange-500",
-      bgGradient: "from-orange-900 to-slate-900",
-      buttonColor: "bg-orange-500 hover:bg-orange-600",
-      accentColor: "text-orange-400",
+      bgCard: "bg-[var(--bg-card)]",
+      buttonColor: "bg-orange-600 hover:bg-orange-700",
+      accentColor: "text-orange-500",
       badgeColor: "bg-orange-500",
-      iconBg: "bg-orange-700/30",
+      iconBg: "bg-orange-500/10",
+      rowBg: "bg-orange-500/5",
     },
     {
       name: "Cyan",
       borderColor: "border-cyan-500",
-      bgGradient: "from-cyan-900 to-slate-900",
-      buttonColor: "bg-cyan-500 hover:bg-cyan-600",
-      accentColor: "text-cyan-400",
+      bgCard: "bg-[var(--bg-card)]",
+      buttonColor: "bg-cyan-600 hover:bg-cyan-700",
+      accentColor: "text-cyan-500",
       badgeColor: "bg-cyan-500",
-      iconBg: "bg-cyan-700/30",
+      iconBg: "bg-cyan-500/10",
+      rowBg: "bg-cyan-500/5",
     },
     {
       name: "Pink",
       borderColor: "border-pink-500",
-      bgGradient: "from-pink-900 to-slate-900",
-      buttonColor: "bg-pink-500 hover:bg-pink-600",
-      accentColor: "text-pink-400",
+      bgCard: "bg-[var(--bg-card)]",
+      buttonColor: "bg-pink-600 hover:bg-pink-700",
+      accentColor: "text-pink-500",
       badgeColor: "bg-pink-500",
-      iconBg: "bg-pink-700/30",
+      iconBg: "bg-pink-500/10",
+      rowBg: "bg-pink-500/5",
     },
   ];
 
@@ -131,11 +135,10 @@ const Packages = () => {
     FetchPackages();
   };
 
-
   // Show shimmer loader while loading
   if (loading && !PackageData?.packages) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white">
+      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
         <div className="max-w-7xl mx-auto p-6">
           <PageHeader
             title="Investment Packages"
@@ -148,7 +151,7 @@ const Packages = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <PageHeader
@@ -158,10 +161,12 @@ const Packages = () => {
         {console.log(PackageData.packages)}
         {/* Packages Section */}
         <div
-          className={`bg-slate-800 border border-slate-700 p-8 rounded-lg shadow-lg mb-8`}
+          className={`bg-[var(--bg-card)] border border-[var(--border-primary)] p-8 rounded-lg shadow-lg mb-8`}
         >
-          <h2 className="text-2xl font-bold text-white mb-2">Packages</h2>
-          <p className="text-gray-400 text-sm mb-6">
+          <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
+            Packages
+          </h2>
+          <p className="text-[var(--text-secondary)] text-sm mb-6">
             Select a package that matches your investment capacity
           </p>
 
@@ -188,7 +193,7 @@ const Packages = () => {
                 return (
                   <div
                     key={pkg.id}
-                    className={`relative bg-linear-to-br ${theme.bgGradient} border-2 ${theme.borderColor} rounded-xl p-6 transition-all duration-300 hover:shadow-2xl hover:border-opacity-100 group`}
+                    className={`relative ${theme.bgCard} border-2 ${theme.borderColor} rounded-xl p-6 shadow-lg transition-all duration-300 hover:shadow-2xl group`}
                   >
                     {/* {theme.popular && (
                       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -202,7 +207,7 @@ const Packages = () => {
 
                     <div className="flex justify-center mb-4">
                       <div
-                        className={`${theme.iconBg} p-4 rounded-full border border-slate-700 group-hover:scale-110 transition-transform`}
+                        className={`${theme.iconBg} p-4 rounded-full border-2 ${theme.borderColor} group-hover:scale-110 transition-transform`}
                       >
                         <IconComponent
                           className={`w-8 h-8 ${theme.accentColor}`}
@@ -210,48 +215,58 @@ const Packages = () => {
                       </div>
                     </div>
 
-                    <h3 className="text-2xl font-bold text-center mb-4 text-white">
+                    <h3 className="text-2xl font-bold text-center mb-4 text-[var(--text-primary)]">
                       {pkg.name}
                     </h3>
 
                     <div className="space-y-3 mb-6">
                       {/* Investment Range - Row */}
-                      <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
-                        <span className="text-sm font-semibold text-gray-400">
+                      <div
+                        className={`flex items-center justify-between p-3 ${theme.rowBg} rounded-lg border border-[var(--border-primary)]`}
+                      >
+                        <span className="text-sm font-semibold text-[var(--text-secondary)]">
                           Investment Range
                         </span>
-                        <span className="text-white font-bold">{range}</span>
+                        <span className="text-[var(--text-primary)] font-bold">
+                          {range}
+                        </span>
                       </div>
 
                       {/* Description - Row */}
                       {pkg.description && (
-                        <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
-                          <span className="text-sm font-semibold text-gray-400">
+                        <div
+                          className={`flex items-center justify-between p-3 ${theme.rowBg} rounded-lg border border-[var(--border-primary)]`}
+                        >
+                          <span className="text-sm font-semibold text-[var(--text-secondary)]">
                             Description
                           </span>
-                          <span className="text-white text-sm text-right max-w-[60%]">
+                          <span className="text-[var(--text-primary)] text-sm text-right max-w-[60%]">
                             {pkg.description}
                           </span>
                         </div>
                       )}
 
                       {/* ROI - Row */}
-                      <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
-                        <span className="text-sm font-semibold text-gray-400 flex items-center gap-2">
-                          <TrendingUp className="w-4 h-4 text-green-400" />
+                      <div
+                        className={`flex items-center justify-between p-3 ${theme.rowBg} rounded-lg border border-[var(--border-primary)]`}
+                      >
+                        <span className="text-sm font-semibold text-[var(--text-secondary)] flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4 text-green-500" />
                           ROI Monthly
                         </span>
-                        <span className="text-green-400 font-bold">
+                        <span className="text-green-500 font-bold">
                           {pkg.monthly_roi || "N/A"}%
                         </span>
                       </div>
 
                       {/* Activation Fee - Row */}
-                      <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
-                        <span className="text-sm font-semibold text-gray-400">
+                      <div
+                        className={`flex items-center justify-between p-3 ${theme.rowBg} rounded-lg border border-[var(--border-primary)]`}
+                      >
+                        <span className="text-sm font-semibold text-[var(--text-secondary)]">
                           Activation Fee
                         </span>
-                        <span className="text-yellow-400 font-bold">
+                        <span className="text-[var(--accent-primary)] font-bold">
                           $ {pkg.commission_percentage || "0"}
                         </span>
                       </div>
@@ -264,10 +279,10 @@ const Packages = () => {
                       SUBSCRIBE NOW
                     </button>
 
-                    <div className="mt-4 pt-4 border-t border-slate-700">
+                    <div className="mt-4 pt-4 border-t border-[var(--border-primary)]">
                       <div className="flex items-center justify-center gap-2">
-                        <span className="text-xs text-green-400">✓</span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-green-500">✓</span>
+                        <span className="text-xs text-[var(--text-secondary)]">
                           {pkg.status
                             ? "Status: " + pkg.status.toUpperCase()
                             : "Active"}
@@ -278,19 +293,19 @@ const Packages = () => {
                 );
               })
             ) : (
-              <div className="col-span-3 text-center py-8 text-gray-400">
+              <div className="col-span-3 text-center py-8 text-[var(--text-muted)]">
                 {loading ? "Loading packages..." : "No packages available"}
               </div>
             )}
           </div>
 
-          <div className="bg-slate-700/50 border border-slate-600 rounded-lg p-4 text-center">
-            <p className="text-gray-400 text-sm">
-              <span className="text-yellow-400 font-semibold">
+          <div className="bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] rounded-lg p-4 text-center">
+            <p className="text-[var(--text-secondary)] text-sm">
+              <span className="text-[var(--accent-primary)] font-semibold">
                 Closing Date:
               </span>{" "}
               {PackageData?.dates_info?.closing_date || "Last date of month"} |
-              <span className="text-yellow-400 font-semibold ml-2">
+              <span className="text-[var(--accent-primary)] font-semibold ml-2">
                 Payout Date:
               </span>{" "}
               {PackageData?.dates_info?.payout_date || "10th of month"}
@@ -299,14 +314,10 @@ const Packages = () => {
         </div>
 
         {/* Investment History */}
-        <Investment_table  />
-
+        <Investment_table />
 
         {/* <AllTransactionTable /> */}
         {/* <AllTransactionTable /> */}
-
-       
-        
       </div>
 
       {/* Purchase Package Modal */}

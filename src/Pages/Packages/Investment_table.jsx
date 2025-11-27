@@ -46,26 +46,30 @@ const Investment_table = ({ Trigger }) => {
 
   if (Loading) {
     return (
-      <div className="bg-slate-800 border border-slate-700 p-8 rounded-lg shadow-lg mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] p-8 rounded-lg shadow-lg mb-8">
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">
           Investment History
         </h2>
-        <div className="text-center py-12 text-gray-400">Loading...</div>
+        <div className="text-center py-12 text-[var(--text-muted)]">
+          Loading...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-8 rounded-lg shadow-lg mb-8">
-      <h2 className="text-2xl font-bold text-white mb-4">Investment History</h2>
+    <div className="bg-(--bg-card) border border-(--border-primary) p-8 rounded-lg shadow-lg mb-8">
+      <h2 className="text-2xl font-bold text-(--text-primary) mb-4">
+        Investment History
+      </h2>
 
       {transaction.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 bg-slate-700/30 rounded-lg border border-slate-600 overflow-auto ">
-          <AlertCircle className="w-16 h-16 text-gray-500 mb-4" />
-          <p className="text-gray-300 text-lg font-semibold">
+        <div className="flex flex-col items-center justify-center py-16 bg-(--bg-tertiary) rounded-lg border border-(--border-secondary) overflow-auto ">
+          <AlertCircle className="w-16 h-16 text-(--text-muted) mb-4" />
+          <p className="text-(--text-secondary) text-lg font-semibold">
             No Investment History Yet
           </p>
-          <p className="text-gray-500 text-center mt-2 max-w-md">
+          <p className="text-(--text-muted) text-center mt-2 max-w-md">
             You haven't made any investments yet. Start by subscribing to a
             package above to begin your investment journey
           </p>
@@ -74,32 +78,32 @@ const Investment_table = ({ Trigger }) => {
         <div className="overflow-auto min-h-100 max-h-100">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-600 bg-slate-700/50">
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+              <tr className="border-b-2 border-(--border-secondary) bg-(--bg-secondary)">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-(--text-secondary)">
                   S.No
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-(--text-secondary)">
                   Package
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-(--text-secondary)">
                   Amount
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-(--text-secondary)">
                   Monthly ROI
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-(--text-secondary)">
                   Purchase Date
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-(--text-secondary)">
                   Closing Date
                 </th>
-                {/* <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+                {/* <th className="text-left py-3 px-4 text-sm font-semibold text-[var(--text-secondary)]">
                   Payout Date
                 </th> */}
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-[var(--text-secondary)]">
                   ROI Earned
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-300">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-[var(--text-secondary)]">
                   Status
                 </th>
               </tr>
@@ -108,42 +112,44 @@ const Investment_table = ({ Trigger }) => {
               {transaction.map((item, index) => (
                 <tr
                   key={item.id}
-                  className="border-b border-slate-700 hover:bg-slate-700/30 transition-colors"
+                  className="border-b border-(--border-primary) hover:bg-(--bg-tertiary) transition-colors"
                 >
-                  <td className="py-4 px-4 text-gray-300">{index + 1}</td>
+                  <td className="py-4 px-4 text-(--text-primary) font-medium">
+                    {index + 1}
+                  </td>
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-2">
-                      <Package className="w-4 h-4 text-yellow-400" />
-                      <span className="text-white font-medium">
+                      <Package className="w-4 h-4 text-(--accent-primary)" />
+                      <span className="text-(--text-primary) font-medium">
                         {item.package_name}
                       </span>
                     </div>
                   </td>
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-green-400" />
-                      <span className="text-white font-semibold">
+                      <DollarSign className="w-4 h-4 text-(--status-success)" />
+                      <span className="text-(--text-primary) font-semibold">
                         {item.formatted_amount}
                       </span>
                     </div>
                   </td>
-                  <td className="py-4 px-4 text-cyan-400 font-medium">
+                  <td className="py-4 px-4 text-(--status-info) font-medium">
                     ${item.rate_percentage}
                   </td>
                   <td className="py-4 px-4">
-                    <div className="flex items-center gap-2 text-gray-300">
-                      <Calendar className="w-4 h-4 text-blue-400" />
+                    <div className="flex items-center gap-2 text-(--text-secondary)">
+                      <Calendar className="w-4 h-4 text-(--status-info)" />
                       {item.formatted_purchase_date}
                     </div>
                   </td>
-                  <td className="py-4 px-4 text-gray-300">
+                  <td className="py-4 px-4 text-(--text-secondary)">
                     {item.formatted_closing_date}
                   </td>
-                  {/* <td className="py-4 px-4 text-gray-300">
+                  {/* <td className="py-4 px-4 text-[var(--text-secondary)]">
                     {item.formatted_payout_date}
                   </td> */}
                   <td className="py-4 px-4">
-                    <span className="text-emerald-400 font-semibold">
+                    <span className="text-(--status-success) font-semibold">
                       {item.formatted_roi}
                     </span>
                   </td>

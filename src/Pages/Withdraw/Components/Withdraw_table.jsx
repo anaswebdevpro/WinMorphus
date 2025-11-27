@@ -96,11 +96,11 @@ const Withdraw_table = () => {
 
   if (loading) {
     return (
-      <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden animate-pulse">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg overflow-hidden animate-pulse">
         <div className="p-4 space-y-4">
-          <div className="h-12 bg-slate-700 rounded"></div>
+          <div className="h-12 bg-[var(--bg-tertiary)] rounded"></div>
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-slate-700 rounded"></div>
+            <div key={i} className="h-16 bg-[var(--bg-tertiary)] rounded"></div>
           ))}
         </div>
       </div>
@@ -108,29 +108,33 @@ const Withdraw_table = () => {
   }
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+    <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg overflow-hidden">
       {/* Table */}
       <div className="overflow-x-auto min-h-100">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-700 bg-slate-700/50">
-              <th className="text-left p-4 font-semibold text-gray-300">
+            <tr className="border-b border-[var(--border-primary)] bg-[var(--bg-tertiary)]">
+              <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                 S.No
               </th>
-              <th className="text-left p-4 font-semibold text-gray-300">
+              <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                 Date
               </th>
-              <th className="text-left p-4 font-semibold text-gray-300">
+              <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                 Amount
               </th>
-              <th className="text-left p-4 font-semibold text-gray-300">Fee</th>
-              <th className="text-left p-4 font-semibold text-gray-300">
+              <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
+                Fee
+              </th>
+              <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                 Network
               </th>
-              <th className="text-left p-4 font-semibold text-gray-300">
+              <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                 Status
               </th>
-              <th className="text-left p-4 font-semibold text-gray-300">OTP</th>
+              <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
+                OTP
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -138,39 +142,39 @@ const Withdraw_table = () => {
               paginatedData.map((item, index) => (
                 <tr
                   key={item.id || index}
-                  className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors"
+                  className="border-b border-[var(--border-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
                 >
-                  <td className="p-4 text-gray-300">
+                  <td className="p-4 text-[var(--text-secondary)]">
                     {(currentPage - 1) * entriesPerPage + index + 1}
                   </td>
-                  <td className="p-4 text-gray-300">
+                  <td className="p-4 text-[var(--text-secondary)]">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-yellow-400" />
+                      <Calendar className="w-4 h-4 text-(--accent-primary)" />
                       {item.date}
                     </div>
                   </td>
                   <td className="p-4">
                     <div className="flex flex-col">
-                      <span className="text-green-400 font-semibold">
+                      <span className="text-(--status-success) font-semibold">
                         {item.amount} {item.currency || "USDT"}
                       </span>
                       {item.notes && (
-                        <span className="text-xs text-gray-500 mt-1">
+                        <span className="text-xs text-(--text-muted) mt-1">
                           {item.notes}
                         </span>
                       )}
                     </div>
                   </td>
-                  <td className="p-4 text-red-400 font-medium">
+                  <td className="p-4 text-(--status-error) font-medium">
                     {item.fee ? `${item.fee} ${item.currency || "USDT"}` : "-"}
                   </td>
                   <td className="p-4">
                     <div className="flex flex-col">
-                      <span className="text-gray-300 font-medium">
+                      <span className="text-[var(--text-secondary)] font-medium">
                         {item.network}
                       </span>
                       {item.wallet_address && (
-                        <span className="text-xs text-gray-400 mt-1 break-all">
+                        <span className="text-xs text-[var(--text-muted)] mt-1 break-all">
                           {item.wallet_address}
                         </span>
                       )}
@@ -184,11 +188,11 @@ const Withdraw_table = () => {
                   </td>
                   <td className="p-4">
                     {item.is_otp_verified ? (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-(--status-success) text-(--text-primary)">
                         <Check className="w-3 h-3" /> Verified
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-(--bg-tertiary) text-(--text-secondary)">
                         Pending
                       </span>
                     )}
@@ -197,7 +201,10 @@ const Withdraw_table = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={7} className="p-8 text-center text-gray-500">
+                <td
+                  colSpan={7}
+                  className="p-8 text-center text-[var(--text-muted)]"
+                >
                   No withdrawal history available
                 </td>
               </tr>
@@ -207,13 +214,13 @@ const Withdraw_table = () => {
       </div>
 
       {/* Pagination */}
-      <div className="px-4 py-4 border-t border-slate-700 bg-slate-700/30">
+      <div className="px-4 py-4 border-t border-[var(--border-primary)] bg-[var(--bg-tertiary)]">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="text-sm text-gray-400">
+          <div className="text-sm text-[var(--text-muted)]">
             <select
               value={entriesPerPage}
               onChange={handleEntriesPerPageChange}
-              className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] rounded px-2 py-1 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {ENTRIES_PER_PAGE_OPTIONS.map((option) => (
                 <option key={option} value={option}>

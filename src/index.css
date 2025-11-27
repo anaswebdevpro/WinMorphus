@@ -1,9 +1,96 @@
 @import "tailwindcss";
 
-/* Custom Scrollbar Styles - Dark Theme */
+/* CSS Variables for Theme */
+:root[data-theme="light"] {
+  /* Background Colors - Softened light theme (reduced whiteness) */
+  --bg-primary: #f3f6f8; /* slightly deeper than pure white */
+  --bg-secondary: #eef3f6;
+  --bg-tertiary: #e6eef3;
+  --bg-card: #fbfcfd; /* very subtle off-white for cards */
+  --bg-card-gradient-start: #fbfcfd;
+  --bg-card-gradient-end: #f3f6f8;
+
+  /* Text Colors - High contrast for readability */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --text-muted: #94a3b8;
+
+  /* Border Colors - Subtle but visible */
+  --border-primary: #dbe6ee; /* a touch stronger than before */
+  --border-secondary: #cfdde7;
+  --border-accent: #9ab0bd;
+
+  /* Accent Colors - Vibrant yellow/gold */
+  --accent-primary: #f59e0b;
+  --accent-secondary: #d97706;
+  --accent-hover: #b45309;
+
+  /* Status Colors */
+  --status-success: #10b981;
+  --status-error: #ef4444;
+  --status-warning: #f59e0b;
+  --status-info: #3b82f6;
+
+  /* Component Specific */
+  --navbar-bg: #1e293b;
+  --navbar-border: #334155;
+  --navbar-text: #f8fafc;
+  --navbar-text-hover: #fbbf24;
+  --input-bg: #fbfcfd; /* inputs follow card background to avoid stark white */
+  --input-border: #d5dde6;
+  --scrollbar-track: #e2e8f0;
+  --scrollbar-thumb: #94a3b8;
+  --scrollbar-thumb-hover: #64748b;
+}
+
+:root[data-theme="dark"] {
+  /* Background Colors */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --bg-card: #1e293b;
+  --bg-card-gradient-start: #1e293b;
+  --bg-card-gradient-end: #0f172a;
+
+  /* Text Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Border Colors */
+  --border-primary: #334155;
+  --border-secondary: #475569;
+  --border-accent: #64748b;
+
+  /* Accent Colors */
+  --accent-primary: #facc15;
+  --accent-secondary: #eab308;
+  --accent-hover: #fde047;
+
+  /* Status Colors */
+  --status-success: #22c55e;
+  --status-error: #ef4444;
+  --status-warning: #f59e0b;
+  --status-info: #3b82f6;
+
+  /* Component Specific */
+  --navbar-bg: #f8fafc;
+  --navbar-border: #e2e8f0;
+  --navbar-text: #0f172a;
+  --navbar-text-hover: #ca8a04;
+  --input-bg: #334155;
+  --input-border: #475569;
+  --scrollbar-track: #334155;
+  --scrollbar-thumb: #64748b;
+  --scrollbar-thumb-hover: #94a3b8;
+}
+
+/* Custom Scrollbar Styles */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #64748b #334155;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 *::-webkit-scrollbar {
@@ -12,18 +99,18 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: #334155;
+  background: var(--scrollbar-track);
   border-radius: 10px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #64748b;
+  background: var(--scrollbar-thumb);
   border-radius: 10px;
   transition: background 0.2s ease;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Custom Slider Styles */

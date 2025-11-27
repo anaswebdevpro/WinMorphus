@@ -47,24 +47,24 @@ const RankProgress = () => {
 
   if (loading || !RankData) {
     return (
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg animate-pulse h-48"></div>
+      <div className="bg-[var(--bg-card)] border-2 border-slate-600 rounded-xl p-6 shadow-lg animate-pulse h-48"></div>
     );
   }
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+    <div className="bg-[var(--bg-card)] border-2 border-slate-600 rounded-xl p-6 shadow-lg">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-white flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-yellow-400" />
+        <h3 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-[var(--accent-primary)]" />
           You're at{" "}
-          <span className="text-yellow-400 text-2xl">
+          <span className="text-[var(--accent-primary)] text-2xl">
             {" "}
             Rank {RankData?.current_rank || 0}
           </span>
         </h3>
         <div className="flex gap-1">
-          <span className="text-yellow-400 text-5xl">🏆</span>
+          <span className="text-[var(--accent-primary)] text-5xl">🏆</span>
           {/* <span className="text-yellow-400 text-3xl">🏆</span>
           <span className="text-yellow-400 text-3xl">🏆</span> */}
         </div>
@@ -76,18 +76,20 @@ const RankProgress = () => {
           <div className="text-3xl font-bold text-blue-400">
             $ {RankData?.current_reward?.reward_amount || 0}
           </div>
-          <div className="text-sm text-gray-400">You've Earned</div>
+          <div className="text-sm text-[var(--text-secondary)]">
+            You've Earned
+          </div>
         </div>
         <div className="text-right">
-          <div className="text-3xl font-bold text-gray-300">
+          <div className="text-3xl font-bold text-[var(--text-primary)]">
             $ {RankData?.next_reward?.reward_amount || 0}
           </div>
-          <div className="text-sm text-gray-400">Goal</div>
+          <div className="text-sm text-[var(--text-secondary)]">Goal</div>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="relative w-full h-3 bg-slate-700 rounded-full overflow-hidden mb-4">
+      <div className="relative w-full h-3 bg-[var(--bg-tertiary)] rounded-full overflow-hidden mb-4">
         <div
           className="absolute top-0 left-0 h-full bg-linear-to-r from-blue-500 to-blue-400 rounded-full transition-all duration-500"
           style={{
@@ -104,18 +106,18 @@ const RankProgress = () => {
 
       {/* Rank Display */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 bg-slate-700/50 px-4 py-2 rounded-lg">
-          <Award className="w-5 h-5 text-gray-400" />
-          <span className="text-white font-medium">
+        <div className="flex items-center gap-2 bg-[var(--bg-tertiary)] px-4 py-2 rounded-lg">
+          <Award className="w-5 h-5 text-[var(--text-secondary)]" />
+          <span className="text-[var(--text-primary)] font-medium">
             {" "}
             {`Rank ${RankData?.current_rank || 0}`}
           </span>
         </div>
-        <div className="flex items-center gap-2 bg-slate-700/50 px-4 py-2 rounded-lg">
-          <span className="text-yellow-400 font-medium">{`Rank ${
+        <div className="flex items-center gap-2 bg-[var(--bg-tertiary)] px-4 py-2 rounded-lg">
+          <span className="text-[var(--accent-primary)] font-medium">{`Rank ${
             RankData?.next_rank || 0
           }`}</span>
-          <Award className="w-5 h-5 text-yellow-400" />
+          <Award className="w-5 h-5 text-[var(--accent-primary)]" />
         </div>
       </div>
 
@@ -134,8 +136,8 @@ const RankProgress = () => {
       </div> */}
     </div>
 
-//     <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
-// <RankChart data={RankData} />      
+    //     <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+    // <RankChart data={RankData} />
 
     // </div>
   );

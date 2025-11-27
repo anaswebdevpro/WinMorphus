@@ -56,7 +56,7 @@ const RankChart = () => {
 
   if (loading || !RankData) {
     return (
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg animate-pulse h-48"></div>
+      <div className="bg-[var(--bg-card)] border-2 border-slate-600 rounded-xl p-6 shadow-lg animate-pulse h-48"></div>
     );
   }
 
@@ -70,7 +70,7 @@ const RankChart = () => {
   // If no levels available, render a small placeholder message
   if (!chartData.length) {
     return (
-      <div className="text-center text-sm text-gray-400 p-4">
+      <div className="text-center text-sm text-[var(--text-muted)] p-4">
         No level data available
       </div>
     );

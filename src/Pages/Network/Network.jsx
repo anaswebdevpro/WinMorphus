@@ -18,28 +18,26 @@ import Accordian from "./Accordian";
 /**
  * StatCard Component: Displays a single statistic card with a title, value, and icon.
  */
-const StatCard = ({
-  title,
-  value,
-  icon,
-  gradient,
-  border,
-  iconBg,
-  iconColor,
-}) => (
+const StatCard = ({ title, value, icon }) => (
   <div
-    className={`bg-linear-to-br ${gradient} border-2 ${border} rounded-lg p-6 shadow-lg hover:shadow-xl transition-all relative overflow-hidden`}
+    className={`bg-(--bg-card-gradient-start) bg-linear-to-br from-(--bg-card-gradient-start) to-(--bg-card-gradient-end) border-2 border-(--border-accent) rounded-lg p-6 shadow-lg hover:shadow-xl transition-all relative overflow-hidden`}
   >
     <div className="absolute top-4 right-4">
-      <div className={`${iconBg} p-3 rounded-lg`}>
-        {React.cloneElement(icon, { className: `w-6 h-6 ${iconColor}` })}
+      <div className="bg-(--accent-primary)/20 p-3 rounded-lg">
+        {React.cloneElement(icon, {
+          className: `w-6 h-6 text-[var(--accent-primary)]`,
+        })}
       </div>
     </div>
     <div className="flex items-center gap-2 mb-2">
-      {React.cloneElement(icon, { className: `w-5 h-5 ${iconColor}` })}
-      <p className="text-sm font-medium opacity-90">{title}</p>
+      {React.cloneElement(icon, {
+        className: `w-5 h-5 text-(--accent-primary)`,
+      })}
+      <p className="text-sm font-medium text-(--text-secondary) opacity-90">
+        {title}
+      </p>
     </div>
-    <h2 className="text-3xl font-bold text-white">{value}</h2>
+    <h2 className="text-3xl font-bold text-(--text-primary)">{value}</h2>
   </div>
 );
 
@@ -52,7 +50,7 @@ const Network = () => {
   const [networkData, setNetworkData] = useState(null);
   const { token } = useAuth();
 
-  const FetchNetwork = () => {
+  const FetchNetwork = React.useCallback(() => {
     setIsLoading(true);
     try {
       apiRequest({
@@ -79,9 +77,9 @@ const Network = () => {
         variant: "error",
       });
     }
-  };
+  }, [token]);
 
-  const fetchStats = () => {
+  const fetchStats = React.useCallback(() => {
     setIsLoading(true);
     try {
       apiRequest({
@@ -118,16 +116,16 @@ const Network = () => {
         variant: "error",
       });
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     FetchNetwork();
     fetchStats();
-  }, []);
+  }, [FetchNetwork, fetchStats]);
 
   if (isLoading) {
     return (
-      <div className="p-6 bg-[#121212] min-h-screen text-white">
+      <div className="p-6 bg-(--bg-primary) min-h-screen text-(--text-primary)">
         <div className="max-w-7xl mx-auto">
           <PageHeader
             title="Track your Network Members"
@@ -141,7 +139,7 @@ const Network = () => {
 
   return (
     <>
-      <div className="p-6 bg-slate-900 min-h-screen text-white">
+      <div className="p-6 bg-(--bg-primary) min-h-screen text-(--text-primary)">
         <div className="max-w-7xl mx-auto">
           <PageHeader
             title="Track your Network Members"

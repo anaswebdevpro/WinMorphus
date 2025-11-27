@@ -2,18 +2,18 @@ import React from "react";
 import { Award, TrendingUp } from "lucide-react";
 
 const Investerprogress = ({ data }) => {
- 
-
   const currentRank = "Invester";
 
-
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+    <div className="bg-[var(--bg-card)] border-2 border-slate-600 rounded-xl p-6 shadow-lg">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-4xl font-bold text-white flex items-center gap-2">
-          <TrendingUp className="w-15 h-15 text-yellow-400" />
-          You're <span className="text-yellow-400 text-4xl">{currentRank}</span>
+        <h3 className="text-4xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+          <TrendingUp className="w-15 h-15 text-[var(--accent-primary)]" />
+          You're{" "}
+          <span className="text-[var(--accent-primary)] text-4xl">
+            {currentRank}
+          </span>
         </h3>
         {/* <div className="flex gap-1">
           <span className="text-yellow-400 text-2xl">🏆</span>
@@ -28,13 +28,18 @@ const Investerprogress = ({ data }) => {
           <div className="text-3xl font-bold text-blue-400">
             {data?.total_directs}
           </div>
-          <div className="text-sm text-gray-400">Direct Referrals</div>
+          <div className="text-sm text-[var(--text-secondary)]">
+            Direct Referrals
+          </div>
         </div>
         <div className="text-right">
-          <div className="text-3xl font-bold text-gray-300">
-           $ {data?.total_business}
+          <div className="text-3xl font-bold text-[var(--text-primary)]">
+            $ {data?.total_business}
           </div>
-          <div className="text-sm text-gray-400"> Required Business</div>
+          <div className="text-sm text-[var(--text-secondary)]">
+            {" "}
+            Required Business
+          </div>
         </div>
       </div>
 
@@ -61,19 +66,21 @@ const Investerprogress = ({ data }) => {
       </div> */}
 
       {/* Info Message */}
-      <div className="flex items-start gap-2 bg-slate-700/30 border border-slate-600 rounded-lg p-3 mb-10">
-        <div className="w-5 h-5 rounded-full border-2 border-gray-400 flex items-center justify-center shrink-0 mt-0.5">
-          <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+      <div className="flex items-start gap-2 bg-[var(--bg-tertiary)] border border-[var(--border-secondary)] rounded-lg p-3 mb-10">
+        <div className="w-5 h-5 rounded-full border-2 border-[var(--text-secondary)] flex items-center justify-center shrink-0 mt-0.5">
+          <div className="w-2 h-2 bg-[var(--text-secondary)] rounded-full"></div>
         </div>
-        <p className="text-gray-300 text-lg">
+        <p className="text-[var(--text-primary)] text-lg">
           You need to earn{" "}
-          <span className="font-bold text-yellow-400">
+          <span className="font-bold text-[var(--accent-primary)]">
             {data?.total_directs} Direct Referrals
           </span>{" "}
-           and 
-           <span className="font-bold text-yellow-400">
-            
-          </span>{" "}<span className="font-bold text-yellow-400">{data?.total_business +"$"} Business</span> Required to Become a Leader.
+          and
+          <span className="font-bold text-[var(--accent-primary)]"></span>{" "}
+          <span className="font-bold text-[var(--accent-primary)]">
+            {data?.total_business + "$"} Business
+          </span>{" "}
+          Required to Become a Leader.
         </p>
       </div>
     </div>

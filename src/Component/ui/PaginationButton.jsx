@@ -19,16 +19,16 @@ const PaginationButton = ({
 }) => {
   const getVariantClasses = () => {
     if (isActive) {
-      return "bg-blue-500 text-white border-blue-500";
+      return "bg-(--accent-primary) text-(--text-primary) border-(--accent-primary)";
     }
 
     switch (variant) {
       case "primary":
-        return "bg-blue-600 text-white border-blue-600 hover:bg-blue-700";
+        return "bg-(--accent-primary) text-(--text-primary) border-(--accent-primary) hover:bg-(--accent-hover)";
       case "secondary":
-        return "bg-slate-600 text-white border-slate-600 hover:bg-slate-700";
+        return "bg-(--bg-secondary) text-(--text-primary) border-(--border-primary) hover:bg-(--bg-tertiary)";
       default:
-        return "border-slate-600 text-gray-300 hover:border-blue-500 hover:text-white";
+        return "border-(--border-primary) text-(--text-secondary) hover:border-(--accent-primary) hover:text-(--text-primary)";
     }
   };
 

@@ -9,10 +9,10 @@ import React from "react";
 const PageHeader = ({ title, description, className = "" }) => {
   return (
     <div className={`mb-8 ${className}`}>
-      <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 mb-2">
+      <h1 className="text-3xl sm:text-4xl font-bold text-(--accent-primary) mb-2">
         {title}
       </h1>
-      {description && <p className="text-gray-400">{description}</p>}
+      {description && <p className="text-(--text-secondary)">{description}</p>}
     </div>
   );
 };
