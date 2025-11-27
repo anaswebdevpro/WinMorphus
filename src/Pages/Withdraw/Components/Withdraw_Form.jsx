@@ -178,7 +178,7 @@ const Withdraw_Form = () => {
     if (n < 50) return null;
     if (n >= 50)
       return (
-        <span className="text-green-600 text-sm mt-2">
+        <span className="text-green-600 text-sm mt-2 lg:ml-50 ">
           $1 transaction fee will be applicable
         </span>
       );
