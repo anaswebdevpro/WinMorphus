@@ -78,8 +78,6 @@ const Withdraw_Form = () => {
     }
   }, [token, enqueueSnackbar]);
 
-  
-
   useEffect(() => {
     fetchWithdrawalLimits();
     fetchWithdrawalNetworks();
@@ -106,7 +104,7 @@ const Withdraw_Form = () => {
 
   const formik = useFormik({
     initialValues: {
-      amount: "50",
+      amount: "",
       wallet: "main",
       network: "",
       address: "",
@@ -123,7 +121,6 @@ const Withdraw_Form = () => {
       };
       console.log("Requested Body:", requestedBody);
       try {
-       
         apiRequest({
           endpoint: WITHDRAWAL_CREATE_REQUEST,
           method: "POST",
@@ -155,8 +152,7 @@ const Withdraw_Form = () => {
               error.response?.data?.message ||
               "Failed to submit withdrawal request";
             enqueueSnackbar(errorMessage, { variant: "error" });
-             setSubmitLoading(false);
-            
+            setSubmitLoading(false);
           });
       } catch (error) {
         console.error("Error submitting withdrawal:", error);
@@ -164,7 +160,7 @@ const Withdraw_Form = () => {
           variant: "error",
         });
         setSubmitLoading(false);
-      } 
+      }
     },
   });
 
@@ -175,6 +171,20 @@ const Withdraw_Form = () => {
     setTimeout(() => setCopied(false), 2000);
     enqueueSnackbar("Address copied to clipboard", { variant: "info" });
   };
+
+  // Selected network fee info (based on formik network selection)
+  const showFees = (() => {
+    const n = formik.values.amount;
+    if (n < 50) return null;
+    if (n >= 50)
+      return (
+        <span className="text-green-600 text-sm mt-2">
+          $1 transaction fee will be applicable
+        </span>
+      );
+
+    return null;
+  })();
 
   if (loading) {
     return (
@@ -349,8 +359,8 @@ const Withdraw_Form = () => {
                 </p>
               ) : (
                 <p className="text-(--text-muted) text-xs mt-2">
-                  💡 Min: {limits?.limits?.min_withdrawal || 10} USDT | Max:{" "}
-                  {limits?.limits?.max_withdrawal || 10000} USDT
+                  💡 Min: {limits?.limits?.min_withdrawal || 10} USDT |{" "}
+                   {showFees}
                 </p>
               )}
             </div>
@@ -426,6 +436,7 @@ const Withdraw_Form = () => {
                     </option>
                   )}
                 </select>
+
                 {formik.touched.network && formik.errors.network && (
                   <p className="text-(--status-error) text-sm mt-2">
                     ⚠️ {formik.errors.network}
