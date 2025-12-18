@@ -89,6 +89,7 @@ const Withdraw_Form = () => {
       .required("Amount is required")
       .min(
         limits?.limits?.min_withdrawal || 50,
+
         `Minimum withdrawal is ${limits?.limits?.min_withdrawal || 50} USDT`
       )
       .max(
@@ -106,7 +107,7 @@ const Withdraw_Form = () => {
     initialValues: {
       amount: "",
       wallet: "main",
-      network: "",
+      network: "bep20",
       address: "",
     },
     validationSchema,
@@ -119,7 +120,7 @@ const Withdraw_Form = () => {
         wallet_address: values.address,
         currency: "USDT",
       };
-      console.log("Requested Body:", requestedBody);
+      // console.log("Requested Body:", requestedBody);
       try {
         apiRequest({
           endpoint: WITHDRAWAL_CREATE_REQUEST,
@@ -132,6 +133,7 @@ const Withdraw_Form = () => {
               enqueueSnackbar("Withdrawal request submitted successfully", {
                 variant: "success",
               });
+              setSubmitLoading(false);
               // Determine request identifier returned by the API (common response shapes)
               const requestId =
                 response?.data?.request_id ||
@@ -360,7 +362,7 @@ const Withdraw_Form = () => {
               ) : (
                 <p className="text-(--text-muted) text-xs mt-2">
                   💡 Min: {limits?.limits?.min_withdrawal || 10} USDT |{" "}
-                   {showFees}
+                  {showFees}
                 </p>
               )}
             </div>
@@ -499,7 +501,6 @@ const Withdraw_Form = () => {
                 disabled={submitLoading || !formik.isValid}
                 className="w-full px-6 py-3 bg-(--accent-primary) hover:bg-(--accent-hover) disabled:bg-(--bg-tertiary) text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-(--accent-primary)/50 disabled:shadow-none"
               >
-                {console.log(submitLoading)}
                 {submitLoading ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />

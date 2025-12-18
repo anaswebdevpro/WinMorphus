@@ -15,7 +15,7 @@ import {
 const Accordian = ({ networkData }) => {
   const [expandedLevels, setExpandedLevels] = useState({});
 
-  console.log("Accordian networkData:", networkData);
+  // console.log("Accordian networkData:", networkData);
 
   // Toggle level expansion
   const toggleLevel = (level) => {

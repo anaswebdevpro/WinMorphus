@@ -62,7 +62,7 @@ const Signup = () => {
           data: payload,
         })
           .then((response) => {
-            console.log("Signup successful:", response);
+            // console.log("Signup successful:", response);
             const successMessage = response?.message || "Signup successful!";
             enqueueSnackbar(successMessage, { variant: "success" });
             // Automatically login the user after signup

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Tree, TreeNode } from "react-organizational-chart";
 import { useAuth } from "../../Context/UseAuth";
+import { NoData } from "../../assets";
 import StatusBadge from "../../Component/ui/StatusBadge";
 
 /**
@@ -137,7 +138,7 @@ const NetworkTree = ({ networkData }) => {
   const [maxLevels, setMaxLevels] = useState(5);
   const [maxNodesPerLevel, setMaxNodesPerLevel] = useState(5);
   const { user } = useAuth();
-  console.log("Logged-in User:", user);
+  // console.log("Logged-in User:", user);
 
   // Build hierarchical tree structure from level-wise data
   React.useEffect(() => {
@@ -147,8 +148,8 @@ const NetworkTree = ({ networkData }) => {
       return;
     }
 
-    console.log("Logged-in User:", user);
-    console.log("Raw Network Data:", networkData);
+    // console.log("Logged-in User:", user);
+    // console.log("Raw Network Data:", networkData);
 
     // Start with the logged-in user as the root
     const loggedInUser = {
@@ -183,7 +184,7 @@ const NetworkTree = ({ networkData }) => {
 
           // Only include levels up to maxLevels
           if (levelNum <= maxLevels && Array.isArray(networkData[level])) {
-            console.log(`Level ${level}:`, networkData[level]);
+            // console.log(`Level ${level}:`, networkData[level]);
 
             // Limit number of nodes per level
             const limitedMembers = networkData[level].slice(
@@ -201,7 +202,7 @@ const NetworkTree = ({ networkData }) => {
         });
     }
 
-    console.log("All Members (including logged-in user):", allMembers);
+    // console.log("All Members (including logged-in user):", allMembers);
 
     // Create a map of members by ID for quick lookup
     const memberMap = {};
@@ -209,7 +210,7 @@ const NetworkTree = ({ networkData }) => {
       memberMap[member.id] = { ...member, children: [] };
     });
 
-    console.log("Member Map:", memberMap);
+    // console.log("Member Map:", memberMap);
 
     // Build the tree by linking children to their sponsors based on sponsor_id === id
     allMembers.forEach((member) => {
@@ -222,12 +223,12 @@ const NetworkTree = ({ networkData }) => {
       }
     });
 
-    console.log("Member Map with Children:", memberMap);
+    // console.log("Member Map with Children:", memberMap);
 
     setAllMembersMap(memberMap);
 
     // Set the logged-in user as root
-    console.log("Setting logged-in user as root:", memberMap[user.id]);
+    // console.log("Setting logged-in user as root:", memberMap[user.id]);
     setRootMemberId(user.id);
     setSelectedMemberId(user.id);
     setNetworkTree(memberMap[user.id]);
@@ -266,9 +267,11 @@ const NetworkTree = ({ networkData }) => {
     return (
       <div className="bg-green-300/10 rounded-2xl shadow-yellow-800 shadow-lg p-6">
         <div className="text-center py-12 text-[#CCCCCC]">
-          <div className="text-6xl mb-4">🌳</div>
+          <div className="mb-4">
+            <img src={NoData} alt="No data" className="h-24 mx-auto mb-3" />
+          </div>
           <div className="text-xl font-semibold mb-2">No Network Members</div>
-          <div>No network data available to display</div>
+          <div>No data available to display</div>
         </div>
       </div>
     );

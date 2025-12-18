@@ -13,7 +13,7 @@ const RoiChart = ({ stats }) => {
 
  
   const data = [
-   { name: "Total investment", value: parseFloat((parseFloat(stats?.total_investment) || 0).toFixed(2)) },
+   { name: "Total investment", value: parseFloat((parseFloat(stats?.total_investment) || 0.01).toFixed(2)) },
    { name: "Level Income", value: parseFloat((parseFloat(stats?.current_level_income) || 0).toFixed(2)) },
     { name: "ROI Earned", value: parseFloat((parseFloat(stats?.current_roi_earned) || 0).toFixed(2)) },
     { name: "Reward Income", value: parseFloat((parseFloat(stats?.reward_income) || 0).toFixed(2)) },

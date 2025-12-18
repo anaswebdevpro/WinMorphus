@@ -34,7 +34,7 @@ const BEP20 = () => {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        console.log("Deposit Methods API Response:", response);
+        // console.log("Deposit Methods API Response:", response);
 
         // Handle both nested and direct data structures
 

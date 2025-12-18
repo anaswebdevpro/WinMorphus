@@ -29,7 +29,7 @@ const WalletInfo = () => {
         .then((response) => {
           if (response?.data) {
             setWalletInfo(response.data);
-            console.log("Wallet Info:", response.data);
+            // console.log("Wallet Info:", response.data);
           }
           setLoading(false);
         })

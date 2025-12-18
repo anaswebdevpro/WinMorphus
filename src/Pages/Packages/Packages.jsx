@@ -6,6 +6,7 @@ import { useAuth } from "../../Context/UseAuth";
 import { enqueueSnackbar } from "notistack";
 import PurchasePackage from "./PurchasePackage";
 import { ShimmerLoader, PageHeader } from "../../Component/ui";
+import { NoData } from "../../assets";
 import Investment_table from "./Investment_table";
 
 const Packages = () => {
@@ -96,7 +97,7 @@ const Packages = () => {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        console.log("Packages API Response:", response);
+        // console.log("Packages API Response:", response);
 
         // Handle both nested and direct data structures
         const data = response.data || response;
@@ -158,7 +159,7 @@ const Packages = () => {
           title="Investment Packages"
           description="Choose the perfect package to start your investment journey"
         />
-        {console.log(PackageData.packages)}
+        {/* console.log(PackageData.packages) */}
         {/* Packages Section */}
         <div
           className={`bg-[var(--bg-card)] border border-[var(--border-primary)] p-8 rounded-lg shadow-lg mb-8`}
@@ -294,7 +295,23 @@ const Packages = () => {
               })
             ) : (
               <div className="col-span-3 text-center py-8 text-[var(--text-muted)]">
-                {loading ? "Loading packages..." : "No packages available"}
+                {loading ? (
+                  "Loading packages..."
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-8">
+                    <img
+                      src={NoData}
+                      alt="No data"
+                      className=" h-50 object-contain mb-4"
+                    />
+                    <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+                      No data available yet
+                    </h3>
+                    <p className="text-[var(--text-secondary)] text-sm mt-2">
+                      No packages available
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

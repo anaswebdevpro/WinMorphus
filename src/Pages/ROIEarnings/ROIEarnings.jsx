@@ -8,10 +8,12 @@ import {
   Percent,
 } from "lucide-react";
 import { PageHeader, ShimmerLoader } from "../../Component/ui";
+import PaginationButton from "../../Component/ui/PaginationButton";
 import { useAuth } from "../../Context/UseAuth";
 import { apiRequest } from "../../Services/Api";
 import { ROI_ACTIVE_INVESTMENTS } from "../../Api/Api_variables";
 import { enqueueSnackbar } from "notistack";
+import { NoData } from "../../assets";
 
 // Reusable StatCard Component
 // eslint-disable-next-line no-unused-vars
@@ -40,16 +42,34 @@ const ROIEarnings = () => {
     total_earned: 0,
   });
   const [loading, setLoading] = useState(true);
+  // Pagination
+  const ENTRIES_PER_PAGE_OPTIONS = [5, 10, 25];
+  const DEFAULT_ENTRIES_PER_PAGE = 5;
+  const [entriesPerPage, setEntriesPerPage] = useState(
+    DEFAULT_ENTRIES_PER_PAGE
+  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    per_page: DEFAULT_ENTRIES_PER_PAGE,
+    current_page: 1,
+    last_page: 1,
+  });
   const { token } = useAuth();
 
   const fetchInvestments = () => {
     if (!token) return;
 
     setLoading(true);
+    const payload = {
+      page: currentPage,
+      per_page: entriesPerPage,
+    };
     apiRequest({
       endpoint: ROI_ACTIVE_INVESTMENTS,
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
+      data: payload,
     })
       .then((response) => {
         if (response?.data) {
@@ -59,6 +79,10 @@ const ROIEarnings = () => {
             total_invest: response.data.total_invested_amount,
             total_earned: response.data.total_earned_so_far,
           });
+          // update pagination if available
+          if (response.data.pagination) {
+            setPagination(response.data.pagination);
+          }
         }
         setLoading(false);
       })
@@ -74,7 +98,29 @@ const ROIEarnings = () => {
   useEffect(() => {
     fetchInvestments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentPage, entriesPerPage]);
+
+  // Pagination derived values
+  const totalPages = pagination?.last_page || 1;
+  const paginatedData = investments; // server paginated
+
+  const handleEntriesPerPageChange = (e) => {
+    const newEntries = parseInt(e.target.value, 10);
+    setEntriesPerPage(newEntries);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
 
   if (loading) {
     return (
@@ -136,7 +182,7 @@ const ROIEarnings = () => {
               <thead>
                 <tr className="border-b border-(--border-primary) bg-(--bg-tertiary)">
                   <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
-                   S.No
+                    S.No
                   </th>
                   <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                     Package
@@ -151,7 +197,7 @@ const ROIEarnings = () => {
                     Purchase Date
                   </th>
                   <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
-                    Months Active
+                    Days Active
                   </th>
                   <th className="text-left p-4 font-semibold text-[var(--text-secondary)]">
                     Earned So Far
@@ -162,14 +208,16 @@ const ROIEarnings = () => {
                 </tr>
               </thead>
               <tbody>
-                {investments.length > 0 ? (
-                  investments.map((item, index) => (
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((item, index) => (
                     <tr
                       key={item.id || index}
                       className="border-b border-(--border-primary) hover:bg-(--bg-tertiary) transition-colors"
                     >
                       <td className="p-4 text-[var(--text-secondary)]">
-                        <span className="font-medium">{index + 1}</span>
+                        <span className="font-medium">
+                          {(currentPage - 1) * entriesPerPage + index + 1}
+                        </span>
                       </td>
                       <td className="p-4 text-[var(--text-secondary)]">
                         <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 text-blue-600 rounded-lg text-sm border border-blue-500/20">
@@ -191,17 +239,18 @@ const ROIEarnings = () => {
                           {item.purchase_date}
                         </div>
                       </td>
-                      <td className="p-4 text-[var(--text-secondary)]">
-                        {item.total_entries >= 24 ? (
+                      <td className="p-4 text-[var(--text-secondary)] font-semibold">
+                        {/* {item.total_entries >= 365 ? (
                           <span className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-600 rounded-lg text-sm font-medium border border-green-500/20">
                             Completed
                           </span>
                         ) : (
                           <>
-                            {Math.max(0, Math.floor(item.total_entries))} /{" "}
-                            {item.total_days} 24 Months
+                           {Math.max(0, Math.floor(item.total_entries))} Days
+                            
                           </>
-                        )}
+                        )} */}
+                        {item.total_entries} Days
                       </td>
                       <td className="p-4">
                         <span className="font-semibold text-green-600">
@@ -222,9 +271,18 @@ const ROIEarnings = () => {
                   <tr>
                     <td
                       colSpan={8}
-                      className="p-8 text-center text-(--text-muted)"
+                      className="p-8 text-center  text-(--text-muted)"
                     >
-                      No active investments available
+                      <div className="flex flex-col items-center justify-center py-8">
+                        <img
+                          src={NoData}
+                          alt="No data"
+                          className=" h-50 object-contain mb-4"
+                        />
+                        <h3 className="text-lg font-semibold text-(--text-primary)">
+                          No data available yet
+                        </h3>
+                      </div>
                     </td>
                   </tr>
                 )}
@@ -234,8 +292,54 @@ const ROIEarnings = () => {
 
           {/* Table Footer with Pagination */}
           <div className="px-4 py-4 border-t border-(--border-primary) bg-(--bg-tertiary)">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-(--text-muted)">
-              <div>Total: {investments.length} entries</div>
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="text-sm text-(--text-muted)">
+                <select
+                  value={entriesPerPage}
+                  onChange={handleEntriesPerPageChange}
+                  className="bg-(--input-bg) border border-(--input-border) rounded px-2 py-1 text-(--text-primary) text-sm focus:outline-none focus:ring-2 focus:ring-(--accent-primary) w-full sm:w-auto"
+                >
+                  {ENTRIES_PER_PAGE_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option} entries
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center space-x-2 overflow-x-auto">
+                <PaginationButton
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </PaginationButton>
+
+                <div className="flex space-x-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    const pageNum = i + 1;
+                    return (
+                      <PaginationButton
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        isActive={currentPage === pageNum}
+                      >
+                        {pageNum}
+                      </PaginationButton>
+                    );
+                  })}
+                </div>
+
+                <PaginationButton
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </PaginationButton>
+              </div>
+            </div>
+            <div className="text-sm text-(--text-muted) mt-2">
+              Total: {pagination?.total || investments.length} entries
             </div>
           </div>
         </div>

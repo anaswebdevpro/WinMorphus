@@ -21,6 +21,7 @@ import {
   Linkedin,
 } from "lucide-react";
 import { useAuth } from "../../Context/UseAuth";
+import { NoData } from "../../assets";
 import { apiRequest } from "../../Services/Api";
 import { DASHBOARD_DATA, GET_BALANCE } from "../../Api/Api_variables";
 import { useNavigate } from "react-router-dom";
@@ -515,7 +516,10 @@ const Dashboard = () => {
                         colSpan="3"
                         className="text-center py-12 text-[var(--text-muted)] text-xl"
                       >
-                        No ROI earnings history available
+                        <div className="flex flex-col items-center justify-center ">
+                          <img src={NoData} alt="No data" className=" h-40 object-contain mb-3" />
+                          <h3 className="text-lg font-semibold text-[var(--text-primary)]">No data available yet</h3>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -593,7 +597,10 @@ const Dashboard = () => {
                         colSpan="4"
                         className="text-center py-12 text-[var(--text-muted)] text-xl"
                       >
-                        No Leadership earnings history available
+                        <div className="flex flex-col items-center justify-center ">
+                          <img src={NoData} alt="No data" className=" h-40 object-contain mb-3" />
+                          <h3 className="text-lg font-semibold text-[var(--text-primary)]">No data available yet</h3>
+                        </div>
                       </td>
                     </tr>
                   )}

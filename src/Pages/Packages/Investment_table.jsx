@@ -4,6 +4,7 @@ import { PACKAGES_INVESTMENT_HISTORY } from "../../Api/Api_variables";
 import { apiRequest } from "../../Services/Api";
 import { useAuth } from "../../Context/UseAuth";
 import { AlertCircle, Package, Calendar, DollarSign } from "lucide-react";
+import { NoData } from "../../assets";
 import { StatusBadge } from "../../Component/ui";
 
 const Investment_table = ({ Trigger }) => {
@@ -20,7 +21,7 @@ const Investment_table = ({ Trigger }) => {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
-          console.log("Investment API Response:", response);
+          // console.log("Investment API Response:", response);
 
           // Handle both nested and direct data structures
           setTransaction(response.data);
@@ -65,10 +66,14 @@ const Investment_table = ({ Trigger }) => {
 
       {transaction.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 bg-(--bg-tertiary) rounded-lg border border-(--border-secondary) overflow-auto ">
-          <AlertCircle className="w-16 h-16 text-(--text-muted) mb-4" />
-          <p className="text-(--text-secondary) text-lg font-semibold">
-            No Investment History Yet
-          </p>
+          <img
+            src={NoData}
+            alt="No data"
+            className="h-50 object-contain mb-4"
+          />
+          <h3 className="text-lg font-semibold text-(--text-primary)">
+            No data available yet
+          </h3>
           <p className="text-(--text-muted) text-center mt-2 max-w-md">
             You haven't made any investments yet. Start by subscribing to a
             package above to begin your investment journey

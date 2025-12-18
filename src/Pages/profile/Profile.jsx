@@ -71,7 +71,7 @@ const Profile = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
-          console.log("Profile Data Response:", response);
+          // console.log("Profile Data Response:", response);
           setIsLoading(false);
           const profile = response.data?.profile || response.data;
           setProfileData(response.data);
@@ -185,7 +185,7 @@ const Profile = () => {
       profileData.postal_code = values.postal_code;
     }
 
-    console.log("Profile requested body:", profileData);
+    // console.log("Profile requested body:", profileData);
 
     try {
       apiRequest({
@@ -195,7 +195,7 @@ const Profile = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
-          console.log("Update Profile Response:", response);
+          // console.log("Update Profile Response:", response);
           setIsSaving(false);
           enqueueSnackbar(
             response?.message || "Profile updated successfully!",
@@ -258,7 +258,7 @@ const Profile = () => {
         },
       })
         .then((response) => {
-          console.log("Upload Profile Picture Response:", response);
+          // console.log("Upload Profile Picture Response:", response);
           setIsUploadingImage(false);
           enqueueSnackbar(
             response?.message || "Profile picture uploaded successfully!",
@@ -298,7 +298,7 @@ const Profile = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
-          console.log("Delete Profile Picture Response:", response);
+          // console.log("Delete Profile Picture Response:", response);
           setIsUploadingImage(false);
           setProfileImage(null);
           enqueueSnackbar(

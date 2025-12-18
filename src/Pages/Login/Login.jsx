@@ -8,6 +8,7 @@ import { LOGIN_URL, LOGIN_WITH_TOKEN_URL } from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { logo, loginImage, loginBackground } from "../../assets";
 import MainNavbar from "../../Component/MainNavbar";
+import { enqueueSnackbar } from "notistack";
 
 const validationSchema = Yup.object({
   username: Yup.string()
@@ -44,7 +45,7 @@ const Login = () => {
 
           // Clear URL parameters and redirect to dashboard
           navigate("/dashboard", { replace: true });
-          console.log("Force login successful:", response);
+          // console.log("Force login successful:", response);
         } else {
           throw new Error(response?.message || "Invalid token response");
         }
@@ -96,14 +97,17 @@ const Login = () => {
             login(response?.user, response?.token);
 
             navigate("/dashboard");
-            console.log(response);
+            // console.log(response);
             setIsLoading(false);
           })
           .catch((error) => {
-            console.error("Login failed:", error);
+            const errMsg = error.response?.data?.message;
 
             formik.setFieldError("password", "Invalid username or password");
             setIsLoading(false);
+            enqueueSnackbar(`${errMsg || "Invalid username or password"}`, {
+              variant: "error",
+            });
           });
       } catch (error) {
         console.error("Login failed:", error);
@@ -166,10 +170,10 @@ const Login = () => {
                     disabled={isForceLoading}
                     className={`w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 
                        text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed ${
-                      formik.touched.username && formik.errors.username
-                        ? "border-red-400"
-                        : ""
-                    }`}
+                         formik.touched.username && formik.errors.username
+                           ? "border-red-400"
+                           : ""
+                       }`}
                   />
                   {formik.touched.username && formik.errors.username ? (
                     <div className="mt-1 text-sm text-red-500">

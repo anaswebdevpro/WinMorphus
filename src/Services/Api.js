@@ -16,13 +16,13 @@ export async function apiRequest(options) {
 
   try {
     const response = await axios.request(config);
-    console.log("✅ API Response:", response.data);
+    // console.log("✅ API Response:", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError && axios.isAxiosError(error)) {
       console.error(" API Error:", error.response?.data || error.message);
-      console.log("Error response data:", error.response?.data);
-      console.log("Error message:", error.response?.data?.message);
+      // console.log("Error response data:", error.response?.data);
+      // console.log("Error message:", error.response?.data?.message);
       throw error;
     } else {
       console.error(" Unexpected Error:", error);

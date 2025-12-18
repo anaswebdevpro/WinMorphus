@@ -30,7 +30,7 @@ const TRC20 = () => {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        console.log("Deposit Methods API Response:", response);
+        // console.log("Deposit Methods API Response:", response);
 
         
         setDepositMethod(response.data);

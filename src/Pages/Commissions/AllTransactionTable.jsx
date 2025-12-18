@@ -4,6 +4,7 @@ import { useAuth } from "../../Context/UseAuth";
 import { apiRequest } from "../../Services/Api";
 import { COMMISSION_ALL_TRANS_HISTORY } from "../../Api/Api_variables";
 import { Calendar, TrendingUp, Award } from "lucide-react";
+import { NoData } from "../../assets";
 import PaginationButton from "../../Component/ui/PaginationButton";
 
 // Constants
@@ -404,7 +405,16 @@ const AllTransactionTable = () => {
                     colSpan={6}
                     className="py-12 pl-12 pr-8 text-center text-(--text-secondary)"
                   >
-                    No transactions available
+                    <div className="flex flex-col items-center justify-center py-8">
+                      <img
+                        src={NoData}
+                        alt="No data"
+                        className=" h-50 object-contain mb-4"
+                      />
+                      <h3 className="text-lg font-semibold text-(--text-primary)">
+                        No data available yet
+                      </h3>
+                    </div>
                   </td>
                 </tr>
               )}

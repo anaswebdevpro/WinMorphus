@@ -50,7 +50,7 @@ const Network = () => {
   const [networkData, setNetworkData] = useState(null);
   const { token } = useAuth();
 
-  const FetchNetwork = React.useCallback(() => {
+  const FetchNetwork =() => {
     setIsLoading(true);
     try {
       apiRequest({
@@ -59,7 +59,7 @@ const Network = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
-          console.log("Network Data:", response);
+          // console.log("Network Data:", response);
           setIsLoading(false);
           setNetworkData(response.data);
         })
@@ -77,9 +77,9 @@ const Network = () => {
         variant: "error",
       });
     }
-  }, [token]);
+  };
 
-  const fetchStats = React.useCallback(() => {
+  const fetchStats =() => {
     setIsLoading(true);
     try {
       apiRequest({
@@ -88,7 +88,7 @@ const Network = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {
-          console.log("Network Data:", response);
+          // console.log("Network Data:", response);
           setIsLoading(false);
           const statsData = response.data;
           if (statsData) {
@@ -116,12 +116,12 @@ const Network = () => {
         variant: "error",
       });
     }
-  }, [token]);
+  };
 
   useEffect(() => {
     FetchNetwork();
     fetchStats();
-  }, [FetchNetwork, fetchStats]);
+  }, []);
 
   if (isLoading) {
     return (

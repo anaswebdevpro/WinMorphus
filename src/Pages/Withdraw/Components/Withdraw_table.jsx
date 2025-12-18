@@ -4,6 +4,7 @@ import { useAuth } from "../../../Context/UseAuth";
 import { apiRequest } from "../../../Services/Api";
 import { WITHDRAWAL_TABLE_HISTORY } from "../../../Api/Api_variables";
 import { Calendar, Check } from "lucide-react";
+import { NoData } from "../../../assets";
 import StatusBadge from "../../../Component/ui/StatusBadge";
 import PaginationButton from "../../../Component/ui/PaginationButton";
 
@@ -205,7 +206,16 @@ const Withdraw_table = () => {
                   colSpan={7}
                   className="p-8 text-center text-[var(--text-muted)]"
                 >
-                  No withdrawal history available
+                  <div className="flex flex-col items-center justify-center py-8">
+                    <img
+                      src={NoData}
+                      alt="No data"
+                      className=" h-50 object-contain mb-4"
+                    />
+                    <h3 className="text-lg font-semibold text-(--text-primary)">
+                      No data available yet
+                    </h3>
+                  </div>
                 </td>
               </tr>
             )}

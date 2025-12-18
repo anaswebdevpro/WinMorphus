@@ -6,6 +6,7 @@ import { useSnackbar } from "notistack";
 import { apiRequest } from "../../Services/Api";
 import { DEPOSIT_METHODS_URL } from "../../Api/Api_variables";
 import { ShimmerLoader, PageHeader } from "../../Component/ui";
+import { NoData } from "../../assets";
 
 const Deposit = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Deposit = () => {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        console.log("Deposit Methods API Response:", response);
+        // console.log("Deposit Methods API Response:", response);
 
         // Handle both nested and direct data structures
 
@@ -99,10 +100,10 @@ const Deposit = () => {
           title="Deposit Funds"
           description="Choose your preferred cryptocurrency deposit method"
         />
-        {console.log(
+        {/* console.log(
           "Rendering Deposit Component with Methods:",
           DepositMethod
-        )}
+        ) */}
         {/* Alert Banner */}
         <div className="bg-(--bg-tertiary) border border-(--border-secondary) rounded-lg p-4 mb-8 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-(--accent-primary) shrink-0 mt-0.5" />
@@ -204,9 +205,19 @@ const Deposit = () => {
                 );
               })
             ) : (
-              <p className="text-(--text-muted)">
-                No deposit methods available
-              </p>
+              <div className="flex flex-col items-center justify-center py-8 text-(--text-muted)">
+                <img
+                  src={NoData}
+                  alt="No data"
+                  className="h-50 object-contain mb-4"
+                />
+                <h3 className="text-lg font-semibold text-(--text-primary)">
+                  No data available yet
+                </h3>
+                <p className="text-(--text-secondary) mt-2">
+                  No deposit methods available
+                </p>
+              </div>
             )}
           </div>
         </div>
