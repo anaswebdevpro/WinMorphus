@@ -8,7 +8,11 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { apiRequest } from "../../Services/Api";
-import { PACKAGES_URL, PACKAGES_PURCHASE, GET_BALANCE } from "../../Api/Api_variables";
+import {
+  PACKAGES_URL,
+  PACKAGES_PURCHASE,
+  GET_BALANCE,
+} from "../../Api/Api_variables";
 import { useAuth } from "../../Context/UseAuth";
 import { useSnackbar } from "notistack";
 import ShimmerLoader from "../../Component/ui/ShimmerLoader";
@@ -69,36 +73,34 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
       });
     }
   };
- 
 
-  // fetchbalace for wallet 
+  // fetchbalace for wallet
 
-   const fetchBalance = () => {
-      if (!token) return;
-  
-      try {
-        setIsLoading(true);
-  
-        apiRequest({
-          endpoint: GET_BALANCE,
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
+  const fetchBalance = () => {
+    if (!token) return;
+
+    try {
+      setIsLoading(true);
+
+      apiRequest({
+        endpoint: GET_BALANCE,
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((response) => {
+          setBalance(response.data);
+          setIsLoading(false);
         })
-          .then((response) => {
-            setBalance(response.data);
-            setIsLoading(false);
-          })
-          .catch((error) => {
-            console.error("Failed to fetch balance data:", error);
-            const errorMessage =
-              error?.message || "Failed to fetch balance data";
-            enqueueSnackbar(errorMessage, { variant: "error" });
-            setIsLoading(false);
-          });
-      } catch (error) {
-        enqueueSnackbar(error?.message, { variant: "error" });
-      }
-    };
+        .catch((error) => {
+          console.error("Failed to fetch balance data:", error);
+          const errorMessage = error?.message || "Failed to fetch balance data";
+          enqueueSnackbar(errorMessage, { variant: "error" });
+          setIsLoading(false);
+        });
+    } catch (error) {
+      enqueueSnackbar(error?.message, { variant: "error" });
+    }
+  };
   // Handle purchase
   const handlePurchase = () => {
     if (!token || !packageDetails) return;
@@ -129,26 +131,27 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
         .then((response) => {
           // console.log("Purchase Response:", response);
           setIsPurchasing(false);
-          
+
           if (response.success === true) {
             enqueueSnackbar(
               response?.message || "Package purchased successfully!",
               {
                 variant: "success",
-              }
+              },
             );
-            
+
             // Reset form state
             setInvestmentAmount("");
-            
+
             // Delay closing to allow snackbar to show
             setTimeout(() => {
               onClose();
             }, 200);
           } else {
             enqueueSnackbar(
-              response?.message || "Failed to purchase package. Please try again.",
-              { variant: "error" }
+              response?.message ||
+                "Failed to purchase package. Please try again.",
+              { variant: "error" },
             );
           }
         })
@@ -272,7 +275,7 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                   <div>
                     <p className="text-white/80 text-sm">Available Balance</p>
                     <p className="text-2xl font-bold text-white">
-                      $ {parseFloat(balance?.main_balance || 0).toFixed(2)} 
+                      $ {parseFloat(balance?.main_balance || 0).toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -296,8 +299,11 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                     </p>
                   </div>
 
-                  {/* Slider */}
+                  {/* Amount Input */}
                   <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Enter Amount (USDT)
+                    </label>
                     <input
                       type="range"
                       min={packageDetails.min_amount}
@@ -321,6 +327,31 @@ const PurchasePackage = ({ isOpen, onClose, packageId }) => {
                         USDT
                       </span>
                     </div>
+                    
+                  </div>
+
+                  {/* Slider */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Enter Amount Manually</label>
+                  <input
+                      type="number"
+                      min={packageDetails.min_amount}
+                      max={
+                        packageDetails.max_amount === 0 ||
+                        packageDetails.max_amount === "0.00"
+                          ? 10000
+                          : packageDetails.max_amount
+                      }
+                      step="50"
+                      value={investmentAmount}
+                      onChange={(e) => setInvestmentAmount(e.target.value)}
+                      placeholder={`Min: ${packageDetails.min_amount} USDT`}
+                      className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 focus:bg-slate-600 transition-all hover:border-slate-500"
+                    />
+                
+                    
+                    
                   </div>
 
                   <p className="text-gray-500 text-xs flex items-center gap-1">

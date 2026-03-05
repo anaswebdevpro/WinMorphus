@@ -16,6 +16,7 @@ import {
 } from "../Pages";
 import BEP20 from "../Pages/Deposit/BEP20/BEP20";
 import TRC20 from "../Pages/Deposit/TRC20/TRC20";
+import Forget from "../Pages/ForgetPassword/Forget";
 
 export const router = createBrowserRouter([
   {
@@ -53,6 +54,7 @@ export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <Signup /> },
   { path: "/ref/:referralId", element: <Signup /> },
+  { path: "/forget", element: <Forget /> },
   // Fallback
   { path: "*", element: <Login /> },
 ]);

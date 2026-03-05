@@ -218,6 +218,16 @@ const Login = () => {
                       {formik.errors.password}
                     </div>
                   ) : null}
+
+                  {/* Forgot Password Link - bottom right of password field */}
+                  <div className="flex justify-end mt-2">
+                    <Link
+                      to="/forget"
+                      className="text-yellow-500 hover:text-yellow-600 text-xs font-medium"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Terms Checkbox */}

@@ -32,6 +32,7 @@ import Investerprogress from "./Components/Investerprogress";
 import TradingView from "./Components/TradingView";
 import TradingView2 from "./Components/TradingView2";
 import RankChart from "./Components/RankChart";
+import Banner from "../../Component/Banner";
 
 const Dashboard = () => {
   const { token } = useAuth();
@@ -236,7 +237,7 @@ const Dashboard = () => {
               <h2 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">
                 ${" "}
                 {parseFloat(dashboardData?.current_level_income || 0).toFixed(
-                  2
+                  2,
                 )}
               </h2>
             </div>
@@ -517,8 +518,14 @@ const Dashboard = () => {
                         className="text-center py-12 text-[var(--text-muted)] text-xl"
                       >
                         <div className="flex flex-col items-center justify-center ">
-                          <img src={NoData} alt="No data" className=" h-40 object-contain mb-3" />
-                          <h3 className="text-lg font-semibold text-[var(--text-primary)]">No data available yet</h3>
+                          <img
+                            src={NoData}
+                            alt="No data"
+                            className=" h-40 object-contain mb-3"
+                          />
+                          <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+                            No data available yet
+                          </h3>
                         </div>
                       </td>
                     </tr>
@@ -589,7 +596,7 @@ const Dashboard = () => {
                             {entry.description || "N/A"}
                           </td>
                         </tr>
-                      )
+                      ),
                     )
                   ) : (
                     <tr>
@@ -598,8 +605,14 @@ const Dashboard = () => {
                         className="text-center py-12 text-[var(--text-muted)] text-xl"
                       >
                         <div className="flex flex-col items-center justify-center ">
-                          <img src={NoData} alt="No data" className=" h-40 object-contain mb-3" />
-                          <h3 className="text-lg font-semibold text-[var(--text-primary)]">No data available yet</h3>
+                          <img
+                            src={NoData}
+                            alt="No data"
+                            className=" h-40 object-contain mb-3"
+                          />
+                          <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+                            No data available yet
+                          </h3>
                         </div>
                       </td>
                     </tr>
@@ -644,7 +657,7 @@ const Dashboard = () => {
                 <p className="text-2xl font-bold text-[var(--text-primary)]">
                   ${" "}
                   {parseFloat(
-                    dashboardData?.user_balance?.income_wallet
+                    dashboardData?.user_balance?.income_wallet,
                   ).toFixed(2) || "0.00"}{" "}
                   USDT
                 </p>
@@ -674,6 +687,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      {/* Banner Popup */}
+      <Banner />
     </div>
   );
 };
