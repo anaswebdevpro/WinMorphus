@@ -179,7 +179,7 @@ const Dashboard = () => {
         )}
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
           {/* Total Investment */}
           {loading ? (
             <ShimmerLoader />
@@ -258,6 +258,26 @@ const Dashboard = () => {
               </div>
               <h2 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">
                 ${parseFloat(dashboardData?.reward_income || 0).toFixed(2)}
+              </h2>
+            </div>
+          )}
+          {/* Royalty Income */}
+           {loading ? (
+            <ShimmerLoader />
+          ) : (
+            <div className="bg-[var(--bg-card)] border-2 border-blue-500 p-6 rounded-lg shadow-lg relative overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-blue-500/10 px-3 py-1 rounded-lg">
+                <TrendingUp className="w-4 h-4 text-blue-500" />
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="w-5 h-5 text-blue-500" />
+                <p className="text-sm font-medium text-[var(--text-secondary)]">
+                  Royalty Bonus
+                </p>
+              </div>
+              <h2 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">
+                $ {parseFloat(dashboardData?.royality_bonus || 0).toFixed(2)}
+            
               </h2>
             </div>
           )}

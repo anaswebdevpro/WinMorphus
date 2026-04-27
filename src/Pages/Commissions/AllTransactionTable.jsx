@@ -16,6 +16,9 @@ const TRANSACTION_TYPES = [
   { value: "roi_earning", label: "ROI Earning" },
   { value: "package_purchase", label: "Package Purchase" },
   { value: "reward_income", label: "Reward Income" },
+  { value: "royalty-bonus", label: "Royalty Bonus" },
+
+
 ];
 
 const AllTransactionTable = () => {
@@ -63,10 +66,13 @@ const AllTransactionTable = () => {
     const typeColors = {
       level_income: "bg-blue-600/30 text-(--text-primary) border-blue-500/20",
       roi_earning: "bg-green-600/30 text-(--text-primary) border-green-500/20",
-      package_purchase:
-        "bg-purple-600/30 text-(--text-primary) border-purple-500/20",
+      package_purchase:"bg-purple-600/30 text-(--text-primary) border-purple-500/20",
       reward_income: "bg-gray-600/30 text-(--text-primary) border-gray-500/20",
+      royalty_bonus: "bg-yellow-600/30 text-(--text-primary) border-yellow-500/20"
+
     };
+
+
     return (
       typeColors[type] ||
       "bg-(--bg-secondary) text-(--text-primary) border-(--border-primary)"
